@@ -1,7 +1,5 @@
 const { playersSchema } = require("../../schemas/players");
-const db = require("../../db");
-
-const players = db.get("players");
+const players = require("../../db/players");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e
@@ -11,26 +9,26 @@ Ha igen megnézzük, hogy létezik-e a játékos,
 Ha nem, akkor eltároljuk az adatbázisban és visszatérünk..
 */
 
-async function getPlayers(req, res, next) {
+async function getPlayers(req, res) {
   try {
     await playersSchema.validate(req.body);
 
     const existing = await players.findOne({ game: req.body.game, user: req.user.user_id });
     if (existing) {
-      res.json({
+      res.send({
         status: "inplay",
       });
     }
 
-    const created = await players.insert({ ...req.body, user: req.user.user_id });
-    res.json({
+    await players.insert({ ...req.body, user: req.user.user_id });
+    res.send({
       status: "success",
     });
   } catch (error) {
     if (error.message.startsWith("E11000")) {
       error.message = "This username is already playing!";
     }
-    next(error);
+    res.send(error);
   }
 }
 

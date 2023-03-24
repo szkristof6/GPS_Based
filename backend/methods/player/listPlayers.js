@@ -1,7 +1,5 @@
-const db = require("../../db");
-
-const players = db.get("players");
-const users = db.get("users");
+const players = require("../../db/players");
+const users = require("../../db/users");
 
 /*
 Lekérdezzük a token azonosítás után létrehozott user tömb segítségével a játékos adatait
@@ -11,7 +9,7 @@ Majd lekérdezzük a játékos játék azonosítója alapján a játékban lév�
 Majd visszaadjuk a végleges listát a felhasznló képével együtt
 */
 
-async function listPlayers(req, res, next) {
+async function listPlayers(req, res) {
   try {
     const player = await players.findOne({ user: req.user.user_id });
     const dbPlayers = await players.find({ game: req.body.game });
@@ -29,9 +27,9 @@ async function listPlayers(req, res, next) {
       }
     }
     
-    res.json(cleaned);
+    res.send(cleaned);
   } catch (error) {
-    next(error);
+    res.send(error);
   }
 }
 

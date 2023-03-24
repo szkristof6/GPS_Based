@@ -1,42 +1,60 @@
-const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
 
-const userSchema = require("../../schemas/user");
-const db = require("../../db");
+const { registerSchema } = require("../../schemas/user");
+const users = require("../../db/users");
+const JWT_sign = require("../jwt");
+const captcha = require("../captcha");
 
-const users = db.get("users"); // Az adatbázisból lekérjük az users táblát
-users.createIndex({ username: 1 }, { unique: true }); // Az users táblában megmondjuk, hogy az username egy unique elem
-
-async function registerUser(req, res, next) {
+async function registerUser(req, res) {
   try {
-    await userSchema.validate(req.body); // A kliens felöl érkező adatokat ellenőrizzük egy schema alapján
+    const notBot = await captcha(req);
+
+    if (!notBot) {
+      res.send({
+        status: "error",
+        message: "Captcha failed!",
+      });
+    }
+
+    await registerSchema.validate(req.body); // A kliens felöl érkező adatokat ellenőrizzük egy schema alapján
+
+    if (req.body.password !== req.body.passwordre) {
+      res.send({
+        status: "error",
+        message: "The passwords are not matching!",
+      });
+    }
+
+    const saltRounds = 5;
+    const hash = await bcrypt.genSalt(saltRounds).then((salt) => bcrypt.hash(req.body.password, salt));
 
     /*
     Sikeres ellenörzés után betesszük az adatbázisba a felhasználót
     Megadunk egy teszt képet és egy hozzáférési szintet
     */
+    const name = `${req.body.firstname} ${req.body.lastname}`;
+
     const user = await users.insert({
-      ...req.body,
-      image: `https://eu.ui-avatars.com/api/?name=${req.body.username}&size=250`,
-      permission: 0
-    });
-    /*
-    Létrehozzuk a felhasználühüz tartozó tokent, amit visszaadunk sikeres művelet eseten a kliensnek
-    */
-    const token = jwt.sign({ user_id: user._id, username: req.body.username }, process.env.TOKEN_KEY, {
-      expiresIn: "2h",
+      name,
+      password: hash,
+      email: req.body.email,
+      date: req.body.date,
+      login_method: "email",
+      image: `https://eu.ui-avatars.com/api/?name=${name}&size=250`,
+      permission: 0,
     });
 
-    res.json({
+    res.send({
       status: "success",
-      token,
     });
   } catch (error) {
     // Minden hiba esetén ide kerülünk, ahol kezeljük a hibát, vagy továbbküldjük a hibakezelőnek
-    if (error.message.startsWith("E11000")) { // A duplicate hiba így kezdődik
-      error.message = "This username is already exists!";
+    if (error.message.startsWith("E11000")) {
+      // A duplicate hiba így kezdődik
+      error.message = "This account already exists!";
     }
-    next(error);
+    res.send(error);
   }
 }
 

@@ -1,18 +1,15 @@
-const db = require("../../db");
-
-const games = db.get("games");
-games.createIndex({ name: 1 }, { unique: true });
+const games = require("../../db/games");
 
 /*
 Ismét egy borzasztó egyszerű funkció, lekérdezi adatbázisból az összes játékot és visszaadja a kliensnek
 */
 
-async function listGames(req, res, next) {
+async function listGames(req, res) {
   try {
     const gameList = await games.find();
-    res.json(gameList);
+    res.send(gameList);
   } catch (error) {
-    next(error);
+    res.send(error);
   }
 }
 

@@ -1,35 +1,60 @@
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const userSchema = require("../../schemas/user");
-const db = require("../../db");
+const {loginSchema} = require("../../schemas/user");
+const users = require("../../db/users");
+const bcrypt = require("bcrypt");
+
+const captcha = require("../captcha");
+const JWT_sign = require("../jwt");
 
 /*
 Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk az adatbázisba, hanem keresünk benne
 Ha megtaláltuk a felhasználüt, akkor visszaadjuk a tokent a felhasználónak
 */
 
-const users = db.get("users");
-users.createIndex({ username: 1 }, { unique: true });
-
-async function loginUser(req, res, next) {
+async function loginUser(req, res) {
   try {
-    await userSchema.validate(req.body);
+    const notBot = await captcha(req);
 
-    const user = await users.findOne({ username: req.body.username });
-    const token = jwt.sign({ user_id: user._id, username: req.body.username }, process.env.TOKEN_KEY, {
-      expiresIn: "2h",
-    });
-
-    res.json({
-      status: "success",
-      token,
-    });
-  } catch (error) {
-    if (error.message.startsWith("Cannot")) { // Ha nem létezik a felhasználó, akkor így kezdődik a hiba
-      error.message = "This user does not exist! Please sign in!";
+    if (!notBot) {
+      res.send({
+        status: "error",
+        message: "Captcha failed!",
+      });
     }
-    next(error);
+
+    await loginSchema.validate(req.body);
+
+    const user = await users.findOne({ email: req.body.email });
+    if (user == null) {
+      res.send({
+        status: "error",
+        message: "This account does not exist! Please sign in!",
+      });
+    }
+    if (user.login_method != "email") {
+      res.send({
+        status: "error",
+        message: "Provider method was used for signin!",
+      });
+    }
+    const password = await bcrypt.compare(req.body.password, user.password);
+
+    if (password) {
+      const token = JWT_sign(user);
+
+      res.send({
+        status: "success",
+        token,
+      });
+    } else {
+      res.send({
+        status: "error",
+        message: "The password is incorrect!",
+      });
+    }
+  } catch (error) {
+    res.send(error);
   }
 }
 

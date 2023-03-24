@@ -4,25 +4,79 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Event code</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <title>Airsoft</title>
 
-    <link rel="stylesheet" href="css/style.css" />
-
+    <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body>
-    <div class="login-main">
-      <div class="login">
-        <h1>Teszt: 640de4c0a414d3b06e819a24</h1>
-        <form>
-          <label for="code">Event Code:</label><br>
-          <input type="text" id="code" name="code" required><br>
+    <div class="login-box white_glass_background">
+      <h1>Login</h1>
+      <form>
+        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+        <input type="hidden" name="action" value="validate_captcha" />
 
-          <input type="submit" name="submit" value="Submit">
-        </form> 
+        <div class="user-box">
+          <input type="email" name="email" required="" />
+          <label>E-Mail</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="password" required="" />
+          <label>Password</label>
+        </div>
+        <div class="buttons_1">
+          <button id="login" class="white">Log in</button>
+          <button id="signin" class="white">Sign in</button>
+        </div>
+      </form>
+      <h4>or use your</h4>
+      <div class="buttons_2">
+        <div>
+          <div
+            id="g_id_onload"
+            data-client_id="905979947159-g4tuu6q59an8dfuejffso3ckuud79qei.apps.googleusercontent.com"
+            data-context="signin"
+            data-ux_mode="popup"
+            data-callback="googleLogin"
+            data-auto_prompt="false"
+          ></div>
+          
+          <div
+            class="g_id_signin"
+            data-type="icon"
+            data-shape="circle"
+            data-theme="outline"
+            data-text="signin_with"
+            data-size="large"
+          ></div>
+        </div>
+        <button id="facebook"><img src="media/facebook (2).png"/></button>
       </div>
     </div>
-    
+    <script src="js/sites/index.js" type="module"></script>
+    <script type="module">
+      import { googleLogin } from "./js/sites/index.js";
+      window.googleLogin = googleLogin;
 
-    <script type="module" src="js/index.js"></script>
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId: "603251091670409",
+          xfbml: true,
+          version: "v16.0",
+        });
+      };
+    </script>
+
+    <script>
+      grecaptcha.ready(function () {
+        grecaptcha
+          .execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" })
+          .then(function (token) {
+            document.querySelector("#g-recaptcha-response").value = token;
+          });
+      });
+    </script>
   </body>
 </html>

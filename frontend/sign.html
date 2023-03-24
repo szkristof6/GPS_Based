@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/Sign.css" />
+    <link rel="stylesheet" href="css/index.css" />
+    <title>Be a member</title>
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG"></script>
+  </head>
+  <body>
+    <div class="login-box white_glass_background">
+      <h1>Sign in</h1>
+      <form>
+        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+        <input type="hidden" name="action" value="validate_captcha" />
+
+        <div class="user-box">
+          <input type="text" name="first" required="" />
+          <label>First name</label>
+        </div>
+        <div class="user-box">
+          <input type="text" name="last" required="" />
+          <label>Last name</label>
+        </div>
+        <div class="user-box">
+            <input type="email" name="email" required="" />
+            <label>E-mail</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="password" required="" />
+          <label>Password</label>
+        </div>
+        <div class="user-box">
+            <input type="password" name="passwordre" required="" />
+            <label>Password again</label>
+        </div>
+        <div class="user-box">
+            <input type="date" name="date" required="" />
+            <label>Birthday</label>
+        </div>
+        <div class="buttons_1">
+          <button id="signin" class="white">Sign in</button>
+          <button id="back" class="white">Back</button>
+        </div>
+      </form>
+    </div>
+    <script src="js/sites/sign.js" type="module"></script>
+    <script>
+      grecaptcha.ready(function () {
+        grecaptcha
+          .execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" })
+          .then(function (token) {
+            document.querySelector("#g-recaptcha-response").value = token;
+          });
+      });
+    </script>
+  </body>
+</html>

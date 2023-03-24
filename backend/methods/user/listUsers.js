@@ -1,18 +1,15 @@
-const db = require("../../db");
-
-const users = db.get("users");
-users.createIndex({ username: 1 }, { unique: true });
+const users = require("../../db/users");
 
 /*
 Borzasztó egyszerű funkció, lekérdezi adatbázisból az összes felhasználót és visszaadja a kliensnek
 */
 
-async function loginUser(req, res, next) {
+async function loginUser(req, res) {
   try {
     const userList = await users.find();
-    res.json(userList);
+    res.send(userList);
   } catch (error) {
-    next(error);
+    res.send(error);
   }
 }
 

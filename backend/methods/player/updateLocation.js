@@ -1,7 +1,5 @@
-const db = require("../../db");
+const players = require("../../db/players");
 const { locationSchema } = require("../../schemas/players");
-
-const players = db.get("players");
 
 /*
 Megnézzük, hogy a kliens által megadott értékek megfelelőek-e
@@ -9,7 +7,7 @@ Amennyiben helyesek megkeressük az adott játékost a token azonosítás után 
 Majd frissítjük a játékos pozicióját
 */
 
-async function updateLocation(req, res, next) {
+async function updateLocation(req, res) {
   try {
     await locationSchema.validate(req.body);
     const player = await players.findOne({user: req.user.user_id});
@@ -18,11 +16,11 @@ async function updateLocation(req, res, next) {
       { _id: player._id },
       { $set: { location: req.body.location } }
     );
-    res.json({
+    res.send({
       status: "success"
     });
   } catch (error) {
-    next(error);
+    res.send(error);
   }
 }
 
