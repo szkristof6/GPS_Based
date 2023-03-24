@@ -23,6 +23,18 @@ Előszőr pár 3rd party middleware-t behozunk, amik különféle funkciókat ho
 fastify.register(require("@fastify/cors"));
 fastify.register(require("@fastify/helmet"), { global: true });
 fastify.register(require("@fastify/jwt"), { secret: process.env.TOKEN_KEY });
+fastify.register(import("@fastify/rate-limit"), {
+  max: 100,
+  timeWindow: "1 minute",
+});
+
+fastify.setErrorHandler(function (error, request, reply) {
+  if (error.statusCode === 429) {
+    reply.code(429);
+    error.message = "You hit the rate limit! Slow down please!";
+  }
+  reply.send(error);
+});
 
 /*
 JWT tokent használunk azonosításra.
