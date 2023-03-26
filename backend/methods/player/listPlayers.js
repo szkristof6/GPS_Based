@@ -1,5 +1,8 @@
 const players = require("../../db/players");
 const users = require("../../db/users");
+const games = require("../../db/games");
+const teams = require("../../db/teams");
+const locations = require("../../db/locations");
 
 /*
 Lekérdezzük a token azonosítás után létrehozott user tömb segítségével a játékos adatait
@@ -11,23 +14,33 @@ Majd visszaadjuk a végleges listát a felhasznló képével együtt
 
 async function listPlayers(req, res) {
   try {
-    const player = await players.findOne({ user: req.user.user_id });
-    const dbPlayers = await players.find({ game: req.body.game });
+    const player = await players.findOne({ _id: req.query.player_id });
+    const allPlayer = await players.find({ game_id: player.game_id });
 
     const cleaned = []; // Létrehozunk egy üres listát
 
-    for (let index = 0; index < dbPlayers.length; index++) {
-      const element = dbPlayers[index]; // elmentjük az adott játékost egy változóval
-      if (element.user != player.user) { // Megnézzük, hogy az adott játékos azonosítója egyezik-e a felhasználó azonosítójával
-        const dbUser = await users.findOne({ _id: element.user }); // Ha nem, akkor lekérdezzük a játékos azonosítója alapján a felhasználói profilját
+    for (let index = 0; index < allPlayer.length; index++) {
+      const element = allPlayer[index]; // elmentjük az adott játékost egy változóval
+      if (element.player_id !== player.player_id) {
+        // Megnézzük, hogy az adott játékos azonosítója egyezik-e a felhasználó azonosítójával
+        const user = await users.findOne({ _id: element.user_id });
+        const team = await teams.findOne({ _id: element.team_id });
+        const location = await locations.findOne({ _id: element.location_id }); // Ha nem, akkor lekérdezzük a játékos azonosítója alapján a felhasználói profilját
+
         cleaned.push({
-          ...element,
-          image: dbUser.image,
+          user: {
+            name: user.name,
+            image: user.image,
+          },
+          team: {
+            color: team.color,
+          },
+          location: location.location,
         }); // Betesszük a listába a kiegészített objektumot
       }
     }
-    
-    res.send(cleaned);
+
+    res.send({ status: "success", count: cleaned.length, players: cleaned });
   } catch (error) {
     res.send(error);
   }

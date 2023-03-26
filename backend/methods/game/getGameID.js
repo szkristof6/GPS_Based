@@ -19,7 +19,7 @@ async function getGame(req, res) {
     }
 
     const game = await games.findOne({ id: req.body.id });
-    if (game == null) {
+    if (game === null) {
       res.send({
         status: "error",
         message: "This game does not exist!",

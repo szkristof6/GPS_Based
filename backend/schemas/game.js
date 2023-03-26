@@ -10,7 +10,15 @@ const gamesSchema = yup.object().shape({
   //token: yup.string().trim().required(),
 });
 
-module.exports = gamesSchema;
+const locationSchema = yup.object().shape({
+  player_id: yup.string().trim().required(),
+  location: yup.object({
+    x: yup.number().required(),
+    y: yup.number().required(),
+  }),
+});
+
+module.exports = { gamesSchema, locationSchema };
 
 /* Game:
 

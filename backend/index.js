@@ -24,23 +24,29 @@ const createGame = require("./methods/game/createGame"); // Játék létrehozás
 const getGame = require("./methods/game/getGame"); // Játék adatok lekérdezése
 const getGameID = require("./methods/game/getGameID"); // Játék azonosító lekérdezése
 const listGames = require("./methods/game/listGames"); // Játékok lekérdezése
+const updateLocation = require("./methods/game/updateLocation"); // Játékos pozició frissítés
 
 fastify.post("/createGame", { onRequest: [fastify.verify] }, createGame);
 fastify.post("/getGame", { onRequest: [fastify.verify] }, getGame);
-fastify.post("/getGameID", getGameID);
+fastify.post("/getGameID", { onRequest: [fastify.verify] }, getGameID);
+fastify.post("/updateLocation", { onRequest: [fastify.verify] }, updateLocation);
 fastify.get("/listGames", { onRequest: [fastify.verify] }, listGames);
 
 // Player methods - Minden olyan funkció, ami a játékosokhoz tartozik
 
 const addPlayer = require("./methods/player/addPlayer"); // Játékos hozzásadáse
-const updateLocation = require("./methods/player/updateLocation"); // Játékos pozició frissítés
 const getPlayerData = require("./methods/player/getPlayerData"); // Játékos adatainak lekérdezése
 const listPlayers = require("./methods/player/listPlayers"); // Adott játékban lévő játékosok lekérdezése
 
 fastify.post("/addPlayer", { onRequest: [fastify.verify] }, addPlayer);
-fastify.post("/updateLocation", { onRequest: [fastify.verify] }, updateLocation);
-fastify.post("/listPlayers", { onRequest: [fastify.verify] }, listPlayers);
+fastify.get("/listPlayers", { onRequest: [fastify.verify] }, listPlayers);
 fastify.get("/getPlayerData", { onRequest: [fastify.verify] }, getPlayerData);
+
+const addTeam = require("./methods/team/addTeam"); // Csapat hozzásadáse
+const getTeam = require("./methods/team/getTeam"); // Csapat adatainak lekérdezése
+
+fastify.post("/addTeam", { onRequest: [fastify.verify] }, addTeam);
+fastify.get("/getTeam", { onRequest: [fastify.verify] }, getTeam);
 
 /*
 Abban az esetben, hogyha semmilyen útba nem tartozik a kérés, akkor ide kerülünk.
