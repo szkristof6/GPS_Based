@@ -7,7 +7,7 @@ Ha létezik visszaadjuk mindent
 
 async function getGame(req, res) {
   try {
-    const game = await games.findOne({ _id: req.body.id });
+    const game = await games.findOne({ id: req.body.id });
 
     res.send(game);
   } catch (error) {

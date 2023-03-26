@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 
+const { nanoid } = require("nanoid");
+
 const gamesSchema = require("../../schemas/game");
 const games = require("../../db/games");
 
@@ -16,6 +18,7 @@ async function createGame(req, res) {
     const hash = await bcrypt.genSalt(saltRounds).then((salt) => bcrypt.hash(req.body.password, salt));
 
     const game = await games.insert({
+      id: nanoid(15),
       name: req.body.name,
       password: hash,
       gamemode: "test",

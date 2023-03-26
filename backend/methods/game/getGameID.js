@@ -18,7 +18,7 @@ async function getGame(req, res) {
       });
     }
 
-    const game = await games.findOne({ _id: req.body.id });
+    const game = await games.findOne({ id: req.body.id });
     if (game == null) {
       res.send({
         status: "error",

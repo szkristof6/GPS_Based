@@ -7,7 +7,7 @@ const gamesSchema = yup.object().shape({
     x: yup.number().required(),
     y: yup.number().required(),
   }),
-  token: yup.string().trim().required(),
+  //token: yup.string().trim().required(),
 });
 
 module.exports = gamesSchema;
