@@ -1,3 +1,5 @@
+import * as Cookie from "./cookie.js";
+
 /*
 Megadjuk, hogy milyen címen tudjuk elérni a szerverünket.
 */
@@ -12,7 +14,8 @@ Ez a POST request funkció.
 Az alkalmazés ezt a funkciót használja, hogyha a szervernek szeretne valami információt átadni.
 Ezt az információt JSON formátumban kezeli, mert a szerver így van konfigurálva. 
 */
-export async function fetchPOST(body, route, token) {
+export async function fetchPOST(body, route) {
+  const token = Cookie.getCookie("Token");
   const rawResponse = await fetch(`${backend_uri}/${route}`, {
     method: "POST",
     headers: {
@@ -32,7 +35,8 @@ Ez a GET request funkció.
 Az alkalmazés ezt a funkciót használja, hogyha a szerverről szeretnénk megkapni valamit, anélkül, hogy nekünk kéne valamit megadni neki.
 Ezt az információt JSON formátumban kezeli, mert a szerver így van konfigurálva. 
 */
-export async function fetchGET(route, token) {
+export async function fetchGET(route) {
+  const token = Cookie.getCookie("Token");
   const rawResponse = await fetch(`${backend_uri}/${route}`, {
     method: "GET",
     headers: {
