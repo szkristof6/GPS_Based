@@ -15,6 +15,8 @@ async function registerUser(req, res) {
         status: "error",
         message: "Captcha failed!",
       });
+
+      return;
     }
 
     await registerSchema.validate(req.body); // A kliens felöl érkező adatokat ellenőrizzük egy schema alapján
@@ -24,6 +26,8 @@ async function registerUser(req, res) {
         status: "error",
         message: "The passwords are not matching!",
       });
+
+      return;
     }
 
     const saltRounds = 5;
@@ -48,6 +52,8 @@ async function registerUser(req, res) {
     res.send({
       status: "success",
     });
+
+    return;
   } catch (error) {
     // Minden hiba esetén ide kerülünk, ahol kezeljük a hibát, vagy továbbküldjük a hibakezelőnek
     if (error.message.startsWith("E11000")) {
@@ -55,6 +61,8 @@ async function registerUser(req, res) {
       error.message = "This account already exists!";
     }
     res.send(error);
+
+    return;
   }
 }
 

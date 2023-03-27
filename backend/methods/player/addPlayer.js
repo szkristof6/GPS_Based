@@ -17,9 +17,17 @@ async function getPlayers(req, res) {
 
     const existing = await players.findOne({ game_id: req.body.game_id, user_id: req.user.user_id });
     if (existing) {
+      const count = await players.count({ game_id: existing.game_id });
+      const game = await games.findOne({ _id: existing.game_id });
+
       res.send({
         status: "inplay",
+        player_id: existing._id,
+        count,
+        time: game.date,
       });
+
+      return;
     }
 
     const created = await players.insert({
@@ -40,19 +48,23 @@ async function getPlayers(req, res) {
     const updated = await players.findOneAndUpdate({ _id: created._id }, { $set: { location_id: location._id } });
 
     const count = await players.count({ game_id: created.game_id });
-    const time = games.findOne({ _id: created.game_id }).then((response) => response.date);
+    const game = await games.findOne({ _id: existing.game_id });
 
     res.send({
       status: "success",
       player_id: updated._id,
       count,
-      time,
+      time: game.date,
     });
+
+    return;
   } catch (error) {
     if (error.message.startsWith("E11000")) {
       error.message = "This username is already playing!";
     }
     res.send(error);
+
+    return;
   }
 }
 

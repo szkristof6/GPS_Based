@@ -18,6 +18,8 @@ async function updateLocation(req, res) {
         status: "error",
         message: "The player was not found!",
       });
+
+      return;
     } else {
       const created = await locations.insert({
         location: req.body.location,
@@ -31,9 +33,13 @@ async function updateLocation(req, res) {
         status: "success",
         updated,
       });
+
+      return;
     }
   } catch (error) {
     res.send(error);
+
+    return;
   }
 }
 

@@ -17,7 +17,7 @@ const form = document.querySelector("form");
 const joinButton = document.querySelector("#JoinRoom");
 const logoutButton = document.querySelector("#logout");
 
-console.log("uNQAvg3C-LgJ5cy");
+console.log("6O13_2qXHJyV_lK");
 console.log("teszt123");
 
 form.addEventListener("submit", (event) => event.preventDefault());
@@ -39,8 +39,7 @@ joinButton.addEventListener("click", async (event) => {
   if (game.status === "success") {
     Cookie.setCookie("GameID", game.id, Cookie.exp_time);
 
-    console.log("tovább");
-    //window.location.replace(next);
+    window.location.replace(next);
   } else {
     console.error(game);
   }

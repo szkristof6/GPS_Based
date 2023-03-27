@@ -31,11 +31,15 @@ async function createGame(req, res) {
       status: "success",
       game,
     });
+
+    return;
   } catch (error) {
     if (error.message.startsWith("E11000")) {
       error.message = "This gas has already been created!";
     }
     res.send(error);
+
+    return;
   }
 }
 

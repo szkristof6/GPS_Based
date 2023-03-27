@@ -15,6 +15,8 @@ async function facebookLogin(req, res) {
         status: "error",
         message: "Captcha failed!",
       });
+
+      return;
     }
 
     const fields = ["email", "name", "picture"].join(",");
@@ -32,6 +34,8 @@ async function facebookLogin(req, res) {
           status: "error",
           message: "Email method was used for signin!",
         });
+
+        return;
       } else {
         const token = JWT_sign(existing);
 
@@ -39,6 +43,8 @@ async function facebookLogin(req, res) {
           status: "success",
           token,
         });
+
+        return;
       }
     }
 
@@ -56,12 +62,16 @@ async function facebookLogin(req, res) {
       status: "success",
       token,
     });
+
+    return;
   } catch (error) {
     if (error.message.startsWith("E11000")) {
       // A duplicate hiba így kezdődik
       error.message = "This account already exists!";
     }
     res.send(error);
+
+    return;
   }
 }
 
