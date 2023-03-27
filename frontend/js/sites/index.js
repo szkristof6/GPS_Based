@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (Cookie.getCookie("Token")) window.location.replace(next);
 });
 
+window.addEventListener("load", () => {
+  const loader = document.querySelector(".container");
+  loader.style.display = "none";
+});
+
 const form = document.querySelector("form");
 const signinButton = document.querySelector("#signin");
 const facebookButton = document.querySelector("#facebook");

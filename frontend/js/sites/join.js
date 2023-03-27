@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!Cookie.getCookie("Token")) window.location.replace(index);
 });
 
+window.addEventListener("load", () => {
+  const loader = document.querySelector(".container");
+  loader.style.display = "none";
+});
+
 const form = document.querySelector("form");
 const joinButton = document.querySelector("#JoinRoom");
 const logoutButton = document.querySelector("#logout");
@@ -31,7 +36,7 @@ joinButton.addEventListener("click", async (event) => {
   };
   const game = await API.fetchPOST(json, "getGameID");
 
-  if(game.status === "success"){
+  if (game.status === "success") {
     Cookie.setCookie("GameID", game.id, Cookie.exp_time);
 
     console.log("tovább");

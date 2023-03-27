@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (Cookie.getCookie("Token")) window.location.replace(next);
 });
 
+window.addEventListener("load", () => {
+  const loader = document.querySelector(".container");
+  loader.style.display = "none";
+});
+
 const form = document.querySelector("form");
 const backButton = document.querySelector("#back");
 
@@ -16,7 +21,7 @@ backButton.addEventListener("click", () => window.location.replace(back));
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  
+
   const formData = new FormData(form);
   const json = {
     firstname: formData.get("first"),
