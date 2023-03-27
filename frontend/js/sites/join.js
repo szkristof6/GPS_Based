@@ -12,7 +12,7 @@ const form = document.querySelector("form");
 const joinButton = document.querySelector("#JoinRoom");
 const logoutButton = document.querySelector("#logout");
 
-console.log("mgb2zjukNJIPNWJ");
+console.log("uNQAvg3C-LgJ5cy");
 console.log("teszt123");
 
 form.addEventListener("submit", (event) => event.preventDefault());

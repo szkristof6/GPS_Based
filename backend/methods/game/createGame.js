@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 
 const { nanoid } = require("nanoid");
 
-const gamesSchema = require("../../schemas/game");
+const { gamesSchema } = require("../../schemas/game");
 const games = require("../../db/games");
 
 /*
@@ -23,7 +23,8 @@ async function createGame(req, res) {
       password: hash,
       gamemode: "test",
       location: req.body.location,
-      date: new Date(),
+      date: req.body.date,
+      joinable: false,
       objects: {},
     });
     res.send({

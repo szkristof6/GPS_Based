@@ -136,6 +136,22 @@ div.buttons_2 > * {
   max-width: 100px;
 }
 
+.server_message{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 355px;
+  max-width: 98%;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  color: #fff;
+  background-color: rgb(62, 9, 0);
+  font-weight: 500;
+  z-index: 200;
+}
 
 @media only screen and (max-width: 400px) {
   .login-box {

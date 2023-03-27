@@ -1,12 +1,27 @@
-*{
-    background-color: black;
+/*html{
+  height: 100%;
 }
-.container {
+body{
+    /*background: linear-gradient(#141e30, #243b55);
+    background-image: url("../media/background.png");
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../media/background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}*/
+.container{
+  position: absolute;
+  background-color: rgba(3, 0, 37, 0.544);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  height: 100%;
+}
+.loader {
     width: 80px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 100;
   }
   
   .block {
@@ -53,3 +68,4 @@
       opacity: 1;
     }
   }
+  

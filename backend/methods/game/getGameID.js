@@ -25,16 +25,23 @@ async function getGame(req, res) {
         message: "This game does not exist!",
       });
     }
-
-    const password = await bcrypt.compare(req.body.password, game.password);
-    if (password) {
-      res.send({ status: "success", id: game._id });
-    } else {
+    if(!game.joinable){
       res.send({
         status: "error",
-        message: "The password is incorrect!",
+        message: "This game is not active at the moment!",
       });
+    } else {
+      const password = await bcrypt.compare(req.body.password, game.password);
+      if (password) {
+        res.send({ status: "success", id: game._id });
+      } else {
+        res.send({
+          status: "error",
+          message: "The password is incorrect!",
+        });
+      }
     }
+
   } catch (error) {
     if (error.message.startsWith("Argument")) {
       error.message = "The requested game does not exist!";

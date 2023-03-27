@@ -1,6 +1,7 @@
 const playersSchema = require("../../schemas/players");
 const players = require("../../db/players");
 const locations = require("../../db/locations");
+const games = require("../../db/games");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e
@@ -38,9 +39,14 @@ async function getPlayers(req, res) {
 
     const updated = await players.findOneAndUpdate({ _id: created._id }, { $set: { location_id: location._id } });
 
+    const count = await players.count({ game_id: created.game_id });
+    const time = games.findOne({ _id: created.game_id }).then((response) => response.date);
+
     res.send({
       status: "success",
-      updated,
+      player_id: updated._id,
+      count,
+      time,
     });
   } catch (error) {
     if (error.message.startsWith("E11000")) {
