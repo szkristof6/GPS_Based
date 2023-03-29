@@ -25,7 +25,7 @@ function remainingTime(date) {
   const minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
 
-  return `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds left`;
+  return `${days} : ${hours} : ${minutes} : ${seconds}`;
 }
 
 async function getData(pos) {
@@ -45,6 +45,8 @@ async function getData(pos) {
   if (player.status == "success" || player.status == "inplay") {
     console.log(player);
 
+    Cookie.setCookie("PlayerID", player.player_id, Cookie.exp_time);
+
     const count = document.querySelector("#count");
     const time = document.querySelector("#time");
 
@@ -53,9 +55,26 @@ async function getData(pos) {
 
     time.querySelector(".ssc-line").style.display = "none";
     time.querySelector("p").innerHTML = remainingTime(player.time);
-    setInterval(() => {
-      time.querySelector("p").innerHTML = remainingTime(player.time);
-    }, 1000);
+
+    setInterval(async () => {
+      time.querySelector(".ssc-line").style.display = "block";
+      time.querySelector("p").innerHTML = "";
+
+      count.querySelector(".ssc-line").style.display = "block";
+      count.querySelector("p").innerHTML = "";
+
+      const status = await API.fetchGET(`getStatus?game_id=${Cookie.getCookie("GameID")}`);
+
+      time.querySelector(".ssc-line").style.display = "none";
+      count.querySelector(".ssc-line").style.display = "none";
+
+      if(status.status === "started"){
+        console.log("tovább");
+      }
+
+      time.querySelector("p").innerHTML = remainingTime(status.time);
+      count.querySelector("p").innerHTML = player.count;
+    }, 5000);
   }
 }
 

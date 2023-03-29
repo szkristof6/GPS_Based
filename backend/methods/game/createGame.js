@@ -24,8 +24,7 @@ async function createGame(req, res) {
       gamemode: "test",
       location: req.body.location,
       date: req.body.date,
-      joinable: false,
-      objects: {},
+      status: "join"
     });
     res.send({
       status: "success",
@@ -35,7 +34,7 @@ async function createGame(req, res) {
     return;
   } catch (error) {
     if (error.message.startsWith("E11000")) {
-      error.message = "This gas has already been created!";
+      error.message = "This game has already been created!";
     }
     res.send(error);
 

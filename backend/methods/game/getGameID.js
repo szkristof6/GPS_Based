@@ -29,7 +29,7 @@ async function getGame(req, res) {
 
       return;
     }
-    if (!game.joinable) {
+    if (game.status === "inactive") {
       res.send({
         status: "error",
         message: "This game is not active at the moment!",
