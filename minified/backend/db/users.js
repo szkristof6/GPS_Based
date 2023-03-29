@@ -1,0 +1,1 @@
+const db=require("./db"),users=db.get("users");users.createIndex({email:1},{unique:!0}),module.exports=users;

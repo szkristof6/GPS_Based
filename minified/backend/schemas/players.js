@@ -1,0 +1,1 @@
+const yup=require("yup"),playersSchema=yup.object().shape({game_id:yup.string().trim().required(),location:yup.object({x:yup.number().required(),y:yup.number().required()}),team_id:yup.string().trim().required()});module.exports=playersSchema;

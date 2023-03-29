@@ -1,0 +1,1 @@
+const games=require("../../db/games");async function listGames(s,e){try{const s=await games.find();e.send(s)}catch(s){e.send(s)}}module.exports=listGames;

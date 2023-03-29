@@ -1,0 +1,1 @@
+const games=require("../../db/games");async function getGame(e,s){try{const t=await games.findOne({id:e.body.id});s.send(t)}catch(e){e.message.startsWith("Argument")&&(e.message="The requested game does not exist!"),s.send(e)}}module.exports=getGame;

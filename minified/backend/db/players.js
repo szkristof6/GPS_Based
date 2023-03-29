@@ -1,0 +1,1 @@
+const db=require("./db"),players=db.get("players");module.exports=players;

@@ -1,0 +1,1 @@
+const teams=require("../../db/teams");async function getTeam(e,t){try{const s=await teams.findOne({_id:e.body._id,game_id:e.body.game_id});t.send(s)}catch(e){e.message.startsWith("Argument")&&(e.message="The requested team does not exist!"),t.send(e)}}module.exports=getTeam;

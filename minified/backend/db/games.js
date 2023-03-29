@@ -1,0 +1,1 @@
+const db=require("./db"),games=db.get("games");games.createIndex({name:1,game:1},{unique:!0}),module.exports=games;
