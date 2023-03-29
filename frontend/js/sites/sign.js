@@ -22,6 +22,8 @@ backButton.addEventListener("click", () => window.location.replace(back));
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
+
   const formData = new FormData(form);
   const json = {
     firstname: formData.get("first"),
@@ -30,7 +32,7 @@ form.addEventListener("submit", async (event) => {
     password: formData.get("password"),
     passwordre: formData.get("passwordre"),
     date: new Date(formData.get("date")),
-    token: formData.get("g-recaptcha-response"),
+    token,
   };
 
   if (json.password !== json.passwordre) {

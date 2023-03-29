@@ -68,7 +68,7 @@ async function getData(pos) {
       time.querySelector(".ssc-line").style.display = "none";
       count.querySelector(".ssc-line").style.display = "none";
 
-      if(status.status === "started"){
+      if (status.status === "started") {
         console.log("tovább");
       }
 

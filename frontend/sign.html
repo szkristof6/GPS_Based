@@ -10,12 +10,13 @@
     <title>Be a member</title>
 
     <script src="https://www.google.com/recaptcha/api.js?render=6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG"></script>
+
+    <script src="js/sites/sign.js" type="module"></script>
   </head>
   <body>
     <div class="login-box white_glass_background">
       <h1>Sign in</h1>
       <form>
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
         <input type="hidden" name="action" value="validate_captcha" />
 
         <div class="user-box">
@@ -27,20 +28,20 @@
           <label>Last name</label>
         </div>
         <div class="user-box">
-            <input type="email" name="email" required="" />
-            <label>E-mail</label>
+          <input type="email" name="email" required="" />
+          <label>E-mail</label>
         </div>
         <div class="user-box">
           <input type="password" name="password" required="" />
           <label>Password</label>
         </div>
         <div class="user-box">
-            <input type="password" name="passwordre" required="" />
-            <label>Password again</label>
+          <input type="password" name="passwordre" required="" />
+          <label>Password again</label>
         </div>
         <div class="user-box">
-            <input type="date" name="date" required="" />
-            <label>Birthday</label>
+          <input type="date" name="date" required="" />
+          <label>Birthday</label>
         </div>
         <div class="buttons_1">
           <button id="signin" class="white">Sign in</button>
@@ -48,16 +49,6 @@
         </div>
       </form>
     </div>
-    <script src="js/sites/sign.js" type="module"></script>
-    <script>
-      grecaptcha.ready(function () {
-        grecaptcha
-          .execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" })
-          .then(function (token) {
-            document.querySelector("#g-recaptcha-response").value = token;
-          });
-      });
-    </script>
     <div class="container">
       <div class="loader">
         <div class="block"></div>

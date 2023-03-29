@@ -11,6 +11,20 @@
     <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
     <script src="https://www.google.com/recaptcha/api.js?render=6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script src="js/sites/index.js" type="module"></script>
+    <script type="module">
+      import { googleLogin } from "./js/sites/index.js";
+      window.googleLogin = googleLogin;
+
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId: "603251091670409",
+          xfbml: true,
+          version: "v16.0",
+        });
+      };
+    </script>
   </head>
   <body>
     <!--
@@ -19,7 +33,6 @@
     <div class="login-box white_glass_background">
       <h1>Login</h1>
       <form>
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
         <input type="hidden" name="action" value="validate_captcha" />
 
         <div class="user-box">
@@ -46,7 +59,7 @@
             data-callback="googleLogin"
             data-auto_prompt="false"
           ></div>
-          
+
           <div
             class="g_id_signin"
             data-type="icon"
@@ -56,32 +69,10 @@
             data-size="large"
           ></div>
         </div>
-        <button id="facebook"><img src="media/facebook (2).png"/></button>
+        <button id="facebook"><img src="media/facebook (2).png" /></button>
       </div>
     </div>
-    <script src="js/sites/index.js" type="module"></script>
-    <script type="module">
-      import { googleLogin } from "./js/sites/index.js";
-      window.googleLogin = googleLogin;
 
-      window.fbAsyncInit = function () {
-        FB.init({
-          appId: "603251091670409",
-          xfbml: true,
-          version: "v16.0",
-        });
-      };
-    </script>
-
-    <script>
-      grecaptcha.ready(function () {
-        grecaptcha
-          .execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" })
-          .then(function (token) {
-            document.querySelector("#g-recaptcha-response").value = token;
-          });
-      });
-    </script>
     <div class="container">
       <div class="loader">
         <div class="block"></div>

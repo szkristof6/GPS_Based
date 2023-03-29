@@ -28,11 +28,13 @@ logoutButton.addEventListener("click", () => {
 });
 
 joinButton.addEventListener("click", async (event) => {
+  const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
+
   const formData = new FormData(form);
   const json = {
     id: formData.get("id"),
     password: formData.get("password"),
-    token: formData.get("g-recaptcha-response"),
+    token,
   };
   const game = await API.fetchPOST(json, "getGameID");
 

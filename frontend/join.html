@@ -10,12 +10,12 @@
     <title>Select a room</title>
 
     <script src="https://www.google.com/recaptcha/api.js?render=6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG"></script>
+    <script src="js/sites/join.js" type="module"></script>
   </head>
   <body>
     <div class="login-box white_glass_background">
       <h1>Select a room</h1>
       <form>
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
         <input type="hidden" name="action" value="validate_captcha" />
 
         <div class="user-box">
@@ -32,16 +32,6 @@
         </div>
       </form>
     </div>
-    <script src="js/sites/join.js" type="module"></script>
-    <script>
-      grecaptcha.ready(function () {
-        grecaptcha
-          .execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" })
-          .then(function (token) {
-            document.querySelector("#g-recaptcha-response").value = token;
-          });
-      });
-    </script>
     <div class="container">
       <div class="loader">
         <div class="block"></div>

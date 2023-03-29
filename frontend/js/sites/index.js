@@ -23,11 +23,13 @@ signinButton.addEventListener("click", () => window.location.replace(signin));
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
+
   const formData = new FormData(form);
   const json = {
     email: formData.get("email"),
     password: formData.get("password"),
-    token: formData.get("g-recaptcha-response"),
+    token,
   };
 
   const user = await API.fetchPOST(json, "loginUser");
