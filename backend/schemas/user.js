@@ -30,7 +30,23 @@ const registerSchema = yup.object().shape({
   token: yup.string().trim().required(),
 });
 
-module.exports = { loginSchema, registerSchema, googleSchema, facebookSchema };
+const forgotSchema = yup.object().shape({
+  email: yup.string().email().lowercase().trim().required(),
+  //token: yup.string().trim().required(),
+});
+
+const resetSchema = yup.object().shape({
+  user_id: yup.string().trim().length(24).required(),
+  //token: yup.string().trim().required(),
+  password: yup.string().trim().required(),
+  passwordre: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .trim()
+    .required(),
+});
+
+module.exports = { loginSchema, registerSchema, googleSchema, facebookSchema, forgotSchema, resetSchema };
 
 /* User:
 

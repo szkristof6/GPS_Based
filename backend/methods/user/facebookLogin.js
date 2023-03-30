@@ -1,5 +1,5 @@
 const { facebookSchema } = require("../../schemas/user");
-const users = require("../../db/users");
+const users = require("../../db/collections/users");
 const JWT_sign = require("../jwt");
 const captcha = require("../captcha");
 

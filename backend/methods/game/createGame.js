@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 
-const { nanoid } = require("nanoid");
+const crypto = require('crypto');
 
 const { gamesSchema } = require("../../schemas/game");
-const games = require("../../db/games");
+const games = require("../../db/collections/games");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e,
@@ -14,11 +14,10 @@ async function createGame(req, res) {
   try {
     await gamesSchema.validate(req.body);
 
-    const saltRounds = 5;
-    const hash = await bcrypt.genSalt(saltRounds).then((salt) => bcrypt.hash(req.body.password, salt));
+    const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
 
     const game = await games.insert({
-      id: nanoid(15),
+      id: crypto.randomBytes(15).toString("hex"),
       name: req.body.name,
       password: hash,
       gamemode: "test",

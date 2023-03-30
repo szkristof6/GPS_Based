@@ -1,6 +1,6 @@
 const { statusSchema } = require("../../schemas/game");
-const games = require("../../db/games");
-const players = require("../../db/players");
+const games = require("../../db/collections/games");
+const players = require("../../db/collections/players");
 
 async function getStatus(req, res) {
   try {

@@ -8,11 +8,15 @@ const facebookLogin = require("./methods/user/facebookLogin");
 const googleLogin = require("./methods/user/googleLogin");
 const registerUser = require("./methods/user/registerUser");
 const loginUser = require("./methods/user/loginUser");
+const requestResetPassword = require("./methods/user/requestResetPassword");
+const resetPassword = require("./methods/user/resetPassword");
 
 fastify.post("/facebookLogin", facebookLogin); // Felhasználó belépés
 fastify.post("/googleLogin", googleLogin); // Felhasználó belépés
 fastify.post("/loginUser", loginUser); // Felhasználó belépés
 fastify.post("/registerUser", registerUser); // Felhasználó regisztrálása
+fastify.post("/requestResetPassword", requestResetPassword); // Jelszóemlékeztető kérése
+fastify.post("/resetPassword", resetPassword); // Jelszó visszaállítása
 
 // Game methods - Minden olyan funkció, ami a játékhoz tartozik
 

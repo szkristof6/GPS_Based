@@ -1,5 +1,5 @@
 const { teamsSchema } = require("../../schemas/team");
-const teams = require("../../db/teams");
+const teams = require("../../db/collections/teams");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e,

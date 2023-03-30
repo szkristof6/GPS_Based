@@ -1,5 +1,5 @@
-const players = require("../../db/players");
-const locations = require("../../db/locations");
+const players = require("../../db/collections/players");
+const locations = require("../../db/collections/locations");
 const { locationSchema } = require("../../schemas/game");
 
 /*

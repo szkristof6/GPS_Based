@@ -2,8 +2,7 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 const { registerSchema } = require("../../schemas/user");
-const users = require("../../db/users");
-const JWT_sign = require("../jwt");
+const users = require("../../db/collections/users");
 const captcha = require("../captcha");
 
 async function registerUser(req, res) {
@@ -26,8 +25,7 @@ async function registerUser(req, res) {
       });
     }
 
-    const saltRounds = 5;
-    const hash = await bcrypt.genSalt(saltRounds).then((salt) => bcrypt.hash(req.body.password, salt));
+    const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
 
     /*
     Sikeres ellenörzés után betesszük az adatbázisba a felhasználót

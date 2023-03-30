@@ -1,7 +1,7 @@
 const { playersSchema } = require("../../schemas/players");
-const players = require("../../db/players");
-const locations = require("../../db/locations");
-const games = require("../../db/games");
+const players = require("../../db/collections/players");
+const locations = require("../../db/collections/locations");
+const games = require("../../db/collections/games");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e

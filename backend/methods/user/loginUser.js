@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const { loginSchema } = require("../../schemas/user");
-const users = require("../../db/users");
+const users = require("../../db/collections/users");
 const bcrypt = require("bcrypt");
 
 const captcha = require("../captcha");

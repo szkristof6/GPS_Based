@@ -1,10 +1,10 @@
 const { listPlayersSchema } = require("../../schemas/players");
 
-const players = require("../../db/players");
-const users = require("../../db/users");
-const games = require("../../db/games");
-const teams = require("../../db/teams");
-const locations = require("../../db/locations");
+const players = require("../../db/collections/players");
+const users = require("../../db/collections/users");
+const games = require("../../db/collections/games");
+const teams = require("../../db/collections/teams");
+const locations = require("../../db/collections/locations");
 
 /*
 Lekérdezzük a token azonosítás után létrehozott user tömb segítségével a játékos adatait

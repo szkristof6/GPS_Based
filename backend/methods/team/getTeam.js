@@ -1,5 +1,5 @@
 const { getTeamSchema } = require("../../schemas/team");
-const teams = require("../../db/teams");
+const teams = require("../../db/collections/teams");
 
 /*
 Lekérdezzük az adatbásból azt a játékot, amelyiknek az azonosítója egyezik a megadott azonosítóval

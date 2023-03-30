@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const { joinGameSchema } = require("../../schemas/game");
-const games = require("../../db/games");
+const games = require("../../db/collections/games");
 const captcha = require("../captcha");
 
 /*

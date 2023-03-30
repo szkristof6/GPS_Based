@@ -3,7 +3,7 @@ const { OAuth2Client } = require("google-auth-library");
 require("dotenv").config();
 
 const { googleSchema } = require("../../schemas/user");
-const users = require("../../db/users");
+const users = require("../../db/collections/users");
 const JWT_sign = require("../jwt");
 const captcha = require("../captcha");
 
