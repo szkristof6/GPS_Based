@@ -20,7 +20,16 @@ Előszőr pár 3rd party middleware-t behozunk, amik különféle funkciókat ho
   Definiáljuk, hogy JSON adatokkal fogunk dolgozni
 */
 
-fastify.register(require("@fastify/cors"));
+fastify.register(require("@fastify/cors"), {
+  origin: (origin, cb) => {
+    const hostname = new URL(origin).hostname
+    if(hostname === process.env.NODE_ENV === "dev" ? "localhost" : "map.stagenex.hu"){
+      cb(null, true)
+      return
+    }
+    cb(new Error("Not allowed"), false)
+  }
+});
 fastify.register(require("@fastify/helmet"), { global: true });
 fastify.register(require("@fastify/jwt"), { secret: process.env.TOKEN_KEY });
 fastify.register(import("@fastify/rate-limit"), {
