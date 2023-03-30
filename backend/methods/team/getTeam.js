@@ -1,3 +1,4 @@
+const { getTeamSchema } = require("../../schemas/team");
 const teams = require("../../db/teams");
 
 /*
@@ -7,14 +8,16 @@ Ha létezik visszaadjuk mindent
 
 async function getTeam(req, res) {
   try {
-    const team = await teams.findOne({ _id: req.body._id, game_id: req.body.game_id });
+    await getTeamSchema.validate(req.body);
 
-    res.send(team);
+    const team = await teams.findOne({ _id: req.body.id, game_id: req.body.game_id });
+
+    return res.send(team);
   } catch (error) {
     if (error.message.startsWith("Argument")) {
       error.message = "The requested team does not exist!";
     }
-    res.send(error);
+    return res.send(error);
   }
 }
 

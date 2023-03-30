@@ -31,7 +31,6 @@ form.addEventListener("submit", async (event) => {
     email: formData.get("email"),
     password: formData.get("password"),
     passwordre: formData.get("passwordre"),
-    date: new Date(formData.get("date")),
     token,
   };
 

@@ -33,7 +33,7 @@ fastify.setErrorHandler(function (error, request, reply) {
     reply.code(429);
     error.message = "You hit the rate limit! Slow down please!";
   }
-  reply.send(error);
+  return reply.send(error);
 });
 
 /*
@@ -49,26 +49,7 @@ fastify.decorate("verify", async function (request, reply) {
   try {
     await request.jwtVerify();
   } catch (error) {
-    reply.send(error);
-  }
-});
-
-fastify.decorate("captcha", async function (request, reply) {
-  console.log(request);
-
-  const secret_key = process.env.CAPTCHA_SECRET;
-  const token = request.body.token;
-  const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secret_key}&response=${token}`;
-
-  try {
-    const captcha = await fetch(url, {
-      method: "get",
-    }).then((response) => response.json());
-    console.log(captcha);
-
-    return true;
-  } catch (error) {
-    reply.send(error);
+    return eply.send(error);
   }
 });
 

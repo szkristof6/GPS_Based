@@ -9,8 +9,6 @@ async function captcha(req) {
       method: "get",
     }).then((response) => response.json());
 
-    console.log(google_response);
-
     // console.log(`${req.protocol}://${req.hostname}`);
     
     if(google_response.success){

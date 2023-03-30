@@ -36,12 +36,14 @@ joinButton.addEventListener("click", async (event) => {
     password: formData.get("password"),
     token,
   };
-  const game = await API.fetchPOST(json, "getGameID");
+  const game = await API.fetchPOST(json, "joinGame");
 
   if (game.status === "success") {
     Cookie.setCookie("GameID", game.id, Cookie.exp_time);
 
-    window.location.replace(next);
+    if (Cookie.getCookie("GameID")) {
+      window.location.replace(next);
+    }
   } else {
     console.error(game);
   }

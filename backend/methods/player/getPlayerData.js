@@ -17,7 +17,7 @@ async function getPlayerData(req, res) {
     const team = await teams.findOne({ _id: player.team_id });
     const location = await locations.findOne({ _id: player.location_id });
 
-    res.send({
+    return res.send({
       status: "success",
       player: {
         point: player.point,
@@ -42,7 +42,7 @@ async function getPlayerData(req, res) {
       location: location.location,
     });
   } catch (error) {
-    res.send(error);
+    return res.send(error);
   }
 }
 

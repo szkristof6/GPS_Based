@@ -1,15 +1,20 @@
 const yup = require("yup");
 
 const playersSchema = yup.object().shape({
-  game_id: yup.string().trim().required(),
+  game_id: yup.string().trim().length(24).required(),
   location: yup.object({
     x: yup.number().required(),
     y: yup.number().required(),
   }),
-  team_id: yup.string().trim().required(),
+  team_id: yup.string().trim().length(24).required(),
 });
 
-module.exports = playersSchema;
+const listPlayersSchema = yup.object().shape({
+  player_id: yup.string().trim().length(24).required(),
+  game_id: yup.string().trim().length(24).required(),
+});
+
+module.exports = { playersSchema, listPlayersSchema };
 
 /* Player:
 

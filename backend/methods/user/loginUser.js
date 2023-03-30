@@ -17,55 +17,43 @@ async function loginUser(req, res) {
     const notBot = await captcha(req);
 
     if (!notBot) {
-      res.send({
+      return res.send({
         status: "error",
         message: "Captcha failed!",
       });
-
-      return;
     }
     await loginSchema.validate(req.body);
 
     const user = await users.findOne({ email: req.body.email });
     if (user == null) {
-      res.send({
+      return res.send({
         status: "error",
         message: "This account does not exist! Please sign in!",
       });
-
-      return;
     }
     if (user.login_method != "email") {
-      res.send({
+      return res.send({
         status: "error",
         message: "Provider method was used for signin!",
       });
-
-      return;
     }
     const password = await bcrypt.compare(req.body.password, user.password);
 
     if (password) {
       const token = JWT_sign(user);
 
-      res.send({
+      return res.send({
         status: "success",
         token,
       });
-
-      return;
     } else {
-      res.send({
+      return res.send({
         status: "error",
         message: "The password is incorrect!",
       });
-
-      return;
     }
   } catch (error) {
-    res.send(error);
-
-    return;
+    return res.send(error);
   }
 }
 

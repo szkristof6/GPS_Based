@@ -1,3 +1,4 @@
+const { facebookSchema } = require("../../schemas/user");
 const users = require("../../db/users");
 const JWT_sign = require("../jwt");
 const captcha = require("../captcha");
@@ -5,23 +6,22 @@ const captcha = require("../captcha");
 async function facebookLogin(req, res) {
   try {
     if (req.body.status != "connected") {
-      res.send({ message: "Not connected!" });
+      return res.send({ message: "Not connected!" });
     }
 
     const notBot = await captcha(req);
-
     if (!notBot) {
-      res.send({
+      return res.send({
         status: "error",
         message: "Captcha failed!",
       });
-
-      return;
     }
 
+    await facebookSchema.validate(req.body);
+
     const fields = ["email", "name", "picture"].join(",");
-    const access_token = req.body.authResponse.accessToken;
-    const url = `https://graph.facebook.com/me?fields=${fields}&access_token=${access_token}`;
+    const accessToken = req.body.accessToken;
+    const url = `https://graph.facebook.com/me?fields=${fields}&access_token=${accessToken}`;
 
     const facebook_response = await fetch(url, {
       method: "get",
@@ -30,21 +30,17 @@ async function facebookLogin(req, res) {
     const existing = await users.findOne({ email: facebook_response.email });
     if (existing) {
       if (existing.login_method != "facebook") {
-        res.send({
+        return res.send({
           status: "error",
           message: "Email method was used for signin!",
         });
-
-        return;
       } else {
         const token = JWT_sign(existing);
 
-        res.send({
+        return res.send({
           status: "success",
           token,
         });
-
-        return;
       }
     }
 
@@ -54,24 +50,21 @@ async function facebookLogin(req, res) {
       login_method: "facebook",
       image: facebook_response.picture.data.url,
       permission: 0,
+      createdAt: Date.now(),
     });
 
     const token = JWT_sign(user);
 
-    res.send({
+    return res.send({
       status: "success",
       token,
     });
-
-    return;
   } catch (error) {
     if (error.message.startsWith("E11000")) {
       // A duplicate hiba így kezdődik
       error.message = "This account already exists!";
     }
-    res.send(error);
-
-    return;
+    return res.send(error);
   }
 }
 

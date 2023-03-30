@@ -1,4 +1,4 @@
-const teamsSchema = require("../../schemas/team");
+const { teamsSchema } = require("../../schemas/team");
 const teams = require("../../db/teams");
 
 /*
@@ -15,8 +15,9 @@ async function addTeam(req, res) {
       game_id: req.body.game_id,
       point: 0,
       color: req.body.color,
+      createdAt: Date.now(),
     });
-    res.send({
+    return res.send({
       status: "success",
       team,
     });
@@ -24,7 +25,7 @@ async function addTeam(req, res) {
     if (error.message.startsWith("E11000")) {
       error.message = "This gas has already been created!";
     }
-    res.send(error);
+    return res.send(error);
   }
 }
 

@@ -24,21 +24,18 @@ async function createGame(req, res) {
       gamemode: "test",
       location: req.body.location,
       date: req.body.date,
-      status: "join"
+      status: 0,
+      createdAt: Date.now(),
     });
-    res.send({
+    return res.send({
       status: "success",
       game,
     });
-
-    return;
   } catch (error) {
     if (error.message.startsWith("E11000")) {
       error.message = "This game has already been created!";
     }
-    res.send(error);
-
-    return;
+    return res.send(error);
   }
 }
 

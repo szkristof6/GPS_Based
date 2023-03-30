@@ -14,32 +14,27 @@ async function updateLocation(req, res) {
     const player = await players.findOne({ _id: req.body.player_id });
 
     if (!player) {
-      res.send({
+      return res.send({
         status: "error",
         message: "The player was not found!",
       });
 
-      return;
     } else {
       const created = await locations.insert({
         location: req.body.location,
-        date: new Date(),
+        date: Date.now(),
         player_id: player._id,
         game_id: player.game_id,
       });
 
       const updated = await players.findOneAndUpdate({ _id: player._id }, { $set: { location_id: created._id } });
-      res.send({
+      return res.send({
         status: "success",
         updated,
       });
-
-      return;
     }
   } catch (error) {
-    res.send(error);
-
-    return;
+    return res.send(error);
   }
 }
 

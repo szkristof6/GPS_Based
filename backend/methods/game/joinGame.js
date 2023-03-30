@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 
+const { joinGameSchema } = require("../../schemas/game");
 const games = require("../../db/games");
 const captcha = require("../captcha");
 
@@ -8,56 +9,46 @@ Lekérdezzük az adatbásból azt a játékot, amelyiknek az azonosítója egyez
 Ha létezik visszaadjuk mindent
 */
 
-async function getGame(req, res) {
+async function joinGame(req, res) {
   try {
     const notBot = await captcha(req);
     if (!notBot) {
-      res.send({
+      return res.send({
         status: "error",
         message: "Captcha failed!",
       });
-
-      return;
     }
+
+    await joinGameSchema.validate(req.body);
 
     const game = await games.findOne({ id: req.body.id });
     if (game === null) {
-      res.send({
+      return res.send({
         status: "error",
         message: "This game does not exist!",
       });
-
-      return;
     }
-    if (game.status === "inactive") {
-      res.send({
+    if (game.status === 0) {
+      return res.send({
         status: "error",
         message: "This game is not active at the moment!",
       });
-
-      return;
     }
     const password = await bcrypt.compare(req.body.password, game.password);
     if (password) {
-      res.send({ status: "success", id: game._id });
-
-      return;
+      return res.send({ status: "success", id: game._id });
     } else {
-      res.send({
+      return res.send({
         status: "error",
         message: "The password is incorrect!",
       });
-
-      return;
     }
   } catch (error) {
     if (error.message.startsWith("Argument")) {
       error.message = "The requested game does not exist!";
     }
-    res.send(error);
-
-    return;
+    return res.send(error);
   }
 }
 
-module.exports = getGame;
+module.exports = joinGame;

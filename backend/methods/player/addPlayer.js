@@ -1,4 +1,4 @@
-const playersSchema = require("../../schemas/players");
+const { playersSchema } = require("../../schemas/players");
 const players = require("../../db/players");
 const locations = require("../../db/locations");
 const games = require("../../db/games");
@@ -20,14 +20,12 @@ async function getPlayers(req, res) {
       const count = await players.count({ game_id: existing.game_id });
       const game = await games.findOne({ _id: existing.game_id });
 
-      res.send({
+      return res.send({
         status: "inplay",
         player_id: existing._id,
         count,
         time: game.date,
       });
-
-      return;
     }
 
     const created = await players.insert({
@@ -36,13 +34,14 @@ async function getPlayers(req, res) {
       location_id: null,
       team_id: req.body.team_id,
       point: 0,
+      createdAt: Date.now(),
     });
 
     const location = await locations.insert({
       location: req.body.location,
-      date: new Date(),
       player_id: created._id,
       game_id: created.game_id,
+      date: Date.now(),
     });
 
     const updated = await players.findOneAndUpdate({ _id: created._id }, { $set: { location_id: location._id } });
@@ -50,21 +49,17 @@ async function getPlayers(req, res) {
     const count = await players.count({ game_id: created.game_id });
     const game = await games.findOne({ _id: existing.game_id });
 
-    res.send({
+    return res.send({
       status: "success",
       player_id: updated._id,
       count,
       time: game.date,
     });
-
-    return;
   } catch (error) {
     if (error.message.startsWith("E11000")) {
       error.message = "This username is already playing!";
     }
-    res.send(error);
-
-    return;
+    return res.send(error);
   }
 }
 

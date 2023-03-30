@@ -1,3 +1,5 @@
+const { listPlayersSchema } = require("../../schemas/players");
+
 const players = require("../../db/players");
 const users = require("../../db/users");
 const games = require("../../db/games");
@@ -14,6 +16,8 @@ Majd visszaadjuk a végleges listát a felhasznló képével együtt
 
 async function listPlayers(req, res) {
   try {
+    await listPlayersSchema.validate(req.query);
+
     const player = await players.findOne({ _id: req.query.player_id });
     const allPlayer = await players.find({ game_id: player.game_id });
 
@@ -40,9 +44,9 @@ async function listPlayers(req, res) {
       }
     }
 
-    res.send({ status: "success", count: cleaned.length, players: cleaned });
+    return res.send({ status: "success", count: cleaned.length, players: cleaned });
   } catch (error) {
-    res.send(error);
+    return res.send(error);
   }
 }
 

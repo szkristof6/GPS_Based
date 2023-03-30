@@ -37,7 +37,9 @@ form.addEventListener("submit", async (event) => {
   if (user.status === "success") {
     Cookie.setCookie("Token", user.token, Cookie.exp_time);
 
-    window.location.replace(next);
+    if (Cookie.getCookie("Token")) {
+      window.location.replace(next);
+    }
   } else {
     console.error(user);
   }
@@ -54,14 +56,19 @@ facebookButton.addEventListener("click", async (event) => {
   const user = await login();
 
   if (user.status === "connected") {
-    const formData = new FormData(form);
+    const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
-    const response = await API.fetchPOST({ ...user, token: formData.get("g-recaptcha-response") }, "facebookLogin");
+    const response = await API.fetchPOST(
+      { accessToken: user.authResponse.accessToken, status: user.status, token },
+      "facebookLogin"
+    );
 
     if (response.status === "success") {
       Cookie.setCookie("Token", response.token, Cookie.exp_time);
 
-      window.location.replace(next);
+      if (Cookie.getCookie("Token")) {
+        window.location.replace(next);
+      }
     } else {
       console.error(response);
     }
@@ -69,14 +76,16 @@ facebookButton.addEventListener("click", async (event) => {
 });
 
 export async function googleLogin(user) {
-  const formData = new FormData(form);
+  const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
-  const response = await API.fetchPOST({ ...user, token: formData.get("g-recaptcha-response") }, "googleLogin");
+  const response = await API.fetchPOST({ credential: user.credential, token }, "googleLogin");
 
   if (response.status === "success") {
     Cookie.setCookie("Token", response.token, Cookie.exp_time);
 
-    window.location.replace(next);
+    if (Cookie.getCookie("Token")) {
+      window.location.replace(next);
+    }
   } else {
     console.error(response);
   }

@@ -2,6 +2,7 @@ const { OAuth2Client } = require("google-auth-library");
 
 require("dotenv").config();
 
+const { googleSchema } = require("../../schemas/user");
 const users = require("../../db/users");
 const JWT_sign = require("../jwt");
 const captcha = require("../captcha");
@@ -10,13 +11,13 @@ async function googleLogin(req, res) {
   const notBot = await captcha(req);
 
   if (!notBot) {
-    res.send({
+    return res.send({
       status: "error",
       message: "Captcha failed!",
     });
-
-    return;
   }
+
+  await googleSchema.validate(req.body);
 
   const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   try {
@@ -29,21 +30,17 @@ async function googleLogin(req, res) {
     const existing = await users.findOne({ email: payload.email });
     if (existing) {
       if (existing.login_method != "google") {
-        res.send({
+        return res.send({
           status: "error",
           message: "Email method was used for signin!",
         });
-
-        return;
       } else {
         const token = JWT_sign(existing);
 
-        res.send({
+        return res.send({
           status: "success",
           token,
         });
-
-        return;
       }
     }
 
@@ -53,24 +50,21 @@ async function googleLogin(req, res) {
       login_method: "google",
       image: payload.picture,
       permission: 0,
+      createdAt: Date.now(),
     });
 
     const token = JWT_sign(user);
 
-    res.send({
+    return res.send({
       status: "success",
       token,
     });
-
-    return;
   } catch (error) {
     if (error.message.startsWith("E11000")) {
       // A duplicate hiba így kezdődik
       error.message = "This account already exists!";
     }
-    res.send(error);
-
-    return;
+    return res.send(error);
   }
 }
 

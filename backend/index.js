@@ -6,33 +6,25 @@ require("dotenv").config();
 
 const facebookLogin = require("./methods/user/facebookLogin");
 const googleLogin = require("./methods/user/googleLogin");
-
 const registerUser = require("./methods/user/registerUser");
 const loginUser = require("./methods/user/loginUser");
-const listUsers = require("./methods/user/listUsers");
 
 fastify.post("/facebookLogin", facebookLogin); // Felhasználó belépés
 fastify.post("/googleLogin", googleLogin); // Felhasználó belépés
-
-fastify.post("/registerUser", registerUser); // Felhasználó regisztrálása
 fastify.post("/loginUser", loginUser); // Felhasználó belépés
-fastify.get("/listUsers", { onRequest: [fastify.verify] }, listUsers); // Felhasználók megjelenítése
+fastify.post("/registerUser", registerUser); // Felhasználó regisztrálása
 
 // Game methods - Minden olyan funkció, ami a játékhoz tartozik
 
 const createGame = require("./methods/game/createGame"); // Játék létrehozása
-const getGame = require("./methods/game/getGame"); // Játék adatok lekérdezése
-const getGameID = require("./methods/game/getGameID"); // Játék azonosító lekérdezése
-const listGames = require("./methods/game/listGames"); // Játékok lekérdezése
+const joinGame = require("./methods/game/joinGame"); // Játék azonosító lekérdezése
 const getStatus = require("./methods/game/getStatus"); // Játék státusztának lekérdezése
 const updateLocation = require("./methods/game/updateLocation"); // Játékos pozició frissítés
 
 fastify.post("/createGame", { onRequest: [fastify.verify] }, createGame);
-fastify.post("/getGame", { onRequest: [fastify.verify] }, getGame);
-fastify.post("/getGameID", { onRequest: [fastify.verify] }, getGameID);
+fastify.post("/joinGame", { onRequest: [fastify.verify] }, joinGame);
 fastify.post("/updateLocation", { onRequest: [fastify.verify] }, updateLocation);
 fastify.get("/getStatus", { onRequest: [fastify.verify] }, getStatus);
-fastify.get("/listGames", { onRequest: [fastify.verify] }, listGames);
 
 // Player methods - Minden olyan funkció, ami a játékosokhoz tartozik
 
@@ -55,10 +47,9 @@ Abban az esetben, hogyha semmilyen útba nem tartozik a kérés, akkor ide kerü
 Ezt használjuk hibakezelésnek
 */
 
-// Megadjuk milyen porton fusson a szerver
-const port = process.env.PORT || 1337;
 
+// Megadjuk milyen porton fusson a szerver
 // Létrehozzuk a szervert az adott porton
-fastify.listen({ port }, (err) => {
+fastify.listen({ port: process.env.PORT || 1337 }, (err) => {
   if (err) throw err;
 });

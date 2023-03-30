@@ -11,23 +11,19 @@ async function registerUser(req, res) {
     const notBot = await captcha(req);
 
     if (!notBot) {
-      res.send({
+      return res.send({
         status: "error",
         message: "Captcha failed!",
       });
-
-      return;
     }
 
     await registerSchema.validate(req.body); // A kliens felöl érkező adatokat ellenőrizzük egy schema alapján
 
     if (req.body.password !== req.body.passwordre) {
-      res.send({
+      return res.send({
         status: "error",
         message: "The passwords are not matching!",
       });
-
-      return;
     }
 
     const saltRounds = 5;
@@ -47,22 +43,19 @@ async function registerUser(req, res) {
       login_method: "email",
       image: `https://eu.ui-avatars.com/api/?name=${name}&size=250`,
       permission: 0,
+      createdAt: Date.now(),
     });
 
-    res.send({
+    return res.send({
       status: "success",
     });
-
-    return;
   } catch (error) {
     // Minden hiba esetén ide kerülünk, ahol kezeljük a hibát, vagy továbbküldjük a hibakezelőnek
     if (error.message.startsWith("E11000")) {
       // A duplicate hiba így kezdődik
       error.message = "This account already exists!";
     }
-    res.send(error);
-
-    return;
+    return res.send(error);
   }
 }
 

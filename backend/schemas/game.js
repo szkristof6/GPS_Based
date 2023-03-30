@@ -7,7 +7,7 @@ const gamesSchema = yup.object().shape({
     x: yup.number().required(),
     y: yup.number().required(),
   }),
-  //token: yup.string().trim().required(),
+  token: yup.string().trim().required(),
 });
 
 const locationSchema = yup.object().shape({
@@ -18,7 +18,17 @@ const locationSchema = yup.object().shape({
   }),
 });
 
-module.exports = { gamesSchema, locationSchema };
+const joinGameSchema = yup.object().shape({
+  id: yup.string().trim().length(15).required(),
+  password: yup.string().trim().required(),
+  token: yup.string().trim().required(),
+});
+
+const statusSchema = yup.object().shape({
+  game_id: yup.string().trim().length(24).required(),
+});
+
+module.exports = { gamesSchema, locationSchema, joinGameSchema, statusSchema };
 
 /* Game:
 
