@@ -17,7 +17,7 @@ async function resetPassword(req, res) {
   try {
     const notBot = await captcha(req);
 
-    if (notBot) {
+    if (!notBot) {
       return res.send({
         status: "error",
         message: "Captcha failed!",
