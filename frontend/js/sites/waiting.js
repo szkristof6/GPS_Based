@@ -6,12 +6,13 @@ const index = "index.html";
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (!Cookie.getCookie("Token")) window.location.replace(index);
-  getLocation();
 });
 
 window.addEventListener("load", () => {
   const loader = document.querySelector(".container");
   loader.style.display = "none";
+
+  getLocation();
 });
 
 function remainingTime(date) {
