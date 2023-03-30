@@ -5,6 +5,7 @@ const fastify = require("../fastify");
 function JWT_sign(user) {
   const json = {
     user_id: user._id,
+    permission: user.permission,
     iss: 'https://api.stagenex.hu'
   };
   const options = {

@@ -10,6 +10,7 @@ const registerUser = require("./methods/user/registerUser");
 const loginUser = require("./methods/user/loginUser");
 const requestResetPassword = require("./methods/user/requestResetPassword");
 const resetPassword = require("./methods/user/resetPassword");
+const verifyUser = require("./methods/user/verifyUser");
 
 fastify.post("/facebookLogin", facebookLogin); // Felhasználó belépés
 fastify.post("/googleLogin", googleLogin); // Felhasználó belépés
@@ -17,6 +18,7 @@ fastify.post("/loginUser", loginUser); // Felhasználó belépés
 fastify.post("/registerUser", registerUser); // Felhasználó regisztrálása
 fastify.post("/requestResetPassword", requestResetPassword); // Jelszóemlékeztető kérése
 fastify.post("/resetPassword", resetPassword); // Jelszó visszaállítása
+fastify.post("/verifyUser", verifyUser); // Felhasználói fiók megerősítése
 
 // Game methods - Minden olyan funkció, ami a játékhoz tartozik
 
@@ -45,6 +47,8 @@ const getTeam = require("./methods/team/getTeam"); // Csapat adatainak lekérdez
 
 fastify.post("/addTeam", { onRequest: [fastify.verify] }, addTeam);
 fastify.get("/getTeam", { onRequest: [fastify.verify] }, getTeam);
+
+fastify.get("/sendTestEmail", require("./email/emails/userCreated")); // Jelszó visszaállítása
 
 /*
 Abban az esetben, hogyha semmilyen útba nem tartozik a kérés, akkor ide kerülünk.

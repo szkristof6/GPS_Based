@@ -60,19 +60,19 @@ async function getData(pos) {
     setInterval(async () => {
       time.querySelector(".ssc-line").style.display = "block";
       time.querySelector("p").innerHTML = "";
-    
+
       count.querySelector(".ssc-line").style.display = "block";
       count.querySelector("p").innerHTML = "";
-    
+
       const status = await API.fetchGET(`getStatus?game_id=${Cookie.getCookie("GameID")}`);
-    
+
       time.querySelector(".ssc-line").style.display = "none";
       count.querySelector(".ssc-line").style.display = "none";
-    
+
       if (status.status === "started") {
         console.log("tovább");
       }
-    
+
       time.querySelector("p").innerHTML = remainingTime(status.time);
       count.querySelector("p").innerHTML = status.count;
     }, 5000);
@@ -82,6 +82,4 @@ async function getData(pos) {
 const getLocation = () =>
   navigator.geolocation.getCurrentPosition(getData, (error) => console.warn(`ERROR(${error.code}): ${error.message}`), {
     enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0,
   });

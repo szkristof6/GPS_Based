@@ -37,6 +37,12 @@ async function loginUser(req, res) {
         message: "Provider method was used for signin!",
       });
     }
+    if (user.permission === 0) {
+      return res.send({
+        status: "error",
+        message: "The account is not verified! Please verify your account!",
+      });
+    }
     const password = await bcrypt.compare(req.body.password, user.password);
 
     if (password) {

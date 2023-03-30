@@ -1,12 +1,9 @@
-const crypto = require('crypto');
-const bcrypt = require("bcrypt");
-
 require("dotenv").config();
 
 const captcha = require("../captcha");
 const { forgotSchema } = require("../../schemas/user");
 const users = require("../../db/collections/users");
-const tokens = require("../../db/collections/tokens");
+const { insertToken } = require("../token");
 
 /*
 Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk az adatbázisba, hanem keresünk benne
@@ -33,19 +30,15 @@ async function requestResetPassword(req, res) {
         message: "This account does not exist! Please sign in!",
       });
     }
-    const token = await tokens.findOne({ user_id: user._id });
-    if (token) await tokens.remove({ user_id: user._id });
+    if(user.login_method !== "email"){
+      return res.send({
+        status: "error",
+        message: "This account uses provider login! Please contect the used provider!",
+      });
+    }
+    const token = await insertToken(user._id, "reset");
 
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(resetToken, salt));
-
-    await tokens.insert({
-      user_id: user._id,
-      token: hash,
-      createdAt: Date.now(),
-    });
-
-    return res.send({ status: "success", resetToken, user_id: user._id });
+    return res.send({ status: "success", token, user_id: user._id });
   } catch (error) {
     return res.send(error);
   }

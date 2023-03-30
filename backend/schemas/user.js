@@ -46,7 +46,13 @@ const resetSchema = yup.object().shape({
     .required(),
 });
 
-module.exports = { loginSchema, registerSchema, googleSchema, facebookSchema, forgotSchema, resetSchema };
+const verifySchema = yup.object().shape({
+  user_token: yup.string().trim().required(),
+  user_id: yup.string().trim().length(24).required(),
+  //token: yup.string().trim().required(),
+});
+
+module.exports = { loginSchema, registerSchema, googleSchema, facebookSchema, forgotSchema, resetSchema, verifySchema };
 
 /* User:
 

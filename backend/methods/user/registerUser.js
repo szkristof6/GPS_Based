@@ -2,8 +2,10 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 const { registerSchema } = require("../../schemas/user");
+
 const users = require("../../db/collections/users");
 const captcha = require("../captcha");
+const { insertToken } = require("../token");
 
 async function registerUser(req, res) {
   try {
@@ -37,12 +39,15 @@ async function registerUser(req, res) {
       name,
       password: hash,
       email: req.body.email,
-      date: req.body.date,
       login_method: "email",
       image: `https://eu.ui-avatars.com/api/?name=${name}&size=250`,
       permission: 0,
       createdAt: Date.now(),
     });
+
+    const token = await insertToken(user._id, "verify");
+
+    console.log(token);
 
     return res.send({
       status: "success",

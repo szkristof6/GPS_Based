@@ -16,7 +16,7 @@ async function getPlayers(req, res) {
     await playersSchema.validate(req.body);
 
     const existing = await players.findOne({ game_id: req.body.game_id, user_id: req.user.user_id });
-    if (existing) {
+    if (existing !== null) {
       const count = await players.count({ game_id: existing.game_id });
       const game = await games.findOne({ _id: existing.game_id });
 
@@ -47,7 +47,7 @@ async function getPlayers(req, res) {
     const updated = await players.findOneAndUpdate({ _id: created._id }, { $set: { location_id: location._id } });
 
     const count = await players.count({ game_id: created.game_id });
-    const game = await games.findOne({ _id: existing.game_id });
+    const game = await games.findOne({ _id: created.game_id });
 
     return res.send({
       status: "success",

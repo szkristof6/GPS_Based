@@ -20,6 +20,7 @@
     "fastify": "^4.14.1",
     "google-auth-library": "^8.7.0",
     "monk": "^7.3.4",
+    "nodemailer": "^6.9.1",
     "yup": "^1.0.2"
   },
   "devDependencies": {

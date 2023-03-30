@@ -58,7 +58,7 @@ fastify.decorate("verify", async function (request, reply) {
   try {
     await request.jwtVerify();
   } catch (error) {
-    return eply.send(error);
+    return reply.send(error);
   }
 });
 
