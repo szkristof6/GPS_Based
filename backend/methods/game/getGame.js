@@ -9,7 +9,10 @@ async function getGame(req, res, next) {
 
     res.send({
       status: "success",
-      location: game.location,
+      game: {
+        location: game.location,
+        status: game.status,
+      },
     });
   } catch (error) {
     if (error.message.startsWith("Argument")) {

@@ -1,5 +1,6 @@
 import * as API from "../api.js";
 import * as Cookie from "../cookie.js";
+import * as Message from "../toast.js";
 
 const next = "join.html";
 const back = "index.html";
@@ -42,9 +43,14 @@ form.addEventListener("submit", async (event) => {
     const user = await API.fetchPOST(json, "registerUser");
 
     if (user.status === "success") {
+      Message.openToast("You will be redirected in a second", user.status);
+
+    setTimeout(() => {
       window.location.replace(index);
+    }, Message.redirect_time);
+
     } else {
-      console.error(game);
+      Message.openToast(user.message, user.status);
     }
   }
 });

@@ -1,6 +1,6 @@
 import * as API from "../api.js";
 import * as Cookie from "../cookie.js";
-import * as Message from "../message.js";
+import * as Message from "../toast.js";
 
 const next = "join.html";
 const signin = "sign.html";

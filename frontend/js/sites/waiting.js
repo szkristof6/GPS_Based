@@ -1,8 +1,10 @@
 import * as API from "../api.js";
 import * as Cookie from "../cookie.js";
+import * as Message from "../toast.js";
 
 const next = "map.html";
 const index = "index.html";
+const refresh_rate = 5 * 1000;
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (!Cookie.getCookie("Token")) window.location.replace(index);
@@ -69,13 +71,17 @@ async function getData(pos) {
       time.querySelector(".ssc-line").style.display = "none";
       count.querySelector(".ssc-line").style.display = "none";
 
-      if (status.status === "started") {
-        window.location.replace(next);
+      if (parseInt(status.status) > 0) {
+        Message.openToast("You will be redirected in a second", "The game has begun");
+
+        setTimeout(() => {
+          window.location.replace(next);
+        }, Message.redirect_time);
       }
 
       time.querySelector("p").innerHTML = remainingTime(status.time);
       count.querySelector("p").innerHTML = `${status.count}`;
-    }, 5000);
+    }, refresh_rate);
   }
 }
 

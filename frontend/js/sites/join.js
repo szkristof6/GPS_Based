@@ -1,5 +1,6 @@
 import * as API from "../api.js";
 import * as Cookie from "../cookie.js";
+import * as Message from "../toast.js";
 
 const next = "waiting.html";
 const index = "index.html";
@@ -41,10 +42,12 @@ joinButton.addEventListener("click", async (event) => {
   if (game.status === "success") {
     Cookie.setCookie("GameID", game.id, Cookie.exp_time);
 
-    if (Cookie.getCookie("GameID")) {
+    Message.openToast("You will be redirected in a second", game.status);
+
+    setTimeout(() => {
       window.location.replace(next);
-    }
+    }, Message.redirect_time);
   } else {
-    console.error(game);
+    Message.openToast(game.message, game.status);
   }
 });

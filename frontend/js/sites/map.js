@@ -1,7 +1,10 @@
 import * as API from "../api.js";
 import * as Cookie from "../cookie.js";
+import * as Message from "../toast.js";
 
 const index = "index.html";
+const back = "waiting.html";
+const refresh_rate = 5 * 1000;
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (!Cookie.getCookie("Token")) window.location.replace(index);
@@ -10,6 +13,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   getPlayerData();
   getLocation();
+  setInterval(async () => {
+    const status = await API.fetchGET(`getStatus?game_id=${Cookie.getCookie("GameID")}`);
+
+    if (parseInt(status.status) === 0) {
+      Message.openToast("You will be redirected in a second", "The game has stopped");
+
+      setTimeout(() => {
+        window.location.replace(back);
+      }, Message.redirect_time);
+    }
+
+    getLocation();
+  }, refresh_rate);
 });
 
 if (!mapboxgl.supported()) {
@@ -19,9 +35,11 @@ if (!mapboxgl.supported()) {
 async function setMap() {
   const game_id = Cookie.getCookie("GameID");
 
-  const game = await API.fetchGET(`getGame?game_id=${game_id}`);
+  const response = await API.fetchGET(`getGame?game_id=${game_id}`);
 
-  if (game.status === "success") {
+  if (response.status === "success") {
+    const { game } = response;
+
     mapboxgl.accessToken =
       "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
 
@@ -119,9 +137,7 @@ async function onSuccess(pos) {
         paintPlayer(player);
       }
     }
-  }
-  else {
-    
+  } else {
   }
 }
 
@@ -136,5 +152,5 @@ function getLocation() {
     maximumAge: 0,
   };
 
-  navigator.geolocation.watchPosition(onSuccess, onError, options);
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 }
