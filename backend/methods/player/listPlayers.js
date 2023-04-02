@@ -24,12 +24,14 @@ async function listPlayers(req, res) {
     const cleaned = []; // Létrehozunk egy üres listát
 
     for (let index = 0; index < allPlayer.length; index++) {
-      const element = allPlayer[index]; // elmentjük az adott játékost egy változóval
-      if (element.player_id !== player.player_id) {
-        // Megnézzük, hogy az adott játékos azonosítója egyezik-e a felhasználó azonosítójával
+      const element = allPlayer[index]; 
+      
+      if (element.user_id !== player.user_id) {
+        console.log("***");
+
         const user = await users.findOne({ _id: element.user_id });
         const team = await teams.findOne({ _id: element.team_id });
-        const location = await locations.findOne({ _id: element.location_id }); // Ha nem, akkor lekérdezzük a játékos azonosítója alapján a felhasználói profilját
+        const location = await locations.findOne({ _id: element.location_id });
 
         cleaned.push({
           user: {
@@ -40,7 +42,7 @@ async function listPlayers(req, res) {
             color: team.color,
           },
           location: location.location,
-        }); // Betesszük a listába a kiegészített objektumot
+        });
       }
     }
 

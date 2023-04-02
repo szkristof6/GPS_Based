@@ -1,112 +1,140 @@
 import * as API from "../api.js";
 import * as Cookie from "../cookie.js";
-import map from "../mapbox.js";
 
-// Megnézzük, hogy támogatott-e a mapbox API
+const index = "index.html";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!Cookie.getCookie("Token")) window.location.replace(index);
+  if (!Cookie.getCookie("GameID")) window.location.replace(index);
+  if (!Cookie.getCookie("PlayerID")) window.location.replace(index);
+
+  getPlayerData();
+  getLocation();
+});
+
 if (!mapboxgl.supported()) {
   alert("Your browser does not support Mapbox GL");
 }
 
-// A játékos adatait lekérdezzük és a felső sáv adatait feltöltjük vele.
-async function getPlayerData() {
-  const token = Cookie.getCookie("Token");
-  const player = await API.fetchGET(`getPlayerData?token=${token}`);
+async function setMap() {
+  const game_id = Cookie.getCookie("GameID");
 
-  document.querySelector(".user").innerHTML = player.username;
+  const game = await API.fetchGET(`getGame?game_id=${game_id}`);
+
+  if (game.status === "success") {
+    mapboxgl.accessToken =
+      "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
+
+    const map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/outdoors-v12?optimize=true",
+      center: [game.location.x, game.location.y],
+      zoom: 8,
+      //minZoom: 15,
+      performanceMetricsCollection: false,
+    });
+
+    map.addControl(new mapboxgl.NavigationControl());
+
+    map.addControl(
+      new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+        showUserHeading: true,
+      })
+    );
+
+    map.on("click", (e) => {
+      console.log(JSON.stringify(e.lngLat.wrap()));
+    });
+
+    return map;
+  }
+
+  return null;
 }
 
-/*
-Játékosok megjeleítése a térképen
+const map = await setMap();
 
-Megadjuk a színeket a csapatoknak
-Létrehozunk egy div elemet, amit tudunk manipulálni
-  Adunk neki egy class-t
-  Megadjuk, hogy milyen kép jelenjen meg a térképen, ezt a szerverről kapjuk meg
-  Szélességet és magasságot deffiniálunk
-  ...
-  A bordernek adunk egy színt. Csapatszínt
+async function getPlayerData() {
+  const player_id = Cookie.getCookie("PlayerID");
+  const player = await API.fetchGET(`getPlayerData?player_id=${player_id}`);
 
-Majd létrehozzuk a mapbox API által adott funkcióval a markert, amit a játékos szerverről kapott poziciójára helyezünk el.
-*/
+  const esemeny = document.querySelector(".esemeny");
+  const user = document.querySelector(".user");
+
+  esemeny.querySelector(".ssc-line").style.display = "none";
+  user.querySelector(".ssc-line").style.display = "none";
+
+  esemeny.querySelector("p").innerHTML = `${player.game.name}`;
+  user.querySelector("p").innerHTML = `${player.user.name}`;
+}
+
 function paintPlayer(player) {
-  const teamA = "#bf1d1d";
-  const teamB = "#3427e8"
-  const color = player.team = "red" ? teamA : teamB; // JS inline if (állítás ? igaz : hamis)
-
   const player_image = document.createElement("div");
   player_image.className = "player-icon";
-  player_image.style.backgroundImage = `url(${player.image})`;
+  player_image.style.backgroundImage = `url(${new URL(player.user.image)})`;
   player_image.style.width = `40px`;
   player_image.style.height = `40px`;
   player_image.style.backgroundSize = "100%";
-  player_image.style.border = `5px solid ${color}`;
+  player_image.style.border = `5px solid ${player.team.color}`;
 
   new mapboxgl.Marker(player_image).setLngLat([player.location.x, player.location.y]).addTo(map);
-}
-/*
-Lekérdezzük a játékos pozicióját, amit az adatbázisban frissítünk,
-Majd lekérdezzük a szerverről az összes adott játékban játszó játékos adatait
-Amiket megjeleítünk a térképen
-*/ 
 
-// Ha sikerült a helyzetmeghatározás
+  const loader = document.querySelector(".container");
+  loader.style.display = "none";
+}
+
 async function onSuccess(pos) {
   const crd = pos.coords;
 
-  // Kiírjuk debug okokból a felhasználó pozicióját
+  const player_id = Cookie.getCookie("PlayerID");
+
   console.log(
     `Time: ${Date.now()} Latitude: ${crd.latitude}, Longitude: ${crd.longitude}, Accuracy ${crd.accuracy} meters.`
   );
 
-  // Elküldjük a szerverre a felhasználó pozicióját, a tokennel együtt
   const update = await API.fetchPOST(
     {
+      player_id,
       location: {
         x: crd.longitude,
         y: crd.latitude,
       },
     },
-    `updateLocation?token=${Cookie.getCookie("Token")}`
+    "updateLocation"
   );
 
-  // Kiírjuk a szerver válaszát
-  console.log(update);
-
-  // Ha a szerver sikeresen végrehajtotta a műveletet, akkor..
   if (update.status == "success") {
-    // Lekérdezzük a játékosokat
-    const db = await API.fetchPOST({game: Cookie.getCookie("GameID")}, `listPlayers?token=${Cookie.getCookie("Token")}`);
+    const db = await API.fetchGET(`listPlayers?player_id=${player_id}`);
 
-    // Hogyha kapunk vissza játékosokat, akkor..
-    if (db.length != 0) {
-      for (const player of db) {
-        // Kitöröljük az oldalról az összes jelenlegi játékos markerét
+    console.log(db);
+
+    if (db.count != 0) {
+      for (const player of db.players) {
         document.querySelectorAll(".player-icon").forEach((e) => e.remove());
 
-        // Megjelenítjük az összes játékost
         paintPlayer(player);
       }
     }
   }
+  else {
+    
+  }
 }
 
-// Ha nem sikerült a helyzetmeghatározás
 function onError(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
 function getLocation() {
-  // Definiálunk pár opciót
   const options = {
     enableHighAccuracy: true,
     timeout: 5000,
     maximumAge: 0,
   };
 
-  // Használjuk a beépített API-t
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+  navigator.geolocation.watchPosition(onSuccess, onError, options);
 }
-
-getPlayerData();
-getLocation();
-setInterval(getLocation, 5000); // 5000ms = 5s-ként frissítjük a poziciókat.

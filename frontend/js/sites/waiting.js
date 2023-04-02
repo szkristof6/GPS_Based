@@ -52,7 +52,7 @@ async function getData(pos) {
     const time = document.querySelector("#time");
 
     count.querySelector(".ssc-line").style.display = "none";
-    count.querySelector("p").innerHTML = player.count;
+    count.querySelector("p").innerHTML = `${player.count}`;
 
     time.querySelector(".ssc-line").style.display = "none";
     time.querySelector("p").innerHTML = remainingTime(player.time);
@@ -70,11 +70,11 @@ async function getData(pos) {
       count.querySelector(".ssc-line").style.display = "none";
 
       if (status.status === "started") {
-        console.log("tovább");
+        window.location.replace(next);
       }
 
       time.querySelector("p").innerHTML = remainingTime(status.time);
-      count.querySelector("p").innerHTML = status.count;
+      count.querySelector("p").innerHTML = `${status.count}`;
     }, 5000);
   }
 }

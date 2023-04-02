@@ -25,12 +25,14 @@ fastify.post("/verifyUser", verifyUser); // Felhasználói fiók megerősítése
 const createGame = require("./methods/game/createGame"); // Játék létrehozása
 const joinGame = require("./methods/game/joinGame"); // Játék azonosító lekérdezése
 const getStatus = require("./methods/game/getStatus"); // Játék státusztának lekérdezése
+const getGame = require("./methods/game/getGame"); // Játék státusztának lekérdezése
 const updateLocation = require("./methods/game/updateLocation"); // Játékos pozició frissítés
 
 fastify.post("/createGame", { onRequest: [fastify.verify] }, createGame);
 fastify.post("/joinGame", { onRequest: [fastify.verify] }, joinGame);
-fastify.post("/updateLocation", { onRequest: [fastify.verify] }, updateLocation);
 fastify.get("/getStatus", { onRequest: [fastify.verify] }, getStatus);
+fastify.get("/getGame", { onRequest: [fastify.verify] }, getGame);
+fastify.post("/updateLocation", { onRequest: [fastify.verify] }, updateLocation);
 
 // Player methods - Minden olyan funkció, ami a játékosokhoz tartozik
 

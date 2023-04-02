@@ -11,7 +11,6 @@ const playersSchema = yup.object().shape({
 
 const listPlayersSchema = yup.object().shape({
   player_id: yup.string().trim().length(24).required(),
-  game_id: yup.string().trim().length(24).required(),
 });
 
 module.exports = { playersSchema, listPlayersSchema };
