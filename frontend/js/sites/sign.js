@@ -43,14 +43,14 @@ form.addEventListener("submit", async (event) => {
     const user = await API.fetchPOST(json, "registerUser");
 
     if (user.status === "success") {
-      Message.openToast("You will be redirected in a second", user.status);
+      Message.openToast("You will be redirected in a second", "Success", user.status);
 
     setTimeout(() => {
       window.location.replace(index);
     }, Message.redirect_time);
 
     } else {
-      Message.openToast(user.message, user.status);
+      Message.openToast(user.message, "Error", user.status);
     }
   }
 });

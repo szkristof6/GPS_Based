@@ -1,4 +1,4 @@
-export function openToast(text, type) {
+export function openToast(text, title, type) {
   const toast = document.querySelector(".toast");
   const progress = document.querySelector(".progress");
 
@@ -6,8 +6,8 @@ export function openToast(text, type) {
   const text_1 = toast.querySelector(".text-1");
   const text_2 = toast.querySelector(".text-2");
 
-  icon.src = type === "error" ? "media/error.png" : "media/success.png";
-  text_1.innerHTML = `${type}`;
+  icon.src = type !== "success" ? "media/error.png" : "media/success.png";
+  text_1.innerHTML = `${title}`;
   text_2.innerHTML = `${text}`;
 
   toast.classList.add("active");

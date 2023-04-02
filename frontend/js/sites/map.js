@@ -6,35 +6,42 @@ const index = "index.html";
 const back = "waiting.html";
 const refresh_rate = 5 * 1000;
 
+const player_id = Cookie.getCookie("PlayerID");
+const game_id = Cookie.getCookie("GameID");
+
 document.addEventListener("DOMContentLoaded", async () => {
   if (!Cookie.getCookie("Token")) window.location.replace(index);
   if (!Cookie.getCookie("GameID")) window.location.replace(index);
   if (!Cookie.getCookie("PlayerID")) window.location.replace(index);
 
   getPlayerData();
-  getLocation();
+  navigator.geolocation.watchPosition(
+    onSuccess,
+    (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
+    { enableHighAccuracy: true }
+  );
+  getLocationOfPlayers();
+
   setInterval(async () => {
     const status = await API.fetchGET(`getStatus?game_id=${Cookie.getCookie("GameID")}`);
 
     if (parseInt(status.status) === 0) {
-      Message.openToast("You will be redirected in a second", "The game has stopped");
+      Message.openToast("You will be redirected in a second", "The game has stopped", "error");
 
       setTimeout(() => {
         window.location.replace(back);
       }, Message.redirect_time);
     }
 
-    getLocation();
+    getLocationOfPlayers();
   }, refresh_rate);
 });
 
 if (!mapboxgl.supported()) {
-  alert("Your browser does not support Mapbox GL");
+  Message.openToast("Your browser does not support Mapbox GL", "Error", "error");
 }
 
 async function setMap() {
-  const game_id = Cookie.getCookie("GameID");
-
   const response = await API.fetchGET(`getGame?game_id=${game_id}`);
 
   if (response.status === "success") {
@@ -70,14 +77,13 @@ async function setMap() {
 
     return map;
   }
-
+  Message.openToast(response.message, "Error", response.status);
   return null;
 }
 
 const map = await setMap();
 
 async function getPlayerData() {
-  const player_id = Cookie.getCookie("PlayerID");
   const player = await API.fetchGET(`getPlayerData?player_id=${player_id}`);
 
   const esemeny = document.querySelector(".esemeny");
@@ -105,52 +111,51 @@ function paintPlayer(player) {
   loader.style.display = "none";
 }
 
-async function onSuccess(pos) {
-  const crd = pos.coords;
-
-  const player_id = Cookie.getCookie("PlayerID");
-
-  console.log(
-    `Time: ${Date.now()} Latitude: ${crd.latitude}, Longitude: ${crd.longitude}, Accuracy ${crd.accuracy} meters.`
-  );
-
-  const update = await API.fetchPOST(
-    {
-      player_id,
-      location: {
-        x: crd.longitude,
-        y: crd.latitude,
-      },
-    },
-    "updateLocation"
-  );
-
-  if (update.status == "success") {
+async function getLocationOfPlayers() {
+  try {
     const db = await API.fetchGET(`listPlayers?player_id=${player_id}`);
+    if (db.status === "success") {
+      console.log(db);
 
-    console.log(db);
+      if (db.count != 0) {
+        for (const player of db.players) {
+          document.querySelectorAll(".player-icon").forEach((e) => e.remove());
 
-    if (db.count != 0) {
-      for (const player of db.players) {
-        document.querySelectorAll(".player-icon").forEach((e) => e.remove());
-
-        paintPlayer(player);
+          paintPlayer(player);
+        }
       }
+    } else {
+      Message.openToast(db.message, "Error", db.status);
     }
-  } else {
+  } catch (error) {
+    Message.openToast(error.message, "Error", error.status);
   }
 }
 
-function onError(err) {
-  console.warn(`ERROR(${err.code}): ${err.message}`);
-}
+async function onSuccess(pos) {
+  try {
+    const crd = pos.coords;
 
-function getLocation() {
-  const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0,
-  };
+    console.log(
+      `Time: ${Date.now()} Latitude: ${crd.latitude}, Longitude: ${crd.longitude}, Accuracy ${crd.accuracy} meters.`
+    );
 
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+    const update = await API.fetchPOST(
+      {
+        player_id,
+        location: {
+          x: crd.longitude,
+          y: crd.latitude,
+        },
+      },
+      "updateLocation"
+    );
+    if (update.status == "success") {
+      getLocationOfPlayers();
+    } else {
+      Message.openToast(update.message, "Error", update.status);
+    }
+  } catch (error) {
+    Message.openToast(error.message, "Error", error.status);
+  }
 }

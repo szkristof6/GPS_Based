@@ -38,13 +38,13 @@ form.addEventListener("submit", async (event) => {
   if (user.status === "success") {
     Cookie.setCookie("Token", user.token, Cookie.exp_time);
 
-    Message.openToast("You will be redirected in a second", user.status);
+    Message.openToast("You will be redirected in a second", "Success", user.status);
 
     setTimeout(() => {
       window.location.replace(next);
     }, Message.redirect_time);
   } else {
-    Message.openToast(user.message, user.status);
+    Message.openToast(user.message, "Error", user.status);
   }
 });
 
@@ -69,13 +69,13 @@ facebookButton.addEventListener("click", async (event) => {
     if (response.status === "success") {
       Cookie.setCookie("Token", response.token, Cookie.exp_time);
 
-      Message.openToast("You will be redirected in a second", response.status);
+      Message.openToast("You will be redirected in a second", "Success", response.status);
 
       setTimeout(() => {
         window.location.replace(next);
       }, Message.redirect_time);
     } else {
-      Message.openToast(response.message, response.status);
+      Message.openToast(response.message, "Error", response.status);
     }
   }
 });
@@ -88,12 +88,12 @@ export async function googleLogin(user) {
   if (response.status === "success") {
     Cookie.setCookie("Token", response.token, Cookie.exp_time);
 
-    Message.openToast("You will be redirected in a second", response.status);
+    Message.openToast("You will be redirected in a second", "Success", response.status);
 
     setTimeout(() => {
       window.location.replace(next);
     }, Message.redirect_time);
   } else {
-    Message.openToast(response.message, response.status);
+    Message.openToast(response.message, "Error", response.status);
   }
 }

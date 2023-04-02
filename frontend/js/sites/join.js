@@ -42,12 +42,12 @@ joinButton.addEventListener("click", async (event) => {
   if (game.status === "success") {
     Cookie.setCookie("GameID", game.id, Cookie.exp_time);
 
-    Message.openToast("You will be redirected in a second", game.status);
+    Message.openToast("You will be redirected in a second", "Success", game.status);
 
     setTimeout(() => {
       window.location.replace(next);
     }, Message.redirect_time);
   } else {
-    Message.openToast(game.message, game.status);
+    Message.openToast(game.message, "Error", game.status);
   }
 });

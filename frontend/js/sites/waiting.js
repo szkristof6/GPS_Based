@@ -46,8 +46,6 @@ async function getData(pos) {
   const player = await API.fetchPOST(playerData, "addPlayer");
 
   if (player.status == "success" || player.status == "inplay") {
-    console.log(player);
-
     Cookie.setCookie("PlayerID", player.player_id, Cookie.exp_time);
 
     const count = document.querySelector("#count");
@@ -72,7 +70,7 @@ async function getData(pos) {
       count.querySelector(".ssc-line").style.display = "none";
 
       if (parseInt(status.status) > 0) {
-        Message.openToast("You will be redirected in a second", "The game has begun");
+        Message.openToast("You will be redirected in a second", "The game has begun", "success");
 
         setTimeout(() => {
           window.location.replace(next);
@@ -86,6 +84,10 @@ async function getData(pos) {
 }
 
 const getLocation = () =>
-  navigator.geolocation.getCurrentPosition(getData, (error) => console.warn(`ERROR(${error.code}): ${error.message}`), {
-    enableHighAccuracy: true,
-  });
+  navigator.geolocation.getCurrentPosition(
+    getData,
+    (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
+    {
+      enableHighAccuracy: true,
+    }
+  );
