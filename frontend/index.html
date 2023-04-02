@@ -11,7 +11,7 @@
     <script src="https://connect.facebook.net/en_US/sdk.js" async defer crossorigin="anonymous"></script>
     <script src="https://www.google.com/recaptcha/api.js?render=6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-
+   
     <script src="js/sites/index.js" type="module"></script>
     <script type="module">
       import { googleLogin } from "./js/sites/index.js";
@@ -33,6 +33,7 @@
     <div class="login-box white_glass_background">
       <h1>Login</h1>
       <form>
+        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
         <input type="hidden" name="action" value="validate_captcha" />
 
         <div class="user-box">
@@ -59,7 +60,7 @@
             data-callback="googleLogin"
             data-auto_prompt="false"
           ></div>
-
+          
           <div
             class="g_id_signin"
             data-type="icon"
@@ -69,7 +70,7 @@
             data-size="large"
           ></div>
         </div>
-        <button id="facebook"><img src="media/facebook (2).png" /></button>
+        <button id="facebook"><img src="media/facebook.png"/></button>
       </div>
     </div>
 
@@ -81,5 +82,24 @@
         <div class="block"></div>
       </div>
     </div>
+
+
+<!-- Remove 'active' class, this is just to show in Codepen thumbnail -->
+<div class="toast">
+  
+  <div class="toast-content">
+    <img src="media/error.png" alt="" class="check">
+
+    <div class="message">
+      <span class="text text-1">Success</span>
+      <span class="text text-2">Your changes has been saved</span>
+    </div>
+  </div>
+  <img src="media/log-out.png" alt="" class="close">
+
+  <!-- Remove 'active' class, this is just to show in Codepen thumbnail -->
+  <div class="progress"></div>
+</div>
+
   </body>
 </html>

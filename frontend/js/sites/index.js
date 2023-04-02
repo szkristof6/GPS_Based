@@ -1,5 +1,6 @@
 import * as API from "../api.js";
 import * as Cookie from "../cookie.js";
+import * as Message from "../message.js";
 
 const next = "join.html";
 const signin = "sign.html";
@@ -37,11 +38,13 @@ form.addEventListener("submit", async (event) => {
   if (user.status === "success") {
     Cookie.setCookie("Token", user.token, Cookie.exp_time);
 
-    if (Cookie.getCookie("Token")) {
+    Message.openToast("You will be redirected in a second", user.status);
+
+    setTimeout(() => {
       window.location.replace(next);
-    }
+    }, Message.redirect_time);
   } else {
-    console.error(user);
+    Message.openToast(user.message, user.status);
   }
 });
 
@@ -66,11 +69,13 @@ facebookButton.addEventListener("click", async (event) => {
     if (response.status === "success") {
       Cookie.setCookie("Token", response.token, Cookie.exp_time);
 
-      if (Cookie.getCookie("Token")) {
+      Message.openToast("You will be redirected in a second", response.status);
+
+      setTimeout(() => {
         window.location.replace(next);
-      }
+      }, Message.redirect_time);
     } else {
-      console.error(response);
+      Message.openToast(response.message, response.status);
     }
   }
 });
@@ -83,10 +88,12 @@ export async function googleLogin(user) {
   if (response.status === "success") {
     Cookie.setCookie("Token", response.token, Cookie.exp_time);
 
-    if (Cookie.getCookie("Token")) {
+    Message.openToast("You will be redirected in a second", response.status);
+
+    setTimeout(() => {
       window.location.replace(next);
-    }
+    }, Message.redirect_time);
   } else {
-    console.error(response);
+    Message.openToast(response.message, response.status);
   }
 }
