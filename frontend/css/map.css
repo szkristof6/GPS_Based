@@ -1,0 +1,65 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "poppins", sans-serif;
+}
+:root {
+  --col_1: orange;
+  --col_2: #222327;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--col_2);
+}
+
+.map-box {
+  width: 100%;
+  height: calc(100vh - 70px);
+  position: fixed;
+  top: 0px;
+}
+
+.navigation {
+  width: 100%;
+  height: 70px;
+  background: #fff;
+  position: fixed;
+  bottom: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.app-name {
+  font-size: 2rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.esemeny {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.player-icon {
+  display: block;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.terkep {
+  width: 100%;
+  height: 100%;
+}
