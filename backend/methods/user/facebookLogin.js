@@ -49,7 +49,7 @@ async function facebookLogin(req, res) {
       email: facebook_response.email,
       login_method: "facebook",
       image: facebook_response.picture.data.url,
-      permission: 0,
+      permission: 1,
       createdAt: Date.now(),
     });
 

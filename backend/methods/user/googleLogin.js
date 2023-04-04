@@ -49,7 +49,7 @@ async function googleLogin(req, res) {
       email: payload.email,
       login_method: "google",
       image: payload.picture,
-      permission: 0,
+      permission: 1,
       createdAt: Date.now(),
     });
 

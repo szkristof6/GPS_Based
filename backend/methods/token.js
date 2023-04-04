@@ -42,7 +42,7 @@ async function verifyToken(id, method, minutes) {
     };
   }
 
-  return { status: "valid" };
+  return { status: "valid", token: userVerifyToken.token };
 }
 
 async function removeToken(id) {

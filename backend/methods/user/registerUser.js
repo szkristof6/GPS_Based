@@ -6,6 +6,7 @@ const { registerSchema } = require("../../schemas/user");
 const users = require("../../db/collections/users");
 const captcha = require("../captcha");
 const { insertToken } = require("../token");
+const userCreated = require("../../email/emails/userCreated");
 
 async function registerUser(req, res) {
   try {
@@ -46,11 +47,12 @@ async function registerUser(req, res) {
     });
 
     const token = await insertToken(user._id, "verify");
+    const email = await userCreated(req.body.email, token, user._id);
 
-    console.log(token);
 
     return res.send({
       status: "success",
+      message: "Please verify your e-mail address!"
     });
   } catch (error) {
     // Minden hiba esetén ide kerülünk, ahol kezeljük a hibát, vagy továbbküldjük a hibakezelőnek

@@ -25,12 +25,13 @@ async function resetPassword(req, res) {
     }
     await resetSchema.validate(req.body);
 
-    const verify = await verifyToken(req.body.user_id, "reset", 5);
-    if (verify.status !== "valid") {
-      return res.send(verify);
+    const passwordResetToken = await verifyToken(req.body.user_id, "reset", 5);
+    if (passwordResetToken.status !== "valid") {
+      return res.send(passwordResetToken);
     }
 
-    const isValid = await bcrypt.compare(req.body.token, passwordResetToken.token);
+
+    const isValid = await bcrypt.compare(req.body.user_token, passwordResetToken.token);
     if (isValid === null) {
       return res.send({
         status: "error",
@@ -42,6 +43,14 @@ async function resetPassword(req, res) {
       return res.send({
         status: "error",
         message: "The passwords are not matching!",
+      });
+    }
+
+    const user = await users.findOne({ _id: req.body.user_id });
+    if (req.body.email !== user.email) {
+      return res.send({
+        status: "error",
+        message: "Account with the given email does not exist!",
       });
     }
 

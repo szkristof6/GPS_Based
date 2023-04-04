@@ -1,19 +1,22 @@
-const transporter = require("../nodemailer");
+const { sendMail } = require("../nodemailer");
 
-async function userCreated(req, res) {
+async function userCreated(email, token, user_id) {
   try {
-    // send mail with defined transport object
-    const email = await transporter.sendMail({
-      from: "GPSBased Info <gps.based.info@gmail.com>", // sender address
-      to: "szabokristof6@gmail.com", // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: "<b>Hello world?</b>", // html body
-    });
+    const html = `
+    <p>
+    Thank you for signing up for our app! We hope you will enjoy your time with us!
 
-    return res.send({ email });
+    First of all, please verify your account!
+    Click on this link to continue: https://map.stagenex.hu/verify?token=${token}&user_id=${user_id}
+    </p>
+    `;
+
+    // send mail with defined transport object
+    const response = await sendMail(email, "Thank you for singing up", "", html);
+
+    return response;
   } catch (error) {
-    return res.send({ error });
+    return error;
   }
 }
 

@@ -21,6 +21,7 @@ Előszőr pár 3rd party middleware-t behozunk, amik különféle funkciókat ho
 */
 
 fastify.register(require("@fastify/cors"), {
+/*
   origin: (origin, cb) => {
     const hostname = new URL(origin).hostname
     if(hostname === process.env.NODE_ENV === "dev" ? "localhost" : "map.stagenex.hu"){
@@ -29,6 +30,7 @@ fastify.register(require("@fastify/cors"), {
     }
     cb(new Error("Not allowed"), false)
   }
+*/
 });
 fastify.register(require("@fastify/helmet"), { global: true });
 fastify.register(require("@fastify/jwt"), { secret: process.env.TOKEN_KEY });
