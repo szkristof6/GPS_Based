@@ -2,9 +2,12 @@ import * as API from "../api.js";
 import * as Cookie from "../cookie.js";
 import * as Message from "../toast.js";
 
+import socket from "../socket.io/connect.js";
+socket.on("connect", () => console.log("Connected.."));
+
 const next = "map.html";
 const index = "index.html";
-const refresh_rate = 5 * 1000;
+const refresh_rate = 1 * 1000;
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (!Cookie.getCookie("Token")) window.location.replace(index);
@@ -58,27 +61,23 @@ async function getData(pos) {
     time.querySelector("p").innerHTML = remainingTime(player.time);
 
     setInterval(async () => {
-      time.querySelector(".ssc-line").style.display = "block";
-      time.querySelector("p").innerHTML = "";
-
-      count.querySelector(".ssc-line").style.display = "block";
-      count.querySelector("p").innerHTML = "";
-
-      const status = await API.fetchGET(`getStatus?game_id=${Cookie.getCookie("GameID")}`);
-
-      time.querySelector(".ssc-line").style.display = "none";
-      count.querySelector(".ssc-line").style.display = "none";
-
-      if (parseInt(status.status) > 0) {
-        Message.openToast("You will be redirected in a second", "The game has begun", "success");
-
-        setTimeout(() => {
-          window.location.replace(next);
-        }, Message.redirect_time);
-      }
-
-      time.querySelector("p").innerHTML = remainingTime(status.time);
-      count.querySelector("p").innerHTML = `${status.count}`;
+      socket.emit("getStatus", Cookie.getCookie("GameID"), status => {
+        
+        time.querySelector(".ssc-line").style.display = "none";
+        count.querySelector(".ssc-line").style.display = "none";
+  
+        if (parseInt(status.status) > 0) {
+          Message.openToast("You will be redirected in a second", "The game has begun", "success");
+  
+          setTimeout(() => {
+            window.location.replace(next);
+          }, Message.redirect_time);
+        }
+  
+        time.querySelector("p").innerHTML = remainingTime(status.time);
+        count.querySelector("p").innerHTML = `${status.count}`;
+      });
+     
     }, refresh_rate);
   }
 }

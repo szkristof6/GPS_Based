@@ -50,6 +50,16 @@ const getTeam = require("./methods/team/getTeam"); // Csapat adatainak lekérdez
 fastify.post("/addTeam", { onRequest: [fastify.verify] }, addTeam);
 fastify.get("/getTeam", { onRequest: [fastify.verify] }, getTeam);
 
+fastify.ready().then(() => {
+  fastify.io.on("connection", (socket) => {
+    socket.on("getStatus", async (game_id, send) => {
+      const status = await getStatus(game_id);
+      
+      send(status);
+    });
+  });
+});
+
 /*
 Abban az esetben, hogyha semmilyen útba nem tartozik a kérés, akkor ide kerülünk.
 Ezt használjuk hibakezelésnek

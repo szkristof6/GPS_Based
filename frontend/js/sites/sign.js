@@ -43,7 +43,7 @@ form.addEventListener("submit", async (event) => {
     const user = await API.fetchPOST(json, "registerUser");
 
     if (user.status === "success") {
-      Message.openToast("You will be redirected in a second", "Success", user.status);
+      Message.openToast("The activation email has been sent to your e-mail address!", "Success", user.status);
 
     setTimeout(() => {
       window.location.replace(index);
