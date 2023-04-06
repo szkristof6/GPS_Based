@@ -30,9 +30,7 @@ const updateLocation = require("./methods/game/updateLocation"); // Játékos po
 
 fastify.post("/createGame", { onRequest: [fastify.verify] }, createGame);
 fastify.post("/joinGame", { onRequest: [fastify.verify] }, joinGame);
-fastify.get("/getStatus", { onRequest: [fastify.verify] }, getStatus);
 fastify.get("/getGame", { onRequest: [fastify.verify] }, getGame);
-fastify.post("/updateLocation", { onRequest: [fastify.verify] }, updateLocation);
 
 // Player methods - Minden olyan funkció, ami a játékosokhoz tartozik
 
@@ -41,8 +39,6 @@ const getPlayerData = require("./methods/player/getPlayerData"); // Játékos ad
 const listPlayers = require("./methods/player/listPlayers"); // Adott játékban lévő játékosok lekérdezése
 
 fastify.post("/addPlayer", { onRequest: [fastify.verify] }, addPlayer);
-fastify.get("/listPlayers", { onRequest: [fastify.verify] }, listPlayers);
-fastify.get("/getPlayerData", { onRequest: [fastify.verify] }, getPlayerData);
 
 const addTeam = require("./methods/team/addTeam"); // Csapat hozzásadáse
 const getTeam = require("./methods/team/getTeam"); // Csapat adatainak lekérdezése
@@ -52,11 +48,10 @@ fastify.get("/getTeam", { onRequest: [fastify.verify] }, getTeam);
 
 fastify.ready().then(() => {
   fastify.io.on("connection", (socket) => {
-    socket.on("getStatus", async (game_id, send) => {
-      const status = await getStatus(game_id);
-      
-      send(status);
-    });
+    socket.on("getStatus", (game_id, send) => getStatus(game_id).then(response => send(response)));
+    socket.on("getPlayerData", (player_id, send) => getPlayerData(player_id).then(response => send(response)));
+    socket.on("listPlayers", (player_id, send) => listPlayers(player_id).then(response => send(response)));
+    socket.on("updateLocation", (object, send) => updateLocation(object).then(response => send(response)));
   });
 });
 

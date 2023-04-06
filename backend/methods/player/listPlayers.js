@@ -14,21 +14,19 @@ Majd lekérdezzük a játékos játék azonosítója alapján a játékban lév�
 Majd visszaadjuk a végleges listát a felhasznló képével együtt
 */
 
-async function listPlayers(req, res) {
+async function listPlayers(player_id) {
   try {
-    await listPlayersSchema.validate(req.query);
+    await listPlayersSchema.validate({ player_id });
 
-    const player = await players.findOne({ _id: req.query.player_id });
+    const player = await players.findOne({ _id: player_id });
     const allPlayer = await players.find({ game_id: player.game_id });
 
     const cleaned = []; // Létrehozunk egy üres listát
 
     for (let index = 0; index < allPlayer.length; index++) {
-      const element = allPlayer[index]; 
-      
-      if (element.user_id !== player.user_id) {
-        console.log("***");
+      const element = allPlayer[index];
 
+      if (element.user_id !== player.user_id) {
         const user = await users.findOne({ _id: element.user_id });
         const team = await teams.findOne({ _id: element.team_id });
         const location = await locations.findOne({ _id: element.location_id });
@@ -46,9 +44,9 @@ async function listPlayers(req, res) {
       }
     }
 
-    return res.send({ status: "success", count: cleaned.length, players: cleaned });
+    return { status: "success", count: cleaned.length, players: cleaned };
   } catch (error) {
-    return res.send(error);
+    return error;
   }
 }
 

@@ -8,33 +8,32 @@ Amennyiben helyesek megkeressük az adott játékost a token azonosítás után 
 Majd frissítjük a játékos pozicióját
 */
 
-async function updateLocation(req, res) {
+async function updateLocation(object) {
   try {
-    await locationSchema.validate(req.body);
-    const player = await players.findOne({ _id: req.body.player_id });
+    await locationSchema.validate(object);
+    const player = await players.findOne({ _id: object.player_id });
 
     if (!player) {
-      return res.send({
+      return {
         status: "error",
         message: "The player was not found!",
-      });
-
+      };
     } else {
       const created = await locations.insert({
-        location: req.body.location,
+        location: object.location,
         date: Date.now(),
         player_id: player._id,
         game_id: player.game_id,
       });
 
       const updated = await players.findOneAndUpdate({ _id: player._id }, { $set: { location_id: created._id } });
-      return res.send({
+      return {
         status: "success",
         updated,
-      });
+      };
     }
   } catch (error) {
-    return res.send(error);
+    return error;
   }
 }
 
