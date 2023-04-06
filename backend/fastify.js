@@ -10,7 +10,8 @@ const serverFactory = (handler, opts) => {
   return fastify_server;
 };
 
-const fastify = require("fastify")({ logger: true, serverFactory });
+const fastify = require("fastify")({ serverFactory });
+
 /* .env
 Itt élenek a globális változók
 úgy érjük el, hogy process.env.<változó neve>
@@ -30,6 +31,14 @@ Előszőr pár 3rd party middleware-t behozunk, amik különféle funkciókat ho
     Ha ez az OPTION sikeresen vissztér a megfelelő CORS headerekkel, amik egyeznek a cliensen, akkor küldi a további kérést
   Definiáljuk, hogy JSON adatokkal fogunk dolgozni
 */
+
+fastify.register(require("fastify-socket.io"), {
+  cors: {
+    origin: process.env.NODE_ENV === "dev" ? "*" : process.env.CLIENT_URI,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  },
+  path: "/socket/",
+});
 
 fastify.register(require("@fastify/cors"), {
   origin: process.env.NODE_ENV === "dev" ? "*" : process.env.CLIENT_URI,

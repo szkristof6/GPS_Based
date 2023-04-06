@@ -1,5 +1,4 @@
 const { fastify, fastify_server } = require("./fastify");
-const { io, socket_server } = require("./socket");
 
 require("dotenv").config();
 
@@ -47,13 +46,6 @@ const getTeam = require("./methods/team/getTeam"); // Csapat adatainak lekérdez
 fastify.post("/addTeam", { onRequest: [fastify.verify] }, addTeam);
 fastify.get("/getTeam", { onRequest: [fastify.verify] }, getTeam);
 
-io.on("connection", (socket) => {
-  socket.on("getStatus", (game_id, send) => getStatus(game_id).then((response) => send(response)));
-  socket.on("getPlayerData", (player_id, send) => getPlayerData(player_id).then((response) => send(response)));
-  socket.on("listPlayers", (player_id, send) => listPlayers(player_id).then((response) => send(response)));
-  socket.on("updateLocation", (object, send) => updateLocation(object).then((response) => send(response)));
-});
-
 /*
 Abban az esetben, hogyha semmilyen útba nem tartozik a kérés, akkor ide kerülünk.
 Ezt használjuk hibakezelésnek
@@ -61,11 +53,15 @@ Ezt használjuk hibakezelésnek
 
 // Megadjuk milyen porton fusson a szerver
 // Létrehozzuk a szervert az adott porton
-socket_server.listen(process.env.SOCKET_PORT, (error) => {
-  console.log(`Socket server started at port: ${process.env.SOCKET_PORT}`);
-});
 
 fastify.ready(() => {
+  fastify.io.on("connection", (socket) => {
+    socket.on("getStatus", (game_id, send) => getStatus(game_id).then((response) => send(response)));
+    socket.on("getPlayerData", (player_id, send) => getPlayerData(player_id).then((response) => send(response)));
+    socket.on("listPlayers", (player_id, send) => listPlayers(player_id).then((response) => send(response)));
+    socket.on("updateLocation", (object, send) => updateLocation(object).then((response) => send(response)));
+  });
+
   fastify_server.listen({ port: process.env.PORT }, (error) => {
     console.log(`Fastify server started at port: ${process.env.PORT}`);
   });
