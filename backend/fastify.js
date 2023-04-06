@@ -20,12 +20,6 @@ Előszőr pár 3rd party middleware-t behozunk, amik különféle funkciókat ho
   Definiáljuk, hogy JSON adatokkal fogunk dolgozni
 */
 
-fastify.register(require("fastify-socket.io"), {
-  cors: {
-    origin: process.env.CLIENT_URI,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  },
-});
 fastify.register(require("@fastify/cors"), {
   origin: process.env.NODE_ENV === "dev" ? "*" : process.env.CLIENT_URI
 });

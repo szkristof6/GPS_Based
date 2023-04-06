@@ -5,11 +5,9 @@ import * as Message from "../toast.js";
 const next = "waiting.html";
 const index = "index.html";
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (!Cookie.getCookie("Token")) window.location.replace(index);
-});
-
 window.addEventListener("load", () => {
+  if (!Cookie.getCookie("Token")) window.location.replace(index);
+
   const loader = document.querySelector(".container");
   loader.style.display = "none";
 });

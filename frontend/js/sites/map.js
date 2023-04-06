@@ -3,7 +3,6 @@ import * as Cookie from "../cookie.js";
 import * as Message from "../toast.js";
 
 import socket from "../socket.io/connect.js";
-socket.on("connect", () => console.log("Connected.."));
 
 const index = "index.html";
 const back = "waiting.html";
@@ -12,33 +11,36 @@ const refresh_rate = 5 * 1000;
 const player_id = Cookie.getCookie("PlayerID");
 const game_id = Cookie.getCookie("GameID");
 
-document.addEventListener("DOMContentLoaded", async () => {
+window.addEventListener("load", async () => {
   if (!Cookie.getCookie("Token")) window.location.replace(index);
   if (!Cookie.getCookie("GameID")) window.location.replace(index);
   if (!Cookie.getCookie("PlayerID")) window.location.replace(index);
 
-  getPlayerData();
+  socket.on("connect", () => {
+    console.log("Connected..");
 
-  navigator.geolocation.watchPosition(
-    onSuccess,
-    (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
-    { enableHighAccuracy: true }
-  );
+    getPlayerData();
 
-  setInterval(async () => {
-    socket.emit("getStatus", game_id, (status) => {
-      if (parseInt(status.status) === 0) {
-        Message.openToast("You will be redirected in a second", "The game has stopped", "error");
+    navigator.geolocation.watchPosition(
+      onSuccess,
+      (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
+      { enableHighAccuracy: true }
+    );
 
-        setTimeout(() => {
-          window.location.replace(back);
-        }, Message.redirect_time);
-      }
-    });
+    setInterval(async () => {
+      socket.emit("getStatus", game_id, (status) => {
+        if (parseInt(status.status) === 0) {
+          Message.openToast("You will be redirected in a second", "The game has stopped", "error");
 
-    
-    getLocationOfPlayers();
-  }, refresh_rate);
+          setTimeout(() => {
+            window.location.replace(back);
+          }, Message.redirect_time);
+        }
+      });
+
+      getLocationOfPlayers();
+    }, refresh_rate);
+  });
 });
 
 if (!mapboxgl.supported()) {

@@ -6,11 +6,9 @@ const next = "join.html";
 const back = "index.html";
 const index = "index.html";
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (Cookie.getCookie("Token")) window.location.replace(next);
-});
-
 window.addEventListener("load", () => {
+  if (Cookie.getCookie("Token")) window.location.replace(next);
+  
   const loader = document.querySelector(".container");
   loader.style.display = "none";
 });

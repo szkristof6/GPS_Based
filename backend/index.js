@@ -1,4 +1,5 @@
 const fastify = require("./fastify");
+const {io, httpServer} = require("./socket");
 
 require("dotenv").config();
 
@@ -46,13 +47,11 @@ const getTeam = require("./methods/team/getTeam"); // Csapat adatainak lekérdez
 fastify.post("/addTeam", { onRequest: [fastify.verify] }, addTeam);
 fastify.get("/getTeam", { onRequest: [fastify.verify] }, getTeam);
 
-fastify.ready().then(() => {
-  fastify.io.on("connection", (socket) => {
-    socket.on("getStatus", (game_id, send) => getStatus(game_id).then(response => send(response)));
-    socket.on("getPlayerData", (player_id, send) => getPlayerData(player_id).then(response => send(response)));
-    socket.on("listPlayers", (player_id, send) => listPlayers(player_id).then(response => send(response)));
-    socket.on("updateLocation", (object, send) => updateLocation(object).then(response => send(response)));
-  });
+io.on("connection", (socket) => {
+  socket.on("getStatus", (game_id, send) => getStatus(game_id).then((response) => send(response)));
+  socket.on("getPlayerData", (player_id, send) => getPlayerData(player_id).then((response) => send(response)));
+  socket.on("listPlayers", (player_id, send) => listPlayers(player_id).then((response) => send(response)));
+  socket.on("updateLocation", (object, send) => updateLocation(object).then((response) => send(response)));
 });
 
 /*
@@ -60,9 +59,12 @@ Abban az esetben, hogyha semmilyen útba nem tartozik a kérés, akkor ide kerü
 Ezt használjuk hibakezelésnek
 */
 
-
 // Megadjuk milyen porton fusson a szerver
 // Létrehozzuk a szervert az adott porton
+httpServer.listen(process.env.SOCKET_PORT, (error) => {
+  console.log(`Socket server started at port: ${process.env.SOCKET_PORT}`);
+});
+
 fastify.listen({ port: process.env.PORT || 1337 }, (err) => {
   if (err) throw err;
 });
