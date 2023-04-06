@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const fastify = require("../fastify");
+const {fastify} = require("../fastify");
 
 function JWT_sign(user) {
   const json = {
