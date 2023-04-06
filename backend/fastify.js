@@ -1,5 +1,16 @@
-const fastify = require("fastify")({ logger: true });
+const http = require("http");
 
+let fastify_server;
+
+const serverFactory = (handler, opts) => {
+  fastify_server = http.createServer((req, res) => {
+    handler(req, res);
+  });
+
+  return fastify_server;
+};
+
+const fastify = require("fastify")({ logger: true, serverFactory });
 /* .env
 Itt élenek a globális változók
 úgy érjük el, hogy process.env.<változó neve>
@@ -21,7 +32,7 @@ Előszőr pár 3rd party middleware-t behozunk, amik különféle funkciókat ho
 */
 
 fastify.register(require("@fastify/cors"), {
-  origin: process.env.NODE_ENV === "dev" ? "*" : process.env.CLIENT_URI
+  origin: process.env.NODE_ENV === "dev" ? "*" : process.env.CLIENT_URI,
 });
 fastify.register(require("@fastify/helmet"), { global: true });
 fastify.register(require("@fastify/jwt"), { secret: process.env.TOKEN_KEY });
@@ -55,4 +66,4 @@ fastify.decorate("verify", async function (request, reply) {
   }
 });
 
-module.exports = fastify;
+module.exports = { fastify, fastify_server };

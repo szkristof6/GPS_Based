@@ -3,8 +3,8 @@ const { Server } = require("socket.io");
 
 require("dotenv").config();
 
-const httpServer = createServer();
-const io = new Server(httpServer, {
+const socket_server = createServer();
+const io = new Server(socket_server, {
   cors: {
     origin: process.env.CLIENT_URI,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
@@ -12,4 +12,4 @@ const io = new Server(httpServer, {
   path: "/socket/"
 });
 
-module.exports = {io, httpServer};
+module.exports = {io, socket_server};

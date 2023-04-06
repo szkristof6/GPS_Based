@@ -1,7 +1,7 @@
 import backend_uri from "../api.js";
 import { io } from "./socket.io.esm.min.js";
 
-const socket = io("http://socket.stagenex.hu:500/", {
+const socket = io("https://socket.stagenex.hu:500", {
   path: "/socket/"
 });
 

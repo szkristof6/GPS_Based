@@ -1,5 +1,5 @@
-const fastify = require("./fastify");
-const {io, httpServer} = require("./socket");
+const { fastify, fastify_server } = require("./fastify");
+const { io, socket_server } = require("./socket");
 
 require("dotenv").config();
 
@@ -61,10 +61,12 @@ Ezt használjuk hibakezelésnek
 
 // Megadjuk milyen porton fusson a szerver
 // Létrehozzuk a szervert az adott porton
-httpServer.listen(process.env.SOCKET_PORT, (error) => {
+socket_server.listen(process.env.SOCKET_PORT, (error) => {
   console.log(`Socket server started at port: ${process.env.SOCKET_PORT}`);
 });
 
-fastify.listen({ port: process.env.PORT || 1337 }, (err) => {
-  if (err) throw err;
+fastify.ready(() => {
+  fastify_server.listen({ port: process.env.PORT }, (error) => {
+    console.log(`Fastify server started at port: ${process.env.PORT}`);
+  });
 });
