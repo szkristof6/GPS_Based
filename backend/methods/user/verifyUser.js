@@ -1,8 +1,8 @@
 require("dotenv").config();
 
 const captcha = require("../captcha");
-const { verifySchema } = require("../../schemas/user");
-const users = require("../../db/collections/users");
+const { verifySchema } = require("../../schemas/token");
+const User = require("../../db/collections/user");
 
 const { verifyToken, removeToken } = require("../token");
 
@@ -13,26 +13,19 @@ Ha megtaláltuk a felhasználüt, akkor visszaadjuk a tokent a felhasználónak
 
 async function verifyUser(req, res) {
   try {
-    const notBot = await captcha(req);
-
-    if (!notBot) {
-      return res.send({
-        status: "error",
-        message: "Captcha failed!",
-      });
-    }
+    const verify = await captcha(req);
+    if (!verify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
     await verifySchema.validate(req.body);
 
-    const verify = await verifyToken(req.body.user_id, "verify", 5);
-    if (verify.status !== "valid") {
-      return res.send(verify);
-    }
+    const { user_id } = req.body;
 
-    const updated = await users.findOneAndUpdate({ _id: req.body.user_id }, { $set: { permission: 1 } });
+    const token = await verifyToken(user_id, "verify", 5);
+    if (token.status !== "valid") return res.code(400).send(token);
 
-    await removeToken(req.body.user_id);
+    await User.updateOne({ _id: user_id }, { $set: { permission: 1 } });
+    await removeToken(user_id);
 
-    return res.send({ status: "success", updated });
+    return res.send({ status: "success" });
   } catch (error) {
     return res.send(error);
   }

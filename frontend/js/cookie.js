@@ -1,4 +1,4 @@
-export function getCookie(name) {
+function getCookie(name) {
   const nameEQ = name + "=";
   const ca = document.cookie.split(";");
   for (let i = 0; i < ca.length; i++) {
@@ -9,7 +9,7 @@ export function getCookie(name) {
   return null;
 }
 
-export function setCookie(name, value, days) {
+function setCookie(name, value, days) {
   let expires = "";
   if (days) {
     const date = new Date();
@@ -19,8 +19,18 @@ export function setCookie(name, value, days) {
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
-export function eraseCookie(name) {
+function eraseCookie(name) {
   document.cookie = name + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
 
-export const exp_time = 1;
+export const getJWT = () => getCookie("tkn");
+export const getGID = () => getCookie("gid");
+export const getPID = () => getCookie("pid");
+
+export const setJWT = (value) => setCookie("tkn", value, 1);
+export const setGID = (value) => setCookie("gid", value, 1);
+export const setPID = (value) => setCookie("pid", value, 1);
+
+export const clearJWT = () => eraseCookie("tkn");
+export const clearGID = () => eraseCookie("gid");
+export const clearPID = () => eraseCookie("pid");

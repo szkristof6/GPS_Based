@@ -8,8 +8,7 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 });
 
 window.addEventListener("load", () => {
-  if (!params.token) window.location.replace(index);
-  if (!params.user_id) window.location.replace(index);
+  if (!params.token || !params.user_id) window.location.replace(index);
 
   const loader = document.querySelector(".container");
   loader.style.display = "none";

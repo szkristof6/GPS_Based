@@ -1,13 +1,15 @@
-const { statusSchema } = require("../../schemas/game");
-const games = require("../../db/collections/games");
+const mongoose = require("mongoose");
 
-async function getGame(req, res, next) {
+const { statusSchema } = require("../../schemas/game");
+const Game = require("../../db/collections/game");
+
+async function getGame(req, res) {
   try {
     await statusSchema.validate(req.query);
 
-    const game = await games.findOne({ _id: req.query.game_id });
+    const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(req.query.game_id) });
 
-    res.send({
+    return res.send({
       status: "success",
       game: {
         location: game.location,
@@ -15,10 +17,7 @@ async function getGame(req, res, next) {
       },
     });
   } catch (error) {
-    if (error.message.startsWith("Argument")) {
-      error.message = "The requested game does not exist!";
-    }
-    res.send(error);
+    return res.send(error);
   }
 }
 

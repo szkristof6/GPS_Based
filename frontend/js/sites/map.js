@@ -8,13 +8,8 @@ const index = "index.html";
 const back = "waiting.html";
 const refresh_rate = 5 * 1000;
 
-const player_id = Cookie.getCookie("PlayerID");
-const game_id = Cookie.getCookie("GameID");
-
 window.addEventListener("load", async () => {
-  if (!Cookie.getCookie("Token")) window.location.replace(index);
-  if (!Cookie.getCookie("GameID")) window.location.replace(index);
-  if (!Cookie.getCookie("PlayerID")) window.location.replace(index);
+  if (!Cookie.getJWT() || !Cookie.getPID() || !Cookie.getGID()) window.location.replace(index);
 
   socket.on("connect", () => {
     console.log("Connected..");
@@ -28,8 +23,8 @@ window.addEventListener("load", async () => {
     );
 
     setInterval(async () => {
-      socket.emit("getStatus", game_id, (status) => {
-        if (parseInt(status.status) === 0) {
+      socket.emit("getStatus", Cookie.getGID(), (status) => {
+        if (status.status === 1) {
           Message.openToast("You will be redirected in a second", "The game has stopped", "error");
 
           setTimeout(() => {
@@ -48,7 +43,7 @@ if (!mapboxgl.supported()) {
 }
 
 async function setMap() {
-  const response = await API.fetchGET(`getGame?game_id=${game_id}`);
+  const response = await API.fetchGET(`getGame?game_id=${Cookie.getGID()}`);
 
   if (response.status === "success") {
     const { game } = response;
@@ -59,7 +54,7 @@ async function setMap() {
     const map = new mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/mapbox/outdoors-v12?optimize=true",
-      center: [game.location.x, game.location.y],
+      center: [game.location.y, game.location.x],
       zoom: 8,
       //minZoom: 15,
       performanceMetricsCollection: false,
@@ -90,15 +85,15 @@ async function setMap() {
 const map = await setMap();
 
 async function getPlayerData() {
-  socket.emit("getPlayerData", player_id, (player) => {
+  socket.emit("getPlayerData", Cookie.getPID(), ({ status, data }) => {
     const esemeny = document.querySelector(".esemeny");
     const user = document.querySelector(".user");
 
     esemeny.querySelector(".ssc-line").style.display = "none";
     user.querySelector(".ssc-line").style.display = "none";
 
-    esemeny.querySelector("p").innerHTML = `${player.game.name}`;
-    user.querySelector("p").innerHTML = `${player.user.name}`;
+    esemeny.querySelector("p").innerHTML = `${data.game.name}`;
+    user.querySelector("p").innerHTML = `${data.user.name}`;
   });
 }
 
@@ -111,20 +106,17 @@ function paintPlayer(player) {
   player_image.style.border = `5px solid ${player.team.color}`;
 
   new mapboxgl.Marker(player_image).setLngLat([player.location.x, player.location.y]).addTo(map);
-
-  const loader = document.querySelector(".container");
-  loader.style.display = "none";
 }
 
 async function getLocationOfPlayers() {
-  socket.emit("listPlayers", player_id, (db) => {
+  socket.emit("listPlayers", Cookie.getPID(), (db) => {
     if (db.status === "success") {
-      console.log(db);
-
       if (db.count != 0) {
         document.querySelectorAll(".player-icon").forEach((e) => e.remove());
         for (const player of db.players) paintPlayer(player);
       }
+      const loader = document.querySelector(".container");
+      loader.style.display = "none";
     } else {
       Message.openToast(db.message, "Error", db.status);
     }
@@ -141,7 +133,7 @@ async function onSuccess(pos) {
   socket.emit(
     "updateLocation",
     {
-      player_id,
+      player_id: Cookie.getPID(),
       location: {
         x: crd.longitude,
         y: crd.latitude,

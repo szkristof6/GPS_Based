@@ -1,10 +1,10 @@
 const { listPlayersSchema } = require("../../schemas/players");
 
-const players = require("../../db/collections/players");
-const users = require("../../db/collections/users");
-const games = require("../../db/collections/games");
-const teams = require("../../db/collections/teams");
-const locations = require("../../db/collections/locations");
+const Player = require("../../db/collections/player");
+const User = require("../../db/collections/user");
+const Game = require("../../db/collections/game");
+const Team = require("../../db/collections/team");
+const Location = require("../../db/collections/location");
 
 /*
 Lekérdezzük a token azonosítás után létrehozott user tömb segítségével a játékos adatait
@@ -18,18 +18,18 @@ async function listPlayers(player_id) {
   try {
     await listPlayersSchema.validate({ player_id });
 
-    const player = await players.findOne({ _id: player_id });
-    const allPlayer = await players.find({ game_id: player.game_id });
+    const player = await Player.findOne({ _id: player_id });
+    if (!player) return { status: "error", message: "This player cannot be found!" };
+    const players = await Player.find({ game_id: player.game_id });
+    if(!players) return { status: "error", message: "There are zero players in this game!" };
 
     const cleaned = []; // Létrehozunk egy üres listát
 
-    for (let index = 0; index < allPlayer.length; index++) {
-      const element = allPlayer[index];
-
-      if (element.user_id !== player.user_id) {
-        const user = await users.findOne({ _id: element.user_id });
-        const team = await teams.findOne({ _id: element.team_id });
-        const location = await locations.findOne({ _id: element.location_id });
+    for (const element of players) {
+      if (element.user_id.toString() !== player.user_id.toString()) {
+        const user = await User.findOne({ _id: element.user_id });
+        const team = await Team.findOne({ _id: element.team_id });
+        const location = await Location.findOne({ _id: element.location_id });
 
         cleaned.push({
           user: {

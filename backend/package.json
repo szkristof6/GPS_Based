@@ -21,7 +21,7 @@
     "fastify-socket.io": "^4.0.0",
     "google-auth-library": "^8.7.0",
     "http": "^0.0.1-security",
-    "monk": "^7.3.4",
+    "mongoose": "^7.0.3",
     "nodemailer": "^6.9.1",
     "socket.io": "^4.6.1",
     "yup": "^1.0.2"

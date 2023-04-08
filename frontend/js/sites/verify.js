@@ -8,8 +8,7 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 });
 
 window.addEventListener("load", async () => {
-  if (params.token === null) window.location.replace(index);
-  if (params.user_id === null) window.location.replace(index);
+  if (!params.token || !params.user_id) window.location.replace(index);
 
   const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 

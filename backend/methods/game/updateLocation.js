@@ -1,5 +1,7 @@
-const players = require("../../db/collections/players");
-const locations = require("../../db/collections/locations");
+const mongoose = require("mongoose");
+
+const Player = require("../../db/collections/player");
+const Location = require("../../db/collections/location");
 const { locationSchema } = require("../../schemas/game");
 
 /*
@@ -11,27 +13,20 @@ Majd frissítjük a játékos pozicióját
 async function updateLocation(object) {
   try {
     await locationSchema.validate(object);
-    const player = await players.findOne({ _id: object.player_id });
+    const player = await Player.findOne({ _id: object.player_id });
 
-    if (!player) {
-      return {
-        status: "error",
-        message: "The player was not found!",
-      };
-    } else {
-      const created = await locations.insert({
-        location: object.location,
-        date: Date.now(),
-        player_id: player._id,
-        game_id: player.game_id,
-      });
+    if (!player) return { status: "error", message: "The player was not found!" };
 
-      const updated = await players.findOneAndUpdate({ _id: player._id }, { $set: { location_id: created._id } });
-      return {
-        status: "success",
-        updated,
-      };
-    }
+    const location = new Location({
+      location: object.location,
+      player_id: player._id,
+      game_id: player.game_id,
+    });
+
+    const savedLocation = await location.save();
+
+    await Player.updateOne({ _id: savedLocation.player_id }, { $set: { location_id: savedLocation._id } });
+    return { status: "success" };
   } catch (error) {
     return error;
   }

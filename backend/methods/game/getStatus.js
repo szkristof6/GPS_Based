@@ -1,19 +1,16 @@
+const mongoose = require("mongoose");
+
 const { statusSchema } = require("../../schemas/game");
-const games = require("../../db/collections/games");
-const players = require("../../db/collections/players");
+const Game = require("../../db/collections/game");
+const Player = require("../../db/collections/player");
 
 async function getStatus(game_id) {
   try {
     await statusSchema.validate({ game_id });
 
-    const count = await players.count({ game_id });
-    const game = await games.findOne({ _id: game_id });
-    if (game === null) {
-      return {
-        status: "error",
-        message: "An error has occured!",
-      };
-    }
+    const count = await Player.count({ game_id: new mongoose.Types.ObjectId(game_id) });
+    const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(game_id) });
+    if (!game) return { status: "error", message: "An error has occured!" };
 
     return {
       status: "success",
@@ -22,9 +19,6 @@ async function getStatus(game_id) {
       status: game.status,
     };
   } catch (error) {
-    if (error.message.startsWith("Argument")) {
-      error.message = "The requested game does not exist!";
-    }
     return error;
   }
 }

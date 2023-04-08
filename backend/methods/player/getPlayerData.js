@@ -1,8 +1,10 @@
-const players = require("../../db/collections/players");
-const users = require("../../db/collections/users");
-const games = require("../../db/collections/games");
-const teams = require("../../db/collections/teams");
-const locations = require("../../db/collections/locations");
+const mongoose = require("mongoose");
+
+const Player = require("../../db/collections/player");
+const User = require("../../db/collections/user");
+const Game = require("../../db/collections/game");
+const Team = require("../../db/collections/team");
+const Location = require("../../db/collections/location");
 
 const { listPlayersSchema } = require("../../schemas/players");
 
@@ -15,14 +17,13 @@ async function getPlayerData(player_id) {
   try {
     await listPlayersSchema.validate({ player_id });
 
-    const player = await players.findOne({ _id: player_id });
-    const user = await users.findOne({ _id: player.user_id });
-    const game = await games.findOne({ _id: player.game_id });
-    const team = await teams.findOne({ _id: player.team_id });
-    const location = await locations.findOne({ _id: player.location_id });
+    const player = await Player.findOne({ _id: new mongoose.Types.ObjectId(player_id) });
+    const user = await User.findOne({ _id: player.user_id });
+    const game = await Game.findOne({ _id: player.game_id });
+    const team = await Team.findOne({ _id: player.team_id });
+    const location = await Location.findOne({ _id: player.location_id });
 
-    return {
-      status: "success",
+    const data = {
       player: {
         point: player.point,
       },
@@ -44,6 +45,11 @@ async function getPlayerData(player_id) {
         color: team.color,
       },
       location: location.location,
+    }
+
+    return {
+      status: "success",
+      data
     };
   } catch (error) {
     return error;

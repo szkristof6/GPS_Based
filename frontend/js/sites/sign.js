@@ -7,7 +7,7 @@ const back = "index.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  if (Cookie.getCookie("Token")) window.location.replace(next);
+  if (Cookie.getJWT()) window.location.replace(next);
   
   const loader = document.querySelector(".container");
   loader.style.display = "none";

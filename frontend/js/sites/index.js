@@ -7,7 +7,7 @@ const signin = "sign.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  if (Cookie.getCookie("Token")) window.location.replace(next);
+  if (Cookie.getJWT()) window.location.replace(next);
 
   const loader = document.querySelector(".container");
   loader.style.display = "none";
@@ -34,7 +34,7 @@ form.addEventListener("submit", async (event) => {
   const user = await API.fetchPOST(json, "loginUser");
 
   if (user.status === "success") {
-    Cookie.setCookie("Token", user.token, Cookie.exp_time);
+    Cookie.setJWT(user.token);
 
     Message.openToast("You will be redirected in a second", "Success", user.status);
 
@@ -65,7 +65,7 @@ facebookButton.addEventListener("click", async (event) => {
     );
 
     if (response.status === "success") {
-      Cookie.setCookie("Token", response.token, Cookie.exp_time);
+      Cookie.setJWT(response.token);
 
       Message.openToast("You will be redirected in a second", "Success", response.status);
 
@@ -84,7 +84,7 @@ export async function googleLogin(user) {
   const response = await API.fetchPOST({ credential: user.credential, token }, "googleLogin");
 
   if (response.status === "success") {
-    Cookie.setCookie("Token", response.token, Cookie.exp_time);
+    Cookie.setJWT(response.token);
 
     Message.openToast("You will be redirected in a second", "Success", response.status);
 

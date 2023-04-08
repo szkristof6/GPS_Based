@@ -1,52 +1,44 @@
 const bcrypt = require("bcrypt");
-const monk = require("monk");
 const crypto = require("crypto");
+const mongoose = require("mongoose");
 
 require("dotenv").config();
 
-const tokens = require("../db/collections/tokens");
+const Token = require("../db/collections/token");
 
 async function insertToken(id, method) {
-  const token = await tokens.findOne({ user_id: id });
-  if (token) await tokens.remove({ user_id: id });
+const user_id = new mongoose.Types.ObjectId(id);
+
+  const existing = await Token.findOne({ user_id });
+  if (existing) await Token.removeOne({ user_id });
 
   const resetToken = crypto.randomBytes(32).toString("hex");
   const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(resetToken, salt));
 
-  await tokens.insert({
-    user_id: id,
+  const token = new Token({
+    user_id,
     token: hash,
     method,
-    createdAt: Date.now(),
   });
+  await token.save();
 
   return resetToken;
 }
 
 async function verifyToken(id, method, minutes) {
-  const userVerifyToken = await tokens.findOne({ user_id: monk.id(id) });
-  if (userVerifyToken === null || userVerifyToken.method !== method) {
-    return {
-      status: "error",
-      message: "Invalid or expired password reset token!",
-    };
-  }
+  const userVerifyToken = await Token.findOne({ user_id: new mongoose.Types.ObjectId(id) });
+  if (!userVerifyToken || userVerifyToken.method !== method)
+    return { status: "error", message: "Invalid or expired password reset token!" };
 
-  const currentTime = Date.now();
-  const delta = currentTime - userVerifyToken.createdAt;
+  const delta = Date.now() - userVerifyToken.createdAt;
 
-  if (delta >= minutes * 60 * 1000) {
-    return {
-      status: "error",
-      message: "Invalid or expired password reset token!",
-    };
-  }
+  if (delta >= minutes * 60 * 1000) return { status: "error", message: "Invalid or expired password reset token!" };
 
   return { status: "valid", token: userVerifyToken.token };
 }
 
 async function removeToken(id) {
-  const query = await tokens.remove({ user_id: monk.id(id) });
+  const query = await Token.deleteOne({ user_id: new mongoose.Types.ObjectId(id) });
 
   return query;
 }
