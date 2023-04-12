@@ -9,7 +9,7 @@ const back = "waiting.html";
 const refresh_rate = 5 * 1000;
 
 window.addEventListener("load", async () => {
-  if (!Cookie.getJWT() || !Cookie.getPID() || !Cookie.getGID()) window.location.replace(index);
+    // verify
 
   socket.on("connect", () => {
     console.log("Connected..");

@@ -5,6 +5,7 @@ const { loginSchema } = require("../../schemas/user");
 const User = require("../../db/collections/user");
 const captcha = require("../captcha");
 const JWT_sign = require("../jwt");
+const setCookie = require("../cookie");
 
 /*
 Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk az adatbázisba, hanem keresünk benne
@@ -30,8 +31,13 @@ async function loginUser(req, res) {
     const password = await bcrypt.compare(req.body.password, user.password);
     if (!password) return res.code(400).send({ status: "error", message: "The password is incorrect!" });
 
-    const token = JWT_sign(user);
-    return res.header("token", token).send({ status: "success", token });
+    const token = JWT_sign(user, "10m");
+    const refresh = JWT_sign(user, "30d");
+
+    res = setCookie("Token", token, res);
+    res = setCookie("refreshToken", refresh, res);
+
+    return res.send({ status: "success" });
   } catch (error) {
     return res.send(error);
   }

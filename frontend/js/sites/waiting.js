@@ -9,7 +9,7 @@ const index = "index.html";
 const refresh_rate = 1 * 1000;
 
 window.addEventListener("load", async () => {
-  if (!Cookie.getJWT()) window.location.replace(index);
+  // verify
 
   const loader = document.querySelector(".container");
   loader.style.display = "none";
@@ -52,7 +52,7 @@ async function getData(pos) {
     },
   };
 
-  const player = await API.fetchPOST(playerData, "addPlayer");
+  const player = await API.fetch(playerData, "addPlayer", "POST");
 
   if (player.status == "success" || player.status == "inplay") {
     Cookie.setPID(player.player_id)

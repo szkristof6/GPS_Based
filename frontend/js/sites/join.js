@@ -6,7 +6,7 @@ const next = "waiting.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  if (!Cookie.getJWT()) window.location.replace(index);
+    // verify
 
   const loader = document.querySelector(".container");
   loader.style.display = "none";
@@ -21,7 +21,7 @@ console.log("teszt123");
 
 form.addEventListener("submit", (event) => event.preventDefault());
 logoutButton.addEventListener("click", () => {
-  Cookie.clearJWT();
+  //logout fetch
 
   window.location.replace(index);
 });
@@ -35,11 +35,9 @@ joinButton.addEventListener("click", async (event) => {
     password: formData.get("password"),
     token,
   };
-  const game = await API.fetchPOST(json, "joinGame");
+  const game = await API.fetch(json, "joinGame", "POST");
 
   if (game.status === "success") {
-    Cookie.setGID(game.id);
-
     Message.openToast("You will be redirected in a second", "Success", game.status);
 
     setTimeout(() => {

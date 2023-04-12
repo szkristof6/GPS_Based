@@ -1,17 +1,9 @@
 require("dotenv").config();
 
-const {fastify} = require("../fastify");
+const { fastify } = require("../fastify");
 
-function JWT_sign(user) {
-  const json = {
-    user_id: user._id,
-    permission: user.permission,
-    iss: 'https://api.stagenex.hu'
-  };
-  const options = {
-    expiresIn: "1d",
-  };
-  return fastify.jwt.sign(json, options);
+function JWT_sign(user, expiresIn) {
+  return fastify.jwt.sign({ user_id: user._id }, { expiresIn });
 }
 
 module.exports = JWT_sign;

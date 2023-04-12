@@ -7,7 +7,7 @@ const back = "index.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  if (Cookie.getJWT()) window.location.replace(next);
+  // verify
   
   const loader = document.querySelector(".container");
   loader.style.display = "none";
@@ -38,7 +38,7 @@ form.addEventListener("submit", async (event) => {
       message: "The passwords don't match!",
     });
   } else {
-    const user = await API.fetchPOST(json, "registerUser");
+    const user = await API.fetch(json, "registerUser", "POST");
 
     if (user.status === "success") {
       Message.openToast("The activation email has been sent to your e-mail address!", "Success", user.status);

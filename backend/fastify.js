@@ -18,16 +18,26 @@ fastify.register(require("fastify-socket.io"), {
   },
   path: "/socket/",
 });
-
+fastify.register(require("@fastify/cookie"), {
+  secret: process.env.COOKIE_SECRET,
+  hook: "onRequest",
+  parseOptions: {},
+});
 fastify.register(require("@fastify/cors"), {
-  origin: process.env.NODE_ENV === "dev" ? "*" : process.env.CLIENT_URI,
+  origin: process.env.CLIENT_URI,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true,
 });
 fastify.register(require("@fastify/helmet"), { global: true });
-fastify.register(require("@fastify/jwt"), { secret: process.env.TOKEN_KEY });
-fastify.register(import("@fastify/rate-limit"), {
-  max: 100,
-  timeWindow: "1 minute",
+fastify.register(require("@fastify/jwt"), {
+  secret: process.env.TOKEN_KEY,
+  verify: { allowedIss: "api.stagenex.hu" },
+  cookie: {
+    cookieName: "Token",
+    signed: false,
+  },
 });
+fastify.register(import("@fastify/rate-limit"), { max: 100, timeWindow: "1 minute" });
 
 fastify.setErrorHandler(function (error, request, reply) {
   if (error.statusCode === 429) {

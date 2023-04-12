@@ -34,7 +34,7 @@ sendButton.addEventListener("click", async (event) => {
     user_id: params.user_id,
     token,
   };
-  const response = await API.fetchPOST(json, "resetPassword");
+  const response = await API.fetch(json, "resetPassword", "POST");
 
   if (response.status === "success") {
     Message.openToast("The new password has been set! Please log in!", "Success", response.status);

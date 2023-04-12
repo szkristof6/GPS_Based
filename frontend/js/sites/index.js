@@ -1,5 +1,4 @@
 import * as API from "../api.js";
-import * as Cookie from "../cookie.js";
 import * as Message from "../toast.js";
 
 const next = "join.html";
@@ -7,7 +6,7 @@ const signin = "sign.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  if (Cookie.getJWT()) window.location.replace(next);
+  // verify
 
   const loader = document.querySelector(".container");
   loader.style.display = "none";
@@ -31,11 +30,9 @@ form.addEventListener("submit", async (event) => {
     token,
   };
 
-  const user = await API.fetchPOST(json, "loginUser");
+  const user = await API.fetch(json, "loginUser", "POST");
 
   if (user.status === "success") {
-    Cookie.setJWT(user.token);
-
     Message.openToast("You will be redirected in a second", "Success", user.status);
 
     setTimeout(() => {
@@ -59,14 +56,12 @@ facebookButton.addEventListener("click", async (event) => {
   if (user.status === "connected") {
     const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
-    const response = await API.fetchPOST(
+    const response = await API.fetch(
       { accessToken: user.authResponse.accessToken, status: user.status, token },
-      "facebookLogin"
+      "facebookLogin", "POST"
     );
 
     if (response.status === "success") {
-      Cookie.setJWT(response.token);
-
       Message.openToast("You will be redirected in a second", "Success", response.status);
 
       setTimeout(() => {
@@ -81,11 +76,9 @@ facebookButton.addEventListener("click", async (event) => {
 export async function googleLogin(user) {
   const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
-  const response = await API.fetchPOST({ credential: user.credential, token }, "googleLogin");
+  const response = await API.fetch({ credential: user.credential, token }, "googleLogin", "POST");
 
   if (response.status === "success") {
-    Cookie.setJWT(response.token);
-
     Message.openToast("You will be redirected in a second", "Success", response.status);
 
     setTimeout(() => {
