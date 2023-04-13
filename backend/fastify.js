@@ -32,10 +32,6 @@ fastify.register(require("@fastify/helmet"), { global: true });
 fastify.register(require("@fastify/jwt"), {
   secret: process.env.TOKEN_KEY,
   verify: { allowedIss: "api.stagenex.hu" },
-  cookie: {
-    cookieName: "Token",
-    signed: false,
-  },
 });
 fastify.register(import("@fastify/rate-limit"), { max: 100, timeWindow: "1 minute" });
 
@@ -47,9 +43,9 @@ fastify.setErrorHandler(function (error, request, reply) {
   return reply.send(error);
 });
 
-fastify.decorate("verify", async function (request, reply) {
+fastify.decorate("test", async function (request, reply) {
   try {
-    await request.jwtVerify();
+    console.log(request.cookies);
   } catch (error) {
     return reply.send(error);
   }

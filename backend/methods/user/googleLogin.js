@@ -4,12 +4,11 @@ require("dotenv").config();
 
 const { googleSchema } = require("../../schemas/social");
 const User = require("../../db/collections/user");
-const JWT_sign = require("../jwt");
-const captcha = require("../captcha");
+const { setJWTCookie } = require("../jwt");
 
 async function googleLogin(req, res) {
-  const verify = await captcha(req);
-  if (!verify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+  if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+
   await googleSchema.validate(req.body);
 
   const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -24,9 +23,9 @@ async function googleLogin(req, res) {
     if (existing) {
       if (existing.login_method != "google")
         return res.code(400).send({ status: "error", message: "Email method was used for signin!" });
-      const token = JWT_sign(existing);
+      await setJWTCookie(existing, res);
 
-      return res.header("token", token).send({ status: "success", token });
+      return res.send({ status: "success" });
     }
 
     const user = new User({
@@ -37,11 +36,11 @@ async function googleLogin(req, res) {
       permission: 1,
     });
 
-    await user.save();
+    const savedUser = await user.save();
 
-    const token = JWT_sign(user);
+    await setJWTCookie(savedUser, res);
 
-    return res.header("token", token).send({ status: "success", token });
+    return res.send({ status: "success" });
   } catch (error) {
     if (error.message.startsWith("E11000")) error.message = "This account already exists!";
     return res.send(error);

@@ -18,4 +18,4 @@ const jwtRefreshSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("jwtRefresh", jwtRefreshSchema);
+module.exports = mongoose.model("JwtRefresh", jwtRefreshSchema);

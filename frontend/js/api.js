@@ -1,5 +1,3 @@
-import * as Cookie from "./cookie.js";
-
 /*
 Megadjuk, hogy milyen címen tudjuk elérni a szerverünket.
 */
@@ -16,7 +14,6 @@ export const fetch = async (data, route, method) => {
         Accept: "application.json",
         "Content-Type": "application/json",
         Cache: "no-cache",
-        Authorization: `Bearer ${Cookie.getJWT()}`,
       },
       url: `${backend_uri}/${route}`,
       data,

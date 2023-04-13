@@ -1,17 +1,20 @@
 require("dotenv").config();
 
-async function captcha(req) {
+async function captchaMiddleware(request, reply) {
   try {
-    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${req.body.token}`;
-    
+    if (!request.body.token) request.captchaVerify = false;
+
+    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${request.body.token}`;
+
     const response = await fetch(url).then((response) => response.json());
 
     // console.log(`${req.protocol}://${req.hostname}`);
 
-    return response.success;
+    if (!response.success) request.captchaVerify = false;
+    else request.captchaVerify = true;
   } catch (error) {
-    return error;
+    request.captchaVerify = false;
   }
 }
 
-module.exports = captcha;
+module.exports = captchaMiddleware;

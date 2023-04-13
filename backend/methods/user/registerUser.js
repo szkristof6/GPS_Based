@@ -4,14 +4,13 @@ require("dotenv").config();
 const { registerSchema } = require("../../schemas/user");
 
 const User = require("../../db/collections/user");
-const captcha = require("../captcha");
 const { insertToken } = require("../token");
 const userCreated = require("../../email/emails/userCreated");
 
 async function registerUser(req, res) {
   try {
-    const verify = await captcha(req);
-    if (!verify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+    if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+
     await registerSchema.validate(req.body);
 
     const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));

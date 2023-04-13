@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt");
 
 require("dotenv").config();
 
-const captcha = require("../captcha");
 const { resetSchema } = require("../../schemas/token");
 const User = require("../../db/collections/user");
 
@@ -15,8 +14,8 @@ Ha megtaláltuk a felhasználüt, akkor visszaadjuk a tokent a felhasználónak
 
 async function resetPassword(req, res) {
   try {
-    const verify = await captcha(req);
-    if (!verify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+    if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+
     await resetSchema.validate(req.body);
 
     const { user_id } = req.body;

@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 
 const { loginSchema } = require("../../schemas/user");
 const User = require("../../db/collections/user");
-const captcha = require("../captcha");
-const JWT_sign = require("../jwt");
+const JwtRefresh = require("../../db/collections/jwt_refresh");
+const { setJWTCookie } = require("../jwt");
 const setCookie = require("../cookie");
 
 /*
@@ -14,9 +14,8 @@ Ha megtaláltuk a felhasználüt, akkor visszaadjuk a tokent a felhasználónak
 
 async function loginUser(req, res) {
   try {
-    const verify = await captcha(req);
-    if (!verify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
-      
+    if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+
     await loginSchema.validate(req.body);
 
     const user = await User.findOne({ email: req.body.email });
@@ -31,11 +30,7 @@ async function loginUser(req, res) {
     const password = await bcrypt.compare(req.body.password, user.password);
     if (!password) return res.code(400).send({ status: "error", message: "The password is incorrect!" });
 
-    const token = JWT_sign(user, "10m");
-    const refresh = JWT_sign(user, "30d");
-
-    res = setCookie("Token", token, res);
-    res = setCookie("refreshToken", refresh, res);
+    await setJWTCookie(user, res);
 
     return res.send({ status: "success" });
   } catch (error) {
