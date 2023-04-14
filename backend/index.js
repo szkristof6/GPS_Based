@@ -1,4 +1,4 @@
-const { fastify } = require("./fastify");
+const { fastify, fastify_server } = require("./fastify");
 const mongoose = require("mongoose");
 
 require("dotenv").config();
@@ -35,11 +35,7 @@ fastify.get("/logoutUser", { preHandler: [fastify.verify] }, require("./methods/
 
 fastify.post("/createGame", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/createGame")); // Játék létrehozása
 fastify.post("/joinGame", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/joinGame")); // Csatlakozás a játékba
-fastify.post(
-  "/updateLocation",
-  { preHandler: [fastify.verify, fastify.captcha] },
-  require("./methods/game/updateLocation")
-); // Csatlakozás a játékba
+fastify.post("/updateLocation", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/updateLocation")); // Csatlakozás a játékba
 fastify.get("/getGame", { preHandler: [fastify.verify] }, require("./methods/game/getGame")); // Játék azonosító lekérdezése
 fastify.get("/getStatus", { preHandler: [fastify.verify] }, require("./methods/game/getStatus")); // Játék azonosító lekérdezése
 
@@ -74,5 +70,7 @@ fastify.io.on("connection", (socket) => {
   });
 */
 
-  fastify.listen({ port: process.env.PORT });
+  fastify_server.listen({ port: process.env.PORT }, (error) => {
+    console.log(`Fastify server started at port: ${process.env.PORT}`);
+  });
 });

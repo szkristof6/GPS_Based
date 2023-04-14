@@ -18,7 +18,7 @@ async function registerUser(req, res) {
     const name = `${req.body.firstname} ${req.body.lastname}`;
 
     const imageParams = Object.entries({
-      name,
+      name: name.split(" ").join("+"),
       size: 250,
       rounded: true,
     })

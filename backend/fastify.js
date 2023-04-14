@@ -1,6 +1,13 @@
-const fastify = require("fastify")({ 
-  logger: true
- });
+const http = require("http");
+
+let fastify_server;
+
+const serverFactory = (handler, opts) => {
+  fastify_server = http.createServer((req, res) => handler(req, res));
+  return fastify_server;
+};
+
+const fastify = require("fastify")({ serverFactory });
 
 require("dotenv").config();
 
@@ -29,4 +36,4 @@ fastify.setErrorHandler(function (error, request, reply) {
   return reply.send(error);
 });
 
-module.exports = { fastify };
+module.exports = { fastify, fastify_server };
