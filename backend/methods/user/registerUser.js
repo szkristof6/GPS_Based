@@ -17,12 +17,20 @@ async function registerUser(req, res) {
 
     const name = `${req.body.firstname} ${req.body.lastname}`;
 
+    const imageParams = Object.entries({
+      name,
+      size: 250,
+      rounded: true,
+    })
+      .map((param) => param.join("="))
+      .join("&");
+
     const user = new User({
       name,
       password: hash,
       email: req.body.email,
       login_method: "email",
-      image: `https://eu.ui-avatars.com/api/?name=${name}&size=250`,
+      image: `https://eu.ui-avatars.com/api/?${imageParams}`,
       permission: 0,
     });
 
