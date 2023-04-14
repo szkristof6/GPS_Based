@@ -5,6 +5,9 @@ const { setCookie } = require("./cookie");
 
 const JwtRefresh = require("../db/collections/jwt_refresh");
 
+const tokenTime = "10m";
+const refreshTime = "30d";
+
 function JWT_sign(user, expiresIn) {
   return fastify.jwt.sign({ user_id: user._id }, { expiresIn });
 }
@@ -36,10 +39,11 @@ async function getNewToken(request, reply) {
 
     if (decodedToken) {
       const existing = await JwtRefresh.findOne({ user_id: decodedToken.user_id });
+
       if (!existing) request.verified = false;
       else {
-        const token = JWT_sign(decodedToken, "10m");
-        const refresh = JWT_sign(decodedToken, "30d");
+        const token = fastify.jwt.sign({ user_id: decodedToken.user_id }, { expiresIn: tokenTime });
+        const refresh = fastify.jwt.sign({ user_id: decodedToken.user_id }, { expiresIn: refreshTime });
 
         await JwtRefresh.updateOne({ user_id: decodedToken.user_id }, { $set: { token: refresh } });
 
@@ -57,8 +61,8 @@ async function getNewToken(request, reply) {
 
 async function setJWTCookie(user, res) {
   try {
-    const token = JWT_sign(user, "10m");
-    const refresh = JWT_sign(user, "30d");
+    const token = JWT_sign(user, tokenTime);
+    const refresh = JWT_sign(user, refreshTime);
 
     const existing = await JwtRefresh.findOne({ user_id: user._id });
     if (existing)
