@@ -4,6 +4,8 @@ const { playersSchema } = require("../../schemas/players");
 const Player = require("../../db/collections/player");
 const Location = require("../../db/collections/location");
 
+const { setCookie } = require("../cookie");
+
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e
 Ha igen megnézzük, hogy létezik-e a játékos,
@@ -14,14 +16,22 @@ Ha nem, akkor eltároljuk az adatbázisban és visszatérünk..
 
 async function addPlayer(req, res) {
   try {
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
+    const gameID = req.unsignCookie(req.cookies.g_id);
+    if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
     await playersSchema.validate(req.body);
 
-    const game_id = new mongoose.Types.ObjectId(req.body.game_id);
+    const game_id = new mongoose.Types.ObjectId(gameID.value);
     const user_id = new mongoose.Types.ObjectId(req.user.user_id);
     const team_id = new mongoose.Types.ObjectId(req.body.team_id);
 
     const existing = await Player.findOne({ game_id, user_id });
-    if (existing) return res.header("p_id", existing._id).send({ status: "inplay", player_id: existing._id });
+    if (existing) {
+      res = setCookie("p_id", existing._id.toString(), res);
+      return res.send({ status: "inplay" });
+    }
 
     const player_id = new mongoose.Types.ObjectId();
 
@@ -44,7 +54,9 @@ async function addPlayer(req, res) {
     await location.save();
     await player.save();
 
-    return res.header("p_id", player_id.toString()).send({ status: "success", player_id: player_id.toString()});
+    res = setCookie("p_id", player._id.toString(), res);
+
+    return res.send({ status: "success" });
   } catch (error) {
     return res.send(error);
   }

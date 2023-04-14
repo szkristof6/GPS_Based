@@ -11,39 +11,50 @@ const { jwtMiddleware } = require("./methods/jwt");
 fastify.decorate("verify", jwtMiddleware);
 fastify.decorate("captcha", captchaMiddleware);
 
+fastify.get("/verifyPage", { preHandler: [fastify.verify] }, (req, res) => {
+  if (!req.verified) return res.send({ status: "disallowed" });
+  return res.send({ status: "allowed" });
+});
+
 // User methods - Minden olyan funkció, ami a felhasználóhoz tartozik
 
 fastify.post("/facebookLogin", { preHandler: [fastify.captcha] }, require("./methods/user/facebookLogin")); // Felhasználó belépés
 fastify.post("/googleLogin", { preHandler: [fastify.captcha] }, require("./methods/user/googleLogin")); // Felhasználó belépés
 fastify.post("/loginUser", { preHandler: [fastify.captcha] }, require("./methods/user/loginUser")); // Felhasználó belépés
 fastify.post("/registerUser", { preHandler: [fastify.captcha] }, require("./methods/user/registerUser")); // Felhasználó regisztrálása
-fastify.post("/requestResetPassword", { preHandler: [fastify.captcha] }, require("./methods/user/requestResetPassword")); // Jelszóemlékeztető kérése
+fastify.post(
+  "/requestResetPassword",
+  { preHandler: [fastify.captcha] },
+  require("./methods/user/requestResetPassword")
+); // Jelszóemlékeztető kérése
 fastify.post("/resetPassword", { preHandler: [fastify.captcha] }, require("./methods/user/resetPassword")); // Jelszó visszaállítása
 fastify.post("/verifyUser", { preHandler: [fastify.captcha] }, require("./methods/user/verifyUser")); // Felhasználói fiók megerősítése
+fastify.get("/logoutUser", { preHandler: [fastify.verify] }, require("./methods/user/logoutUser")); // Felhasználó belépés
 
 // Game methods - Minden olyan funkció, ami a játékhoz tartozik
 
-fastify.post("/createGame", { preHandler: [fastify.verify] }, require("./methods/game/createGame")); // Játék létrehozása
-fastify.post("/joinGame", { preHandler: [fastify.verify] }, require("./methods/game/joinGame")); // Csatlakozás a játékba
+fastify.post("/createGame", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/createGame")); // Játék létrehozása
+fastify.post("/joinGame", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/joinGame")); // Csatlakozás a játékba
+fastify.post("/updateLocation", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/updateLocation")); // Csatlakozás a játékba
 fastify.get("/getGame", { preHandler: [fastify.verify] }, require("./methods/game/getGame")); // Játék azonosító lekérdezése
+fastify.get("/getStatus", { preHandler: [fastify.verify] }, require("./methods/game/getStatus")); // Játék azonosító lekérdezése
 
 // Player methods - Minden olyan funkció, ami a játékosokhoz tartozik
 
 fastify.post("/addPlayer", { preHandler: [fastify.verify] }, require("./methods/player/addPlayer")); // Játékos hozzásadáse
+fastify.get("/getPlayerData", { preHandler: [fastify.verify] }, require("./methods/player/getPlayerData")); // Játék azonosító lekérdezése
+fastify.get("/listPlayers", { preHandler: [fastify.verify] }, require("./methods/player/listPlayers")); // Játék azonosító lekérdezése
 
 // Team methods
 
 fastify.post("/addTeam", { preHandler: [fastify.verify] }, require("./methods/team/addTeam")); // Csapat hozzásadáse
 fastify.get("/getTeam", { preHandler: [fastify.verify] }, require("./methods/team/getTeam")); // Csapat adatainak lekérdezése
 
-fastify.get("/test", { preHandler: [fastify.captcha, fastify.verify] }, (request, response) => {
-  return response.send({ captcha: request.captchaVerify, verified: request.verified, user: request.user });
-});
-
 // Socket methods
 
 fastify.ready(() => {
-  fastify.io.on("connection", (socket) => {
+  /*
+fastify.io.on("connection", (socket) => {
     socket.on("getStatus", (game_id, send) =>
       require("./methods/game/getStatus")(game_id).then((response) => send(response))
     ); // Játék státusztának lekérdezése
@@ -57,6 +68,7 @@ fastify.ready(() => {
       require("./methods/game/updateLocation")(object).then((response) => send(response))
     ); // Játékos pozició frissítés
   });
+*/
 
   fastify_server.listen({ port: process.env.PORT }, (error) => {
     console.log(`Fastify server started at port: ${process.env.PORT}`);

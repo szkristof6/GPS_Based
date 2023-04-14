@@ -1,41 +1,38 @@
 import * as API from "../api.js";
-import * as Cookie from "../cookie.js";
 import * as Message from "../toast.js";
-
-import socket from "../socket.io/connect.js";
 
 const index = "index.html";
 const back = "waiting.html";
 const refresh_rate = 5 * 1000;
 
 window.addEventListener("load", async () => {
-    // verify
-
-  socket.on("connect", () => {
-    console.log("Connected..");
-
-    getPlayerData();
-
-    navigator.geolocation.watchPosition(
-      onSuccess,
-      (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
-      { enableHighAccuracy: true }
-    );
-
-    setInterval(async () => {
-      socket.emit("getStatus", Cookie.getGID(), (status) => {
-        if (status.status === 1) {
-          Message.openToast("You will be redirected in a second", "The game has stopped", "error");
-
-          setTimeout(() => {
-            window.location.replace(back);
-          }, Message.redirect_time);
-        }
-      });
-
-      getLocationOfPlayers();
-    }, refresh_rate);
+  API.fetch("", "verifyPage", "GET").then((response) => {
+    if (response.status === "disallowed") window.location.replace(index);
   });
+
+  getPlayerData();
+
+  navigator.geolocation.watchPosition(
+    onSuccess,
+    (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
+    { enableHighAccuracy: true }
+  );
+
+  setInterval(async () => {
+    const response = API.fetch("", "getStatus", "GET");
+    if (response.status === "success") {
+      const { game } = response;
+      if (game.status === 1) {
+        Message.openToast("You will be redirected in a second", "The game has stopped", "error");
+
+        setTimeout(() => {
+          window.location.replace(back);
+        }, Message.redirect_time);
+      }
+    }
+
+    getLocationOfPlayers();
+  }, refresh_rate);
 });
 
 if (!mapboxgl.supported()) {
@@ -43,7 +40,7 @@ if (!mapboxgl.supported()) {
 }
 
 async function setMap() {
-  const response = await API.fetchGET(`getGame?game_id=${Cookie.getGID()}`);
+  const response = await API.fetch("", "getGame", "GET");
 
   if (response.status === "success") {
     const { game } = response;
@@ -85,7 +82,10 @@ async function setMap() {
 const map = await setMap();
 
 async function getPlayerData() {
-  socket.emit("getPlayerData", Cookie.getPID(), ({ status, data }) => {
+  const response = await API.fetch("", "getPlayerData", "GET");
+
+  if (response.status === "success") {
+    const { data } = response;
     const esemeny = document.querySelector(".esemeny");
     const user = document.querySelector(".user");
 
@@ -94,7 +94,7 @@ async function getPlayerData() {
 
     esemeny.querySelector("p").innerHTML = `${data.game.name}`;
     user.querySelector("p").innerHTML = `${data.user.name}`;
-  });
+  }
 }
 
 function paintPlayer(player) {
@@ -109,18 +109,18 @@ function paintPlayer(player) {
 }
 
 async function getLocationOfPlayers() {
-  socket.emit("listPlayers", Cookie.getPID(), (db) => {
-    if (db.status === "success") {
-      if (db.count != 0) {
-        document.querySelectorAll(".player-icon").forEach((e) => e.remove());
-        for (const player of db.players) paintPlayer(player);
-      }
-      const loader = document.querySelector(".container");
-      loader.style.display = "none";
-    } else {
-      Message.openToast(db.message, "Error", db.status);
+  const response = await API.fetch("", "listPlayers", "GET");
+
+  if (response.status === "success") {
+    if (response.count != 0) {
+      document.querySelectorAll(".player-icon").forEach((e) => e.remove());
+      response.players.forEach((player) => paintPlayer(player));
     }
-  });
+    const loader = document.querySelector(".container");
+    loader.style.display = "none";
+  } else {
+    Message.openToast(response.message, "Error", response.status);
+  }
 }
 
 async function onSuccess(pos) {
@@ -130,17 +130,13 @@ async function onSuccess(pos) {
     `Time: ${Date.now()} Latitude: ${crd.latitude}, Longitude: ${crd.longitude}, Accuracy ${crd.accuracy} meters.`
   );
 
-  socket.emit(
-    "updateLocation",
-    {
-      player_id: Cookie.getPID(),
-      location: {
-        x: crd.longitude,
-        y: crd.latitude,
-      },
+  const json = {
+    location: {
+      x: crd.longitude,
+      y: crd.latitude,
     },
-    (update) => {
-      if (update.status !== "success") Message.openToast(update.message, "Error", update.status);
-    }
-  );
+  };
+
+  const update = await API.fetch(json, "updateLocation", "POST");
+  if (update.status !== "success") Message.openToast(update.message, "Error", update.status);
 }

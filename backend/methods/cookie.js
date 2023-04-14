@@ -6,7 +6,9 @@ const setCookie = (name, value, reply) =>
     path: "/",
     signed: true,
     secure: "auto",
-    httpOnly: true
+    httpOnly: true,
   });
 
-module.exports = setCookie;
+const clearCookie = (name, reply) => reply.clearCookie(name, { path: "/" });
+
+module.exports = { setCookie, clearCookie };

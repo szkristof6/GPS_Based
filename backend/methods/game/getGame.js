@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
 
-const { statusSchema } = require("../../schemas/game");
 const Game = require("../../db/collections/game");
 
 async function getGame(req, res) {
   try {
-    await statusSchema.validate(req.query);
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(req.query.game_id) });
+    const gameID = req.unsignCookie(req.cookies.g_id);
+    if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
+    const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(gameID.value) });
 
     return res.send({
       status: "success",

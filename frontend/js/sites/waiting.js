@@ -1,29 +1,25 @@
 import * as API from "../api.js";
-import * as Cookie from "../cookie.js";
 import * as Message from "../toast.js";
-
-import socket from "../socket.io/connect.js";
 
 const next = "map.html";
 const index = "index.html";
-const refresh_rate = 1 * 1000;
+const refresh_rate = 5 * 1000;
 
 window.addEventListener("load", async () => {
-  // verify
+  API.fetch("", "verifyPage", "GET").then((response) => {
+    if (response.status === "disallowed") window.location.replace(index);
+  });
 
   const loader = document.querySelector(".container");
   loader.style.display = "none";
 
-  socket.on("connect", () => {
-    console.log("Connected..");
-    navigator.geolocation.getCurrentPosition(
-      getData,
-      (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
-      {
-        enableHighAccuracy: true,
-      }
-    );
-  });
+  navigator.geolocation.getCurrentPosition(
+    getData,
+    (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
+    {
+      enableHighAccuracy: true,
+    }
+  );
 });
 
 function remainingTime(date) {
@@ -44,7 +40,6 @@ async function getData(pos) {
   const crd = pos.coords;
 
   const playerData = {
-    game_id: Cookie.getGID(),
     team_id: "64309e291629620849cd5ff1",
     location: {
       x: crd.longitude,
@@ -55,14 +50,16 @@ async function getData(pos) {
   const player = await API.fetch(playerData, "addPlayer", "POST");
 
   if (player.status == "success" || player.status == "inplay") {
-    Cookie.setPID(player.player_id)
-
     setInterval(async () => {
-      socket.emit("getStatus", Cookie.getGID(), (status) => {
+      const response = await API.fetch("", "getStatus", "GET");
+
+      if (response.status === "success") {
         time.querySelector(".ssc-line").style.display = "none";
         count.querySelector(".ssc-line").style.display = "none";
 
-        if (parseInt(status.status) > 1) {
+        const { game } = response;
+
+        if (parseInt(game.status) > 1) {
           Message.openToast("You will be redirected in a second", "The game has begun", "success");
 
           setTimeout(() => {
@@ -70,9 +67,9 @@ async function getData(pos) {
           }, Message.redirect_time);
         }
 
-        time.querySelector("p").innerHTML = remainingTime(status.time);
-        count.querySelector("p").innerHTML = `${status.count}`;
-      });
+        time.querySelector("p").innerHTML = remainingTime(game.time);
+        count.querySelector("p").innerHTML = `${game.count}`;
+      }
     }, refresh_rate);
   }
 }

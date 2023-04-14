@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const { fastify } = require("../fastify");
-const setCookie = require("./cookie");
+const { setCookie } = require("./cookie");
 
 const JwtRefresh = require("../db/collections/jwt_refresh");
 
@@ -35,16 +35,20 @@ async function getNewToken(request, reply) {
     const decodedToken = fastify.jwt.verify(refreshToken.value);
 
     if (decodedToken) {
-      const token = JWT_sign(decodedToken, "10m");
-      const refresh = JWT_sign(decodedToken, "30d");
+      const existing = await JwtRefresh.findOne({ user_id: decodedToken.user_id });
+      if (!existing) request.verified = false;
+      else {
+        const token = JWT_sign(decodedToken, "10m");
+        const refresh = JWT_sign(decodedToken, "30d");
 
-      await JwtRefresh.updateOne({ user_id: decodedToken.user_id }, { $set: { token: refresh } });
+        await JwtRefresh.updateOne({ user_id: decodedToken.user_id }, { $set: { token: refresh } });
 
-      reply = setCookie("token", token, reply);
-      reply = setCookie("refreshToken", refresh, reply);
+        reply = setCookie("token", token, reply);
+        reply = setCookie("refreshToken", refresh, reply);
 
-      request.verified = true;
-      request.body = decodedToken;
+        request.verified = true;
+        request.body = decodedToken;
+      }
     }
   } catch (error) {
     request.verified = false;

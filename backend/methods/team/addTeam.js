@@ -10,11 +10,13 @@ Ha igen, akkor betesszük adatbázisba a játékot és visszatérünk..
 
 async function addTeam(req, res) {
   try {
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
     await teamsSchema.validate(req.body);
 
     const team = new Team({
       name: req.body.name,
-      game_id:  new mongoose.Types.ObjectId(req.body.game_id),
+      game_id: new mongoose.Types.ObjectId(req.body.game_id),
       point: 0,
       color: req.body.color,
     });

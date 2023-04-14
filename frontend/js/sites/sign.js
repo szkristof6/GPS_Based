@@ -1,5 +1,4 @@
 import * as API from "../api.js";
-import * as Cookie from "../cookie.js";
 import * as Message from "../toast.js";
 
 const next = "join.html";
@@ -7,8 +6,10 @@ const back = "index.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  // verify
-  
+  API.fetch("", "verifyPage", "GET").then((response) => {
+    if (response.status === "allowed") window.location.replace(next);
+  });
+
   const loader = document.querySelector(".container");
   loader.style.display = "none";
 });
@@ -43,10 +44,9 @@ form.addEventListener("submit", async (event) => {
     if (user.status === "success") {
       Message.openToast("The activation email has been sent to your e-mail address!", "Success", user.status);
 
-    setTimeout(() => {
-      window.location.replace(index);
-    }, Message.redirect_time);
-
+      setTimeout(() => {
+        window.location.replace(index);
+      }, Message.redirect_time);
     } else {
       Message.openToast(user.message, "Error", user.status);
     }

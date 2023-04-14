@@ -6,18 +6,17 @@ const Game = require("../../db/collections/game");
 const Team = require("../../db/collections/team");
 const Location = require("../../db/collections/location");
 
-const { listPlayersSchema } = require("../../schemas/players");
-
 /*
 Lekérdezzük a token azonosítás után létrehozott user tömb segítségével a játékos adatait
 Mjad lekérdezzük a felhasználó adatokat és együtt visszaadjuk
 */
 
-async function getPlayerData(player_id) {
+async function getPlayerData(req, res) {
   try {
-    await listPlayersSchema.validate({ player_id });
+    const playerID = req.unsignCookie(req.cookies.p_id);
+    if (!playerID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    const player = await Player.findOne({ _id: new mongoose.Types.ObjectId(player_id) });
+    const player = await Player.findOne({ _id: new mongoose.Types.ObjectId(playerID.value) });
     const user = await User.findOne({ _id: player.user_id });
     const game = await Game.findOne({ _id: player.game_id });
     const team = await Team.findOne({ _id: player.team_id });
@@ -45,14 +44,14 @@ async function getPlayerData(player_id) {
         color: team.color,
       },
       location: location.location,
-    }
-
-    return {
-      status: "success",
-      data
     };
+
+    return res.send({
+      status: "success",
+      data,
+    });
   } catch (error) {
-    return error;
+    return res.send(error);
   }
 }
 

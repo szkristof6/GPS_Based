@@ -3,9 +3,7 @@ const bcrypt = require("bcrypt");
 
 const { loginSchema } = require("../../schemas/user");
 const User = require("../../db/collections/user");
-const JwtRefresh = require("../../db/collections/jwt_refresh");
 const { setJWTCookie } = require("../jwt");
-const setCookie = require("../cookie");
 
 /*
 Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk az adatbázisba, hanem keresünk benne

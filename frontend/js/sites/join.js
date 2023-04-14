@@ -1,12 +1,13 @@
 import * as API from "../api.js";
-import * as Cookie from "../cookie.js";
 import * as Message from "../toast.js";
 
 const next = "waiting.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-    // verify
+  API.fetch("", "verifyPage", "GET").then((response) => {
+    if (response.status === "disallowed") window.location.replace(index);
+  });
 
   const loader = document.querySelector(".container");
   loader.style.display = "none";
@@ -20,10 +21,15 @@ console.log("3a1b5d76d7c5728");
 console.log("teszt123");
 
 form.addEventListener("submit", (event) => event.preventDefault());
-logoutButton.addEventListener("click", () => {
-  //logout fetch
+logoutButton.addEventListener("click", async () => {
+  const response  = await API.fetch("", "logoutUser", "GET");
+  if(response.status === "success") {
+    Message.openToast("You have been logged out!", "Success", response.status);
 
-  window.location.replace(index);
+    setTimeout(() => {
+      window.location.replace(index);
+    }, Message.redirect_time);
+  }
 });
 
 joinButton.addEventListener("click", async (event) => {

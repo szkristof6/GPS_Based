@@ -8,7 +8,7 @@ export default backend_uri;
 
 export const fetch = async (data, route, method) => {
   try {
-    const { response } = await axios({
+    const response = await axios({
       method,
       headers: {
         Accept: "application.json",
@@ -17,11 +17,12 @@ export const fetch = async (data, route, method) => {
       },
       url: `${backend_uri}/${route}`,
       data,
-      withCredentials: true
+      withCredentials: true,
     });
 
     return response.data;
-  } catch ({ response: error }) {
+  } catch (error) {
+    console.log(error);
     return error.data;
   }
 };

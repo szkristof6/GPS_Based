@@ -11,7 +11,6 @@ const gamesSchema = yup.object().shape({
 });
 
 const locationSchema = yup.object().shape({
-  player_id: yup.string().trim().required(),
   location: yup.object({
     x: yup.number().required(),
     y: yup.number().required(),
@@ -24,11 +23,7 @@ const joinGameSchema = yup.object().shape({
   token: yup.string().trim().required(),
 });
 
-const statusSchema = yup.object().shape({
-  game_id: yup.string().trim().length(24).required(),
-});
-
-module.exports = { gamesSchema, locationSchema, joinGameSchema, statusSchema };
+module.exports = { gamesSchema, locationSchema, joinGameSchema };
 
 /* Game:
 

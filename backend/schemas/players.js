@@ -1,7 +1,6 @@
 const yup = require("yup");
 
 const playersSchema = yup.object().shape({
-  game_id: yup.string().trim().length(24).required(),
   location: yup.object({
     x: yup.number().required(),
     y: yup.number().required(),

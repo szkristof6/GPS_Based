@@ -6,7 +6,9 @@ const signin = "sign.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  // verify
+  API.fetch("", "verifyPage", "GET").then((response) => {
+    if (response.status === "allowed") window.location.replace(next);
+  });
 
   const loader = document.querySelector(".container");
   loader.style.display = "none";
@@ -58,7 +60,8 @@ facebookButton.addEventListener("click", async (event) => {
 
     const response = await API.fetch(
       { accessToken: user.authResponse.accessToken, status: user.status, token },
-      "facebookLogin", "POST"
+      "facebookLogin",
+      "POST"
     );
 
     if (response.status === "success") {

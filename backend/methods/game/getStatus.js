@@ -1,25 +1,27 @@
 const mongoose = require("mongoose");
 
-const { statusSchema } = require("../../schemas/game");
 const Game = require("../../db/collections/game");
 const Player = require("../../db/collections/player");
 
-async function getStatus(game_id) {
+async function getStatus(req, res) {
   try {
-    await statusSchema.validate({ game_id });
+    const gameID = req.unsignCookie(req.cookies.g_id);
+    if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    const count = await Player.count({ game_id: new mongoose.Types.ObjectId(game_id) });
-    const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(game_id) });
+    const count = await Player.count({ game_id: new mongoose.Types.ObjectId(gameID.value) });
+    const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(gameID.value) });
     if (!game) return { status: "error", message: "An error has occured!" };
 
-    return {
+    return res.send({
       status: "success",
-      count,
-      time: game.date,
-      status: game.status,
-    };
+      game:{
+        count,
+        time: game.date,
+        status: game.status,
+      }
+    });
   } catch (error) {
-    return error;
+    return res.send(error);
   }
 }
 
