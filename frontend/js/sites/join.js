@@ -5,7 +5,8 @@ const next = "waiting.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  API.fetch("", "verifyPage", "GET").then((response) => {
+  API.fetch("", "page/verify", "GET").then((response) => {
+
     if (response.status === "disallowed") window.location.replace(index);
   });
 
@@ -22,7 +23,7 @@ console.log("teszt123");
 
 form.addEventListener("submit", (event) => event.preventDefault());
 logoutButton.addEventListener("click", async () => {
-  const response  = await API.fetch("", "logoutUser", "GET");
+  const response  = await API.fetch("", "user/logout", "GET");
   if(response.status === "success") {
     Message.openToast("You have been logged out!", "Success", response.status);
 
@@ -41,7 +42,7 @@ joinButton.addEventListener("click", async (event) => {
     password: formData.get("password"),
     token,
   };
-  const game = await API.fetch(json, "joinGame", "POST");
+  const game = await API.fetch(json, "game/join", "POST");
 
   if (game.status === "success") {
     Message.openToast("You will be redirected in a second", "Success", game.status);

@@ -6,7 +6,7 @@ const signin = "sign.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  API.fetch("", "verifyPage", "GET").then((response) => {
+  API.fetch("", "page/verify", "GET").then((response) => {
     if (response.status === "allowed") window.location.replace(next);
   });
 
@@ -32,7 +32,7 @@ form.addEventListener("submit", async (event) => {
     token,
   };
 
-  const user = await API.fetch(json, "loginUser", "POST");
+  const user = await API.fetch(json, "login/user", "POST");
 
   if (user.status === "success") {
     Message.openToast("You will be redirected in a second", "Success", user.status);
@@ -60,7 +60,7 @@ facebookButton.addEventListener("click", async (event) => {
 
     const response = await API.fetch(
       { accessToken: user.authResponse.accessToken, status: user.status, token },
-      "facebookLogin",
+      "login/facebook",
       "POST"
     );
 
@@ -79,7 +79,7 @@ facebookButton.addEventListener("click", async (event) => {
 export async function googleLogin(user) {
   const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
-  const response = await API.fetch({ credential: user.credential, token }, "googleLogin", "POST");
+  const response = await API.fetch({ credential: user.credential, token }, "login/google", "POST");
 
   if (response.status === "success") {
     Message.openToast("You will be redirected in a second", "Success", response.status);

@@ -7,7 +7,7 @@ const index = "index.html";
 const refresh_rate = 5 * 1000;
 
 window.addEventListener("load", async () => {
-  API.fetch("", "verifyPage", "GET").then((response) => {
+  API.fetch("", "page/verify", "GET").then((response) => {
     if (response.status === "disallowed") window.location.replace(index);
   });
 
@@ -48,7 +48,7 @@ async function getData(pos) {
     },
   };
 
-  const player = await API.fetch(playerData, "addPlayer", "POST");
+  const player = await API.fetch(playerData, "player/add", "POST");
 
   if (player.status === "moderator") {
     Message.openToast("In a second you will be redirected..", "You are a moderator", "success");
@@ -60,7 +60,7 @@ async function getData(pos) {
 
   if (player.status === "success" || player.status === "inplay") {
     setInterval(async () => {
-      const response = await API.fetch("", "getStatus", "GET");
+      const response = await API.fetch("", "game/status", "GET");
 
       if (response.status === "success") {
         time.querySelector(".ssc-line").style.display = "none";

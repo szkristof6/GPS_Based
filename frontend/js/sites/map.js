@@ -6,7 +6,7 @@ const back = "waiting.html";
 const refresh_rate = 5 * 1000;
 
 window.addEventListener("load", async () => {
-  API.fetch("", "verifyPage", "GET").then((response) => {
+  API.fetch("", "page/verify", "GET").then((response) => {
     if (response.status === "disallowed") window.location.replace(index);
   });
 
@@ -19,7 +19,7 @@ window.addEventListener("load", async () => {
   );
 
   setInterval(async () => {
-    const response = await API.fetch("", "getStatus", "GET");
+    const response = await API.fetch("", "game/status", "GET");
     if (response.status === "success") {
       const { game } = response;
       if (game.status === 1) {
@@ -40,7 +40,7 @@ if (!mapboxgl.supported()) {
 }
 
 async function setMap() {
-  const response = await API.fetch("", "getGame", "GET");
+  const response = await API.fetch("", "game/data", "GET");
 
   if (response.status === "success") {
     const { game } = response;
@@ -82,7 +82,7 @@ async function setMap() {
 const map = await setMap();
 
 async function getPlayerData() {
-  const response = await API.fetch("", "getPlayerData", "GET");
+  const response = await API.fetch("", "player/data", "GET");
 
   if (response.status === "success") {
     const { data } = response;
@@ -109,7 +109,7 @@ function paintPlayer(player) {
 }
 
 async function getLocationOfPlayers() {
-  const response = await API.fetch("", "listPlayers", "GET");
+  const response = await API.fetch("", "game/players", "GET");
 
   if (response.status === "success") {
     if (response.count != 0) {
@@ -137,6 +137,6 @@ async function onSuccess(pos) {
     },
   };
 
-  const update = await API.fetch(json, "updateLocation", "POST");
+  const update = await API.fetch(json, "game/update/location", "POST");
   if (update.status !== "success") Message.openToast(update.message, "Error", update.status);
 }

@@ -23,7 +23,7 @@ sendButton.addEventListener("click", async (event) => {
     email: formData.get("email"),
     token,
   };
-  const response = await API.fetch(json, "requestResetPassword", "POST");
+  const response = await API.fetch(json, "user/reset/password/request", "POST");
 
   if (response.status === "success") {
     Message.openToast("Please follow the instructions sent to your e-mail address!", "Success", response.status);

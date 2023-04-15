@@ -29,8 +29,8 @@ module.exports = async function (req, res) {
     const user_id = new mongoose.Types.ObjectId(req.user.user_id);
     const team_id = new mongoose.Types.ObjectId(req.body.team_id);
 
-    const isModerator = await Moderator.findOne({ game_id, user_id });
-    const isAdmin = User.findOne({ _id: user_id }).then((user) => (user.permission === 10 ? true : false));
+    const isModerator = await Moderator.findOne({ game_id, user_id }).then((moderator) => (moderator ? true : false));
+    const isAdmin = await User.findOne({ _id: user_id }).then((user) => (user.permission === 10 ? true : false));
     if (isModerator || isAdmin) return res.send({ status: "moderator" });
 
     const existing = await Player.findOne({ game_id, user_id });

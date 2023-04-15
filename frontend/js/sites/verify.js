@@ -17,7 +17,7 @@ window.addEventListener("load", async () => {
     user_id: params.user_id,
     token,
   };
-  const response = await API.fetch(json, "verifyUser", "POST");
+  const response = await API.fetch(json, "user/verify", "POST");
 
   if (response.status === "success") {
     const loader = document.querySelector(".container");

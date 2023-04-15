@@ -6,7 +6,7 @@ const back = "index.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
-  API.fetch("", "verifyPage", "GET").then((response) => {
+  API.fetch("", "page/verify", "GET").then((response) => {
     if (response.status === "allowed") window.location.replace(next);
   });
 
@@ -39,7 +39,7 @@ form.addEventListener("submit", async (event) => {
       message: "The passwords don't match!",
     });
   } else {
-    const user = await API.fetch(json, "registerUser", "POST");
+    const user = await API.fetch(json, "register", "POST");
 
     if (user.status === "success") {
       Message.openToast("The activation email has been sent to your e-mail address!", "Success", user.status);

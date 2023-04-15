@@ -11,54 +11,66 @@ const { jwtMiddleware } = require("./methods/jwt");
 fastify.decorate("verify", jwtMiddleware);
 fastify.decorate("captcha", captchaMiddleware);
 
-fastify.get("/verifyPage", { preHandler: [fastify.verify] }, (req, res) => {
+fastify.get("/page/verify", { preHandler: [fastify.verify] }, (req, res) => {
   if (!req.verified) return res.send({ status: "disallowed" });
   return res.send({ status: "allowed" });
 });
 
 // User methods - Minden olyan funkció, ami a felhasználóhoz tartozik
 
-fastify.post("/facebookLogin", { preHandler: [fastify.captcha] }, require("./methods/user/facebookLogin")); // Felhasználó belépés
-fastify.post("/googleLogin", { preHandler: [fastify.captcha] }, require("./methods/user/googleLogin")); // Felhasználó belépés
-fastify.post("/loginUser", { preHandler: [fastify.captcha] }, require("./methods/user/loginUser")); // Felhasználó belépés
-fastify.post("/registerUser", { preHandler: [fastify.captcha] }, require("./methods/user/registerUser")); // Felhasználó regisztrálása
-fastify.post(
-  "/requestResetPassword",
-  { preHandler: [fastify.captcha] },
-  require("./methods/user/requestResetPassword")
-); // Jelszóemlékeztető kérése
-fastify.post("/resetPassword", { preHandler: [fastify.captcha] }, require("./methods/user/resetPassword")); // Jelszó visszaállítása
-fastify.post("/verifyUser", { preHandler: [fastify.captcha] }, require("./methods/user/verifyUser")); // Felhasználói fiók megerősítése
-fastify.get("/logoutUser", { preHandler: [fastify.verify] }, require("./methods/user/logoutUser")); // Felhasználó belépés
+fastify.post("/login/facebook", { preHandler: [fastify.captcha] }, require("./methods/user/facebookLogin")); // Felhasználó belépés
+fastify.post("/login/google", { preHandler: [fastify.captcha] }, require("./methods/user/googleLogin")); // Felhasználó belépés
+fastify.post("/login/user", { preHandler: [fastify.captcha] }, require("./methods/user/loginUser")); // Felhasználó belépés
+fastify.post("/register", { preHandler: [fastify.captcha] }, require("./methods/user/registerUser")); // Felhasználó regisztrálása
+fastify.post("/user/reset/password/request", { preHandler: [fastify.captcha] }, require("./methods/user/requestResetPassword")); // Jelszóemlékeztető kérése
+fastify.post("/user/reset/password", { preHandler: [fastify.captcha] }, require("./methods/user/resetPassword")); // Jelszó visszaállítása
+fastify.post("/user/verify", { preHandler: [fastify.captcha] }, require("./methods/user/verifyUser")); // Felhasználói fiók megerősítése
+fastify.get("/user/logout", { preHandler: [fastify.verify] }, require("./methods/user/logoutUser")); // Felhasználó belépés
 
 // Game methods - Minden olyan funkció, ami a játékhoz tartozik
 
-fastify.post("/createGame", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/createGame")); // Játék létrehozása
-fastify.post("/joinGame", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/joinGame")); // Csatlakozás a játékba
-fastify.post("/updateLocation", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/updateLocation")); // Csatlakozás a játékba
-fastify.get("/getGame", { preHandler: [fastify.verify] }, require("./methods/game/getGame")); // Játék azonosító lekérdezése
-fastify.get("/getStatus", { preHandler: [fastify.verify] }, require("./methods/game/getStatus")); // Játék azonosító lekérdezése
+fastify.post("/game/create", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/createGame")); // Játék létrehozása
+fastify.post("/game/join", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/joinGame")); // Csatlakozás a játékba
+fastify.post(
+  "/game/update/location",
+  { preHandler: [fastify.verify, fastify.captcha] },
+  require("./methods/game/updateLocation")
+);
+fastify.get("/game/data", { preHandler: [fastify.verify] }, require("./methods/game/getGame")); // Játék azonosító lekérdezése
+fastify.get("/game/status", { preHandler: [fastify.verify] }, require("./methods/game/getStatus")); // Játék azonosító lekérdezése
+fastify.get("/game/players", { preHandler: [fastify.verify] }, require("./methods/game/getPlayers")); // Játék azonosító lekérdezése
 
 // Player methods - Minden olyan funkció, ami a játékosokhoz tartozik
 
-fastify.post("/addPlayer", { preHandler: [fastify.verify] }, require("./methods/player/addPlayer")); // Játékos hozzásadáse
-fastify.get("/getPlayerData", { preHandler: [fastify.verify] }, require("./methods/player/getPlayerData")); // Játék azonosító lekérdezése
-fastify.get("/getPlayers", { preHandler: [fastify.verify] }, require("./methods/player/getPlayers")); // Játék azonosító lekérdezése
+fastify.post("/player/add", { preHandler: [fastify.verify] }, require("./methods/player/addPlayer")); // Játékos hozzásadáse
+fastify.get("/player/data", { preHandler: [fastify.verify] }, require("./methods/player/getPlayerData")); // Játék azonosító lekérdezése
 
 // Team methods
 
-fastify.post("/addTeam", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/team/addTeam")); // Csapat hozzásadáse
-fastify.delete("/deleteTeam", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/team/deleteTeam")); // Csapat adatainak lekérdezése
+fastify.post("/team/add", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/team/addTeam")); // Csapat hozzásadáse
+fastify.delete("/team/delete", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/team/deleteTeam")); // Csapat adatainak lekérdezése
 
 // Obejct methods
 
-fastify.post("/addObejct", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/object/addObject")); // Csapat hozzásadáse
-fastify.delete("/deleteObejct", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/team/deleteTeam")); // Csapat adatainak lekérdezése
+fastify.post("/object/add", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/object/addObject")); // Csapat hozzásadáse
+fastify.delete(
+  "/object/delete",
+  { preHandler: [fastify.verify, fastify.captcha] },
+  require("./methods/team/deleteTeam")
+); // Csapat adatainak lekérdezése
 
 // Moderator methods
 
-fastify.post("/addModerator", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/moderator/addModerator")); // Csapat hozzásadáse
-fastify.delete("/deleteModerator", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/moderator/deleteModerator")); // Csapat adatainak lekérdezése
+fastify.post(
+  "/moderator/add",
+  { preHandler: [fastify.verify, fastify.captcha] },
+  require("./methods/moderator/addModerator")
+); // Csapat hozzásadáse
+fastify.delete(
+  "/moderator/delete",
+  { preHandler: [fastify.verify, fastify.captcha] },
+  require("./methods/moderator/deleteModerator")
+); // Csapat adatainak lekérdezése
 
 // Socket methods
 
