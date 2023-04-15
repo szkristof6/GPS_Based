@@ -8,7 +8,7 @@ Megnézzük, hogy a kliensről érkező adatok megfelelőek-e,
 Ha igen, akkor betesszük adatbázisba a játékot és visszatérünk..
 */
 
-async function addTeam(req, res) {
+module.exports = async function (req, res) {
   try {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
@@ -26,6 +26,4 @@ async function addTeam(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = addTeam;
+};

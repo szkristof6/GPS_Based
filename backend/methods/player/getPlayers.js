@@ -14,8 +14,10 @@ Majd lekérdezzük a játékos játék azonosítója alapján a játékban lév�
 Majd visszaadjuk a végleges listát a felhasznló képével együtt
 */
 
-async function listPlayers(req, res) {
+module.exports = async function (req, res) {
   try {
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
     const gameID = req.unsignCookie(req.cookies.g_id);
     if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
@@ -25,7 +27,6 @@ async function listPlayers(req, res) {
     const cleaned = []; // Létrehozunk egy üres listát
 
     for (const player of players) {
-
       if (player.user_id.toString() !== req.user.user_id) {
         const user = await User.findOne({ _id: player.user_id });
         const team = await Team.findOne({ _id: player.team_id });
@@ -48,6 +49,4 @@ async function listPlayers(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = listPlayers;
+};

@@ -16,7 +16,7 @@ function removeCookies(req, res) {
   return res;
 }
 
-async function logoutUser(req, res) {
+module.exports = async function (req, res) {
   try {
     if (!req.verified) {
       res = removeCookies(req, res);
@@ -46,6 +46,4 @@ async function logoutUser(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = logoutUser;
+};

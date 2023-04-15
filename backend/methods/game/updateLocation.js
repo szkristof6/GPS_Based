@@ -10,8 +10,10 @@ Amennyiben helyesek megkeressük az adott játékost a token azonosítás után 
 Majd frissítjük a játékos pozicióját
 */
 
-async function updateLocation(req, res) {
+module.exports = async function (req, res) {
   try {
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
     const playerID = req.unsignCookie(req.cookies.p_id);
     if (!playerID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
@@ -33,6 +35,4 @@ async function updateLocation(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = updateLocation;
+};

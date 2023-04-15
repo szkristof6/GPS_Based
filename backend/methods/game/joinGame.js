@@ -10,7 +10,7 @@ Lekérdezzük az adatbásból azt a játékot, amelyiknek az azonosítója egyez
 Ha létezik visszaadjuk mindent
 */
 
-async function joinGame(req, res) {
+module.exports = async function (req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
@@ -31,6 +31,4 @@ async function joinGame(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = joinGame;
+};

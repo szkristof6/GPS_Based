@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const { playersSchema } = require("../../schemas/players");
 const Player = require("../../db/collections/player");
 const Location = require("../../db/collections/location");
+const Moderator = require("../../db/collections/moderator");
+const User = require("../../db/collections/user");
 
 const { setCookie } = require("../cookie");
 
@@ -14,7 +16,7 @@ Ha igen megnézzük, hogy létezik-e a játékos,
 Ha nem, akkor eltároljuk az adatbázisban és visszatérünk..
 */
 
-async function addPlayer(req, res) {
+module.exports = async function (req, res) {
   try {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
@@ -26,6 +28,10 @@ async function addPlayer(req, res) {
     const game_id = new mongoose.Types.ObjectId(gameID.value);
     const user_id = new mongoose.Types.ObjectId(req.user.user_id);
     const team_id = new mongoose.Types.ObjectId(req.body.team_id);
+
+    const isModerator = await Moderator.findOne({ game_id, user_id });
+    const isAdmin = User.findOne({ _id: user_id }).then((user) => (user.permission === 10 ? true : false));
+    if (isModerator || isAdmin) return res.send({ status: "moderator" });
 
     const existing = await Player.findOne({ game_id, user_id });
     if (existing) {
@@ -60,6 +66,4 @@ async function addPlayer(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = addPlayer;
+};

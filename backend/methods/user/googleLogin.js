@@ -6,7 +6,7 @@ const { googleSchema } = require("../../schemas/social");
 const User = require("../../db/collections/user");
 const { setJWTCookie } = require("../jwt");
 
-async function googleLogin(req, res) {
+module.exports = async function (req, res) {
   if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
   await googleSchema.validate(req.body);
@@ -45,6 +45,4 @@ async function googleLogin(req, res) {
     if (error.message.startsWith("E11000")) error.message = "This account already exists!";
     return res.send(error);
   }
-}
-
-module.exports = googleLogin;
+};

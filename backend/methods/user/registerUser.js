@@ -7,7 +7,7 @@ const User = require("../../db/collections/user");
 const { insertToken } = require("../token");
 const userCreated = require("../../email/emails/userCreated");
 
-async function registerUser(req, res) {
+module.exports = async function (req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
@@ -43,6 +43,4 @@ async function registerUser(req, res) {
     if (error.message.startsWith("E11000")) error.message = "This account already exists!";
     return res.send(error);
   }
-}
-
-module.exports = registerUser;
+};

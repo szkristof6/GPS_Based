@@ -12,7 +12,7 @@ Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk 
 Ha megtaláltuk a felhasználüt, akkor visszaadjuk a tokent a felhasználónak
 */
 
-async function resetPassword(req, res) {
+module.exports = async function resetPassword(req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
@@ -24,15 +24,14 @@ async function resetPassword(req, res) {
     if (passwordResetToken.status !== "valid") return res.code(400).send(passwordResetToken);
 
     const password = await bcrypt.compare(req.body.user_token, passwordResetToken.token);
-    if (!password)
-      return res.code(400).send({ status: "error", message: "Invalid or expired password reset token!" });
+    if (!password) return res.code(400).send({ status: "error", message: "Invalid or expired password reset token!" });
 
     const user = await User.findOne({ _id: user_id });
     if (req.body.email !== user.email)
       return res.code(400).send({ status: "error", message: "Account with the given email does not exist!" });
 
     const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
-    await User.updateOne({ _id: user_id}, { $set: { password: hash } });
+    await User.updateOne({ _id: user_id }, { $set: { password: hash } });
 
     await removeToken(user_id);
 
@@ -40,6 +39,4 @@ async function resetPassword(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = resetPassword;
+};

@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-async function captchaMiddleware(request, reply) {
+module.exports = async function captchaMiddleware(request, reply) {
   try {
     if (!request.body.token) request.captchaVerify = false;
 
@@ -15,6 +15,4 @@ async function captchaMiddleware(request, reply) {
   } catch (error) {
     request.captchaVerify = false;
   }
-}
-
-module.exports = captchaMiddleware;
+};

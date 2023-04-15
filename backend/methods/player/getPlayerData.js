@@ -11,8 +11,10 @@ Lekérdezzük a token azonosítás után létrehozott user tömb segítségével
 Mjad lekérdezzük a felhasználó adatokat és együtt visszaadjuk
 */
 
-async function getPlayerData(req, res) {
+module.exports = async function (req, res) {
   try {
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
     const playerID = req.unsignCookie(req.cookies.p_id);
     if (!playerID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
@@ -53,6 +55,4 @@ async function getPlayerData(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = getPlayerData;
+};

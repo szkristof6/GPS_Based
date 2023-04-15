@@ -10,7 +10,7 @@ Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk 
 Ha megtaláltuk a felhasználüt, akkor visszaadjuk a tokent a felhasználónak
 */
 
-async function verifyUser(req, res) {
+module.exports = async function verifyUser(req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
@@ -28,6 +28,4 @@ async function verifyUser(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = verifyUser;
+};

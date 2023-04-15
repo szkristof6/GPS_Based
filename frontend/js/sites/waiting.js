@@ -2,6 +2,7 @@ import * as API from "../api.js";
 import * as Message from "../toast.js";
 
 const next = "map.html";
+const moderator = "moderator.html";
 const index = "index.html";
 const refresh_rate = 5 * 1000;
 
@@ -49,7 +50,15 @@ async function getData(pos) {
 
   const player = await API.fetch(playerData, "addPlayer", "POST");
 
-  if (player.status == "success" || player.status == "inplay") {
+  if (player.status === "moderator") {
+    Message.openToast("In a second you will be redirected..", "You are a moderator", "success");
+
+    setTimeout(() => {
+      window.location.replace(moderator);
+    }, Message.redirect_time);
+  }
+
+  if (player.status === "success" || player.status === "inplay") {
     setInterval(async () => {
       const response = await API.fetch("", "getStatus", "GET");
 

@@ -2,7 +2,7 @@ const { facebookSchema } = require("../../schemas/social");
 const User = require("../../db/collections/user");
 const { setJWTCookie } = require("../jwt");
 
-async function facebookLogin(req, res) {
+module.exports = async function (req, res) {
   try {
     if (req.body.status != "connected") return res.code(400).send({ message: "Not connected!" });
 
@@ -41,6 +41,4 @@ async function facebookLogin(req, res) {
     if (error.message.startsWith("E11000")) error.message = "This account already exists!";
     return res.send(error);
   }
-}
-
-module.exports = facebookLogin;
+};

@@ -1,6 +1,6 @@
 const { sendMail } = require("../nodemailer");
 
-async function passwordReset(email, token, user_id) {
+module.exports = async function (email, token, user_id) {
   try {
     const html = `
     <p>
@@ -18,6 +18,4 @@ async function passwordReset(email, token, user_id) {
   } catch (error) {
     return error;
   }
-}
-
-module.exports = passwordReset;
+};

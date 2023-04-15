@@ -10,7 +10,8 @@ Megnézzük, hogy a kliensről érkező adatok megfelelőek-e,
 Ha igen, akkor betesszük adatbázisba a játékot és visszatérünk..
 */
 
-async function createGame(req, res) {
+
+module.exports = async function (req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
@@ -35,6 +36,4 @@ async function createGame(req, res) {
   } catch (error) {
     return res.send(error);
   }
-}
-
-module.exports = createGame;
+};

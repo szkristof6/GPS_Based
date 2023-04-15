@@ -8,7 +8,6 @@ const teamsSchema = yup.object().shape({
 
 const getTeamSchema = yup.object().shape({
   id: yup.string().trim().length(24).required(),
-  game_id: yup.string().trim().length(24).required(),
 });
 
 module.exports = { teamsSchema, getTeamSchema };

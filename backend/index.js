@@ -43,12 +43,22 @@ fastify.get("/getStatus", { preHandler: [fastify.verify] }, require("./methods/g
 
 fastify.post("/addPlayer", { preHandler: [fastify.verify] }, require("./methods/player/addPlayer")); // Játékos hozzásadáse
 fastify.get("/getPlayerData", { preHandler: [fastify.verify] }, require("./methods/player/getPlayerData")); // Játék azonosító lekérdezése
-fastify.get("/listPlayers", { preHandler: [fastify.verify] }, require("./methods/player/listPlayers")); // Játék azonosító lekérdezése
+fastify.get("/getPlayers", { preHandler: [fastify.verify] }, require("./methods/player/getPlayers")); // Játék azonosító lekérdezése
 
 // Team methods
 
-fastify.post("/addTeam", { preHandler: [fastify.verify] }, require("./methods/team/addTeam")); // Csapat hozzásadáse
-fastify.get("/getTeam", { preHandler: [fastify.verify] }, require("./methods/team/getTeam")); // Csapat adatainak lekérdezése
+fastify.post("/addTeam", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/team/addTeam")); // Csapat hozzásadáse
+fastify.delete("/deleteTeam", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/team/deleteTeam")); // Csapat adatainak lekérdezése
+
+// Obejct methods
+
+fastify.post("/addObejct", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/object/addObject")); // Csapat hozzásadáse
+fastify.delete("/deleteObejct", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/team/deleteTeam")); // Csapat adatainak lekérdezése
+
+// Moderator methods
+
+fastify.post("/addModerator", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/moderator/addModerator")); // Csapat hozzásadáse
+fastify.delete("/deleteModerator", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/moderator/deleteModerator")); // Csapat adatainak lekérdezése
 
 // Socket methods
 
