@@ -19,7 +19,7 @@ window.addEventListener("load", async () => {
   );
 
   setInterval(async () => {
-    const response = API.fetch("", "getStatus", "GET");
+    const response = await API.fetch("", "getStatus", "GET");
     if (response.status === "success") {
       const { game } = response;
       if (game.status === 1) {

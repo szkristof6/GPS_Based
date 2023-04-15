@@ -66,7 +66,7 @@ async function setJWTCookie(user, res) {
 
     const existing = await JwtRefresh.findOne({ user_id: user._id });
     if (existing)
-      await JwtRefresh.updateOne({ user_id: user._id }, { $set: { token: refresh, createdAt: Date.now() } });
+      await JwtRefresh.updateOne({ user_id: user._id }, { $set: { token: refresh } });
     else {
       const refreshToken = new JwtRefresh({
         user_id: user._id,
