@@ -21,8 +21,7 @@ export const fetch = async (data, route, method) => {
     });
 
     return response.data;
-  } catch (error) {
-    console.log(error);
+  } catch ({response: error}) {
     return error.data;
   }
 };

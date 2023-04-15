@@ -16,6 +16,11 @@ const gameSchema = new mongoose.Schema(
       trim: true,
       max: 255,
     },
+    desc: {
+      type: String,
+      required: true,
+      max: 500,
+    },
     password: {
       type: String,
       required: true,
@@ -24,17 +29,17 @@ const gameSchema = new mongoose.Schema(
     },
     gamemode: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     location: {
       x: {
         type: Number,
-        required: true,
+        required: false,
       },
       y: {
         type: Number,
-        required: true,
+        required: false,
       },
     },
     status: {

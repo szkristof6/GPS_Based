@@ -18,7 +18,7 @@ const locationSchema = yup.object().shape({
 });
 
 const joinGameSchema = yup.object().shape({
-  id: yup.string().trim().length(15).required(),
+  id: yup.string().trim().length(16).required(),
   password: yup.string().trim().required(),
   token: yup.string().trim().required(),
 });

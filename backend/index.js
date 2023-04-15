@@ -35,7 +35,9 @@ fastify.get("/user/logout", { preHandler: [fastify.verify] }, require("./methods
 
 // Game methods - Minden olyan funkció, ami a játékhoz tartozik
 
-fastify.post("/game/create", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/createGame")); // Játék létrehozása
+fastify.post("/game/create/general", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/create/general")); // Játék létrehozása
+fastify.post("/game/create/gamemode", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/create/gamemode")); // Játék létrehozása
+
 fastify.post("/game/join", { preHandler: [fastify.verify, fastify.captcha] }, require("./methods/game/joinGame")); // Csatlakozás a játékba
 fastify.post("/game/update/location", { preHandler: [fastify.verify] }, require("./methods/game/updateLocation"));
 fastify.get("/game/data", { preHandler: [fastify.verify] }, require("./methods/game/getGame")); // Játék azonosító lekérdezése
