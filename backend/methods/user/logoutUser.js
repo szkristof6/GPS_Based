@@ -1,7 +1,8 @@
-require("dotenv").config();
 const mongoose = require("mongoose");
 
-const JwtRefresh = require("../../db/collections/jwt_refresh");
+require("dotenv").config();
+
+const JwtRefresh = require("../../collections/jwt_refresh");
 const { clearCookie } = require("../cookie");
 
 /*

@@ -1,8 +1,9 @@
-const mongoose = require("mongoose");
+const yup = require("yup");
 
-const Player = require("../../db/collections/player");
-const Location = require("../../db/collections/location");
-const { locationSchema } = require("../../schemas/game");
+const Player = require("../../collections/player");
+const Location = require("../../collections/location");
+
+const { locationObject } = require("../../schema");
 
 /*
 Megnézzük, hogy a kliens által megadott értékek megfelelőek-e
@@ -17,7 +18,9 @@ module.exports = async function (req, res) {
     const playerID = req.unsignCookie(req.cookies.p_id);
     if (!playerID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    await locationSchema.validate(req.body);
+    const schema = yup.object().shape({ location: locationObject });
+
+    await schema.validate(req.body);
 
     const player = await Player.findOne({ _id: playerID.value });
     if (!player) return res.code(400).send({ status: "error", message: "The player was not found!" });

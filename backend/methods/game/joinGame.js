@@ -1,9 +1,11 @@
 const bcrypt = require("bcrypt");
+const yup = require("yup");
 
-const { joinGameSchema } = require("../../schemas/game");
-const Game = require("../../db/collections/game");
+const Game = require("../../collections/game");
 
 const { setCookie } = require("../cookie");
+
+const { trimmedString } = require("../../schema");
 
 /*
 Lekérdezzük az adatbásból azt a játékot, amelyiknek az azonosítója egyezik a megadott azonosítóval
@@ -15,7 +17,13 @@ module.exports = async function (req, res) {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    await joinGameSchema.validate(req.body);
+    const schema = yup.object().shape({
+      id: trimmedString.length(15),
+      password: trimmedString,
+      token: trimmedString,
+    });
+
+    await schema.validate(req.body);
 
     const game = await Game.findOne({ id: req.body.id });
     if (!game) return res.code(400).send({ status: "error", message: "This game does not exist!" });

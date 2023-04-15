@@ -1,9 +1,13 @@
+const yup = require("yup");
+
 require("dotenv").config();
 
-const { forgotSchema } = require("../../schemas/token");
-const User = require("../../db/collections/user");
+const User = require("../../collections/user");
+
 const { insertToken } = require("../token");
 const passwordReset = require("../../email/emails/passwordReset");
+
+const { trimmedString, emailTrimmed } = require("../../schema");
 
 /*
 Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk az adatbázisba, hanem keresünk benne
@@ -14,7 +18,12 @@ module.exports = async function (req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
-    await forgotSchema.validate(req.body);
+    const schema = yup.object().shape({
+      email: emailTrimmed,
+      token: trimmedString,
+    });
+
+    await schema.validate(req.body);
 
     const user = await User.findOne({ email: req.body.email });
 

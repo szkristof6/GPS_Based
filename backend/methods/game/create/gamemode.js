@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
+const yup = require("yup");
 
-const Game = require("../../../db/collections/game");
+const Game = require("../../../collections/game");
+
+const { objectID, trimmedString, locationObject } = require("../../../schema");
 
 module.exports = async function (req, res) {
   try {
@@ -8,13 +11,10 @@ module.exports = async function (req, res) {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
     const schema = yup.object().shape({
-      game_id: yup.string().trim().length(24).required(),
-      gamemode: yup.string().trim().required(),
-      location: yup.object({
-        x: yup.number().required(),
-        y: yup.number().required(),
-      }),
-      token: yup.string().trim().required(),
+      game_id: objectID,
+      gamemode: trimmedString,
+      location: locationObject,
+      token: trimmedString,
     });
 
     await schema.validate(req.body);

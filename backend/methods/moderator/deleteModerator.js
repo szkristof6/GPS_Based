@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const yup = require("yup");
 
-const Moderator = require("../../db/collections/moderator");
+const Moderator = require("../../collections/moderator");
+
+const { trimmedString, objectID } = require("../../schema");
 
 /*
 Lekérdezzük az adatbásból azt a játékot, amelyiknek az azonosítója egyezik a megadott azonosítóval
@@ -14,8 +16,8 @@ module.exports = async function (req, res) {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
     const schema = yup.object().shape({
-      moderator_id: yup.string().trim().length(24).required(),
-      token: yup.string().trim().required(),
+      moderator_id: objectID,
+      token: trimmedString,
     });
 
     await schema.validate(req.body);

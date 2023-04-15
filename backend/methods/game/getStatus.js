@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const Game = require("../../db/collections/game");
-const Player = require("../../db/collections/player");
+const Game = require("../../collections/game");
+const Player = require("../../collections/player");
 
 module.exports = async function (req, res) {
   try {

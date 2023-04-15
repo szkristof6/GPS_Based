@@ -1,6 +1,6 @@
 const yup = require("yup");
 
-const Team = require("../../db/collections/team");
+const Team = require("../../collections/team");
 
 /*
 Lekérdezzük az adatbásból azt a játékot, amelyiknek az azonosítója egyezik a megadott azonosítóval

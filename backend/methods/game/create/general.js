@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const yup = require("yup");
 
-const Game = require("../../../db/collections/game");
+const Game = require("../../../collections/game");
+
+const { trimmedString, dateTime } = require("../../../schema");
 
 module.exports = async function (req, res) {
   try {
@@ -9,11 +12,11 @@ module.exports = async function (req, res) {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
     const schema = yup.object().shape({
-      name: yup.string().max(255).trim().required(),
-      desc: yup.string().max(500).required(),
-      password: yup.string().trim().required(),
-      date: yup.date().required(),
-      token: yup.string().trim().required(),
+      name: trimmedString.max(255),
+      desc: trimmedString.max(500),
+      password: trimmedString,
+      date: dateTime,
+      token: trimmedString,
     });
 
     await schema.validate(req.body);

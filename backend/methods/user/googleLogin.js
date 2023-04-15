@@ -1,15 +1,22 @@
 const { OAuth2Client } = require("google-auth-library");
+const yup = require("yup");
 
 require("dotenv").config();
 
-const { googleSchema } = require("../../schemas/social");
-const User = require("../../db/collections/user");
+const User = require("../../collections/user");
+
 const { setJWTCookie } = require("../jwt");
+
+const { trimmedString } = require("../../schema");
 
 module.exports = async function (req, res) {
   if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
-  await googleSchema.validate(req.body);
+  const schema = yup.object().shape({
+    credential: trimmedString,
+    token: trimmedString,
+  });
+  await schema.validate(req.body);
 
   const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   try {

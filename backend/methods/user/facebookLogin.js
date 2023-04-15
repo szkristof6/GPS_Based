@@ -1,13 +1,24 @@
-const { facebookSchema } = require("../../schemas/social");
-const User = require("../../db/collections/user");
+const yup = require("yup");
+
+const User = require("../../collections/user");
+
 const { setJWTCookie } = require("../jwt");
+
+const { trimmedString } = require("../../schema");
 
 module.exports = async function (req, res) {
   try {
     if (req.body.status != "connected") return res.code(400).send({ message: "Not connected!" });
 
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
-    await facebookSchema.validate(req.body);
+
+    const schema = yup.object().shape({
+      accessToken: trimmedString,
+      status: trimmedString,
+      token: trimmedString,
+    });
+
+    await schema.validate(req.body);
 
     const fields = ["email", "name", "picture"].join(",");
     const url = `https://graph.facebook.com/me?fields=${fields}&access_token=${req.body.accessToken}`;

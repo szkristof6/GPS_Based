@@ -1,10 +1,10 @@
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const mongoose = require("mongoose");
 
 require("dotenv").config();
 
-const Token = require("../db/collections/token");
+const Token = require("../collections/token");
 
 async function insertToken(id, method) {
 const user_id = new mongoose.Types.ObjectId(id);

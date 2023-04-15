@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
+const yup = require("yup");
 
-const { playersSchema } = require("../../schemas/players");
-const Player = require("../../db/collections/player");
-const Location = require("../../db/collections/location");
-const Moderator = require("../../db/collections/moderator");
-const User = require("../../db/collections/user");
+const Player = require("../../collections/player");
+const Location = require("../../collections/location");
+const Moderator = require("../../collections/moderator");
+const User = require("../../collections/user");
 
 const { setCookie } = require("../cookie");
+
+const { objectID, locationObject } = require("../../schema");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e
@@ -23,7 +25,12 @@ module.exports = async function (req, res) {
     const gameID = req.unsignCookie(req.cookies.g_id);
     if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    await playersSchema.validate(req.body);
+    const schema = yup.object().shape({
+      location: locationObject,
+      team_id: objectID,
+    });
+
+    await schema.validate(req.body);
 
     const game_id = new mongoose.Types.ObjectId(gameID.value);
     const user_id = new mongoose.Types.ObjectId(req.user.user_id);

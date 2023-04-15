@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const yup = require("yup");
 
-const Moderator = require("../../db/collections/moderator");
+const Moderator = require("../../collections/moderator");
+
+const { trimmedString, numberMin, objectID } = require("../../schema");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e,
@@ -14,9 +16,9 @@ module.exports = async function (req, res) {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
     const schema = yup.object().shape({
-      game_id: yup.string().trim().length(24).required(),
-      permission: yup.number().min(0).required(),
-      token: yup.string().trim().required(),
+      game_id: objectID,
+      permission: numberMin,
+      token: trimmedString,
     });
 
     await schema.validate(req.body);

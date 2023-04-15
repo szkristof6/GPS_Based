@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const yup = require("yup");
 
-const Object = require("../../db/collections/object");
+const Object = require("../../collections/object");
+
+const { trimmedString, objectID, numberMin, locationObject } = require("../../schema");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e,
@@ -14,13 +16,11 @@ module.exports = async function (req, res) {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
     const schema = yup.object().shape({
-      type: yup.string().trim().required(),
-      location: yup.object({
-        x: yup.number().required(),
-        y: yup.number().required(),
-      }),
-      radius: yup.number().required(),
-      game_id: yup.string().trim().length(24).required(),
+      type: trimmedString,
+      location: locationObject,
+      radius: numberMin,
+      game_id: objectID,
+      token: trimmedString,
     });
 
     await schema.validate(req.body);

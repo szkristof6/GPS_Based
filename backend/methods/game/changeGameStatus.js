@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const Game = require("../../db/collections/game");
-const Moderator = require("../../db/collections/moderator");
-const User = require("../../db/collections/user");
+const Game = require("../../collections/game");
+const Moderator = require("../../collections/moderator");
+const User = require("../../collections/user");
 
 const states = {
   inactive: 0,

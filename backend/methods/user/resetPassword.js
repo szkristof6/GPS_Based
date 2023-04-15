@@ -1,11 +1,13 @@
 const bcrypt = require("bcrypt");
+const yup = require("yup");
 
 require("dotenv").config();
 
-const { resetSchema } = require("../../schemas/token");
-const User = require("../../db/collections/user");
+const User = require("../../collections/user");
 
 const { verifyToken, removeToken } = require("../token");
+
+const { trimmedString, emailTrimmed, objectID, passwordMatch } = require("../../schema");
 
 /*
 Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk az adatbázisba, hanem keresünk benne
@@ -16,7 +18,15 @@ module.exports = async function resetPassword(req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
-    await resetSchema.validate(req.body);
+    const schema = yup.object().shape({
+      user_id: objectID,
+      user_token: trimmedString,
+      token: trimmedString,
+      email: emailTrimmed,
+      password: trimmedString,
+      passwordre: passwordMatch,
+    });
+    await schema.validate(req.body);
 
     const { user_id } = req.body;
 

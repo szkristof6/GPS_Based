@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const Player = require("../../db/collections/player");
-const User = require("../../db/collections/user");
-const Game = require("../../db/collections/game");
-const Team = require("../../db/collections/team");
-const Location = require("../../db/collections/location");
+const Player = require("../../collections/player");
+const User = require("../../collections/user");
+const Game = require("../../collections/game");
+const Team = require("../../collections/team");
+const Location = require("../../collections/location");
 
 /*
 Lekérdezzük a token azonosítás után létrehozott user tömb segítségével a játékos adatait

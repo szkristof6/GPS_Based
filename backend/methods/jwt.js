@@ -1,9 +1,10 @@
 require("dotenv").config();
 
+const JwtRefresh = require("../collections/jwt_refresh");
+
 const { fastify } = require("../fastify");
 const { setCookie } = require("./cookie");
 
-const JwtRefresh = require("../db/collections/jwt_refresh");
 
 const tokenTime = "10m";
 const refreshTime = "30d";

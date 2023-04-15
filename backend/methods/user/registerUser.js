@@ -1,17 +1,29 @@
 const bcrypt = require("bcrypt");
+const yup = require("yup");
+
 require("dotenv").config();
 
-const { registerSchema } = require("../../schemas/user");
+const User = require("../../collections/user");
 
-const User = require("../../db/collections/user");
 const { insertToken } = require("../token");
 const userCreated = require("../../email/emails/userCreated");
+
+const { trimmedString, emailTrimmed, passwordMatch } = require("../../schema");
 
 module.exports = async function (req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
-    await registerSchema.validate(req.body);
+    const schema = yup.object().shape({
+      firstname: trimmedString,
+      lastname: trimmedString,
+      email: emailTrimmed,
+      password: trimmedString,
+      passwordre: passwordMatch,
+      token: trimmedString,
+    });
+
+    await schema.validate(req.body);
 
     const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
 

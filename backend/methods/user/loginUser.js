@@ -1,9 +1,13 @@
-require("dotenv").config();
 const bcrypt = require("bcrypt");
+const yup = require("yup");
 
-const { loginSchema } = require("../../schemas/user");
-const User = require("../../db/collections/user");
+require("dotenv").config();
+
+const User = require("../../collections/user");
+
 const { setJWTCookie } = require("../jwt");
+
+const { trimmedString, emailTrimmed } = require("../../schema");
 
 /*
 Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk az adatbázisba, hanem keresünk benne
@@ -14,7 +18,12 @@ module.exports = async function (req, res) {
   try {
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
-    await loginSchema.validate(req.body);
+    const schema = yup.object().shape({
+      email: emailTrimmed,
+      password: trimmedString,
+      token: trimmedString,
+    });
+    await schema.validate(req.body);
 
     const user = await User.findOne({ email: req.body.email });
     if (!user) return res.code(400).send({ status: "error", message: "This account does not exist! Please sign in!" });
