@@ -27,7 +27,9 @@ async function jwtMiddleware(request, reply) {
     }
   } catch (error) {
     if (error.code === "FAST_JWT_EXPIRED") await getNewToken(request, reply);
-    else request.verified = false;
+    else {
+      request.verified = false;
+    }
   }
 }
 

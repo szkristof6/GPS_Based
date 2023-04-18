@@ -10,7 +10,7 @@ const { trimmedString } = require("../../schema");
 
 module.exports = async function (req, res) {
   try {
-    //if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
     const schema = yup.object().shape({
       message: trimmedString.max(255),

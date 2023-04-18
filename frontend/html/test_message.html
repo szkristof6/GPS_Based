@@ -17,27 +17,29 @@
       <div class="container"></div>
     </div>
   </body>
-  <script>
+  <script type="module">
+    async function getMessages() {
+      const response = await fetch("http://localhost:1337/message/list", {
+        method: "GET",
+        headers: {
+          Accept: "application.json",
+          "Content-Type": "application/json",
+          Cache: "no-cache",
+        },
+        credentials: "include",
+      }).then((data) => data.json());
+
+      const containerContainer = document.querySelector(".container");
+
+      containerContainer.innerHTML = "";
+
+      response.messages.forEach((message) => {
+        containerContainer.innerHTML += `${message.text} <br>`;
+      });
+    }
     window.addEventListener("load", () => {
-      setInterval(async () => {
-        const response = await fetch("http://localhost:1337/message/list", {
-          method: "GET",
-          headers: {
-            Accept: "application.json",
-            "Content-Type": "application/json",
-            Cache: "no-cache",
-          },
-          credentials: "include",
-        }).then((data) => data.json());
-
-        const containerContainer = document.querySelector(".container");
-
-        containerContainer.innerHTML = "";
-
-        response.messages.forEach((message) => {
-            containerContainer.innerHTML += `${message.text} <br>`
-        })
-      }, 5000);
+      getMessages();
+      setInterval(async () => getMessages(), 5 * 1000);
     });
 
     const form = document.querySelector("form");

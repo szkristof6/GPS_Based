@@ -9,7 +9,6 @@ const { fastify, fastify_server } = require("./fastify");
 
 mongoose.connect(process.env.MONGO_URI);
 
-
 fastify.decorate("verify", jwtMiddleware);
 fastify.decorate("captcha", captchaMiddleware);
 
@@ -18,6 +17,20 @@ fastify.get("/", (req, res) => res.send({ status: "disallowed" }));
 fastify.get("/page/verify", { preHandler: [fastify.verify] }, (req, res) => {
   if (!req.verified) return res.send({ status: "disallowed" });
   return res.send({ status: "allowed" });
+});
+
+fastify.get("/page/socket/verify", (req, res) => {
+  try {
+    const token = req.unsignCookie(req.cookies.token);
+
+    if (!token.valid) res.send({ status: "disallowed" });
+
+    const decodedToken = fastify.jwt.verify(token.value);
+
+    if (decodedToken) return res.send({ status: "allowed" });
+  } catch (error) {
+    res.send({ status: "disallowed" });
+  }
 });
 
 // User methods - Minden olyan funkció, ami a felhasználóhoz tartozik
@@ -68,7 +81,7 @@ fastify.get("/game/status/stop", { preHandler: [fastify.verify, fastify.captcha]
 fastify.get("/game/status/pause", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: pause
 fastify.get("/game/status/resume", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: resume
 
-// Chat methods - 
+// Chat methods -
 
 const sendMessage = require("./methods/chat/sendMessage");
 const listMessages = require("./methods/chat/listMessages");
@@ -111,6 +124,33 @@ fastify.post("/moderator/add", { preHandler: [fastify.verify, fastify.captcha] }
 fastify.delete("/moderator/delete", { preHandler: [fastify.verify, fastify.captcha] }, deleteModerator); // Moderátor törlése
 
 fastify.ready(() => {
+  fastify.io.use(async function (socket, next) {
+    console.log(socket.handshake.query);
+    if (socket.handshake.query && socket.handshake.query.token) {
+      const cookies = Object.entries({
+        token: socket.handshake.query.token,
+      })
+        .map((param) => param.join("="))
+        .join("; ");
+
+      const response = await fetch("http://localhost:1337/page/socket/verify", {
+        headers: {
+          Cookie: cookies,
+        },
+      }).then((data) => data.json());
+
+      if (response.status === "allowed") next();
+      else {
+        next(new Error("Authentication error"));
+      }
+    } else {
+      next(new Error("Authentication error"));
+    }
+  });
+  fastify.io.on("connection", (socket) => {
+    socket.on("test", async (param, send) => send(param));
+  });
+
   fastify_server.listen({ port: process.env.PORT }, (error) => {
     console.log(`Fastify server started at port: ${process.env.PORT}`);
   });
