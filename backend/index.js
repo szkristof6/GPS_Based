@@ -1,12 +1,14 @@
-const { fastify, fastify_server } = require("./fastify");
 const mongoose = require("mongoose");
 
 require("dotenv").config();
 
-mongoose.connect(process.env.MONGO_URI);
-
 const captchaMiddleware = require("./methods/captcha");
 const { jwtMiddleware } = require("./methods/jwt");
+
+const { fastify, fastify_server } = require("./fastify");
+
+mongoose.connect(process.env.MONGO_URI);
+
 
 fastify.decorate("verify", jwtMiddleware);
 fastify.decorate("captcha", captchaMiddleware);
@@ -66,6 +68,14 @@ fastify.get("/game/status/stop", { preHandler: [fastify.verify, fastify.captcha]
 fastify.get("/game/status/pause", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: pause
 fastify.get("/game/status/resume", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: resume
 
+// Chat methods - 
+
+const sendMessage = require("./methods/chat/sendMessage");
+const listMessages = require("./methods/chat/listMessages");
+
+fastify.post("/message/send", { preHandler: [fastify.verify] }, sendMessage); // Üzenet küldése
+fastify.get("/message/list", { preHandler: [fastify.verify] }, listMessages); // Üzenetek lekérése
+
 // Player methods - Minden olyan funkció, ami a játékosokhoz tartozik
 
 const addPlayer = require("./methods/player/addPlayer");
@@ -77,9 +87,11 @@ fastify.get("/player/data", { preHandler: [fastify.verify] }, getPlayerData); //
 // Team methods
 
 const addTeam = require("./methods/team/addTeam");
+const listTeams = require("./methods/team/listTeams");
 const deleteTeam = require("./methods/team/deleteTeam");
 
 fastify.post("/team/add", { preHandler: [fastify.verify, fastify.captcha] }, addTeam); // Csapat hozzásadáse
+fastify.get("/team/list", { preHandler: [fastify.verify] }, listTeams); // Csapatok kilistázása
 fastify.delete("/team/delete", { preHandler: [fastify.verify, fastify.captcha] }, deleteTeam); // Csapat törlése
 
 // Obejct methods

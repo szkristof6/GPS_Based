@@ -26,14 +26,16 @@ fastify.register(require("@fastify/jwt"), {
   secret: process.env.TOKEN_KEY,
   verify: { allowedIss: "api.stagenex.hu" },
 });
-fastify.register(import("@fastify/rate-limit"), { max: 100, timeWindow: "1 minute" });
-
-fastify.setErrorHandler(function (error, request, reply) {
-  if (error.statusCode === 429) {
-    reply.code(429);
-    error.message = "You hit the rate limit! Slow down please!";
-  }
-  return reply.send(error);
+fastify.register(import("@fastify/rate-limit"), {
+  max: 10,
+  timeWindow: '10s',
+  global: true,
+  hook: 'preHandler',
+  addHeadersOnExceeding: { 
+    'x-ratelimit-limit': true,
+    'x-ratelimit-remaining': true,
+    'x-ratelimit-reset': true
+  },
 });
 
 module.exports = { fastify, fastify_server };
