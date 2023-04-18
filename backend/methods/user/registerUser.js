@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const yup = require("yup");
+const escapeHtml = require('escape-html')
 
 require("dotenv").config();
 
@@ -27,7 +28,7 @@ module.exports = async function (req, res) {
 
     const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
 
-    const name = `${req.body.firstname} ${req.body.lastname}`;
+    const name = escapeHtml(`${req.body.firstname} ${req.body.lastname}`);
 
     const imageParams = Object.entries({
       name: name.split(" ").join("+"),
@@ -40,7 +41,7 @@ module.exports = async function (req, res) {
     const user = new User({
       name,
       password: hash,
-      email: req.body.email,
+      email: escapeHtml(req.body.email),
       login_method: "email",
       image: `https://eu.ui-avatars.com/api/?${imageParams}`,
       permission: 0,

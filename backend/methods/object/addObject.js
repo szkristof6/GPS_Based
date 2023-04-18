@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const yup = require("yup");
+const escapeHtml = require('escape-html')
 
 const Object = require("../../collections/object");
 
@@ -26,9 +27,9 @@ module.exports = async function (req, res) {
     await schema.validate(req.body);
 
     const object = new Object({
-      type: req.user.type,
+      type: escapeHtml(req.user.type),
       location: req.body.location,
-      radius: req.body.radius,
+      radius: escapeHtml(req.body.radius),
       game_id: new mongoose.Types.ObjectId(req.body.game_id),
     });
 

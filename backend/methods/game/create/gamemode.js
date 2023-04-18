@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const yup = require("yup");
+const escapeHtml = require('escape-html')
 
 const Game = require("../../../collections/game");
 
@@ -21,7 +22,7 @@ module.exports = async function (req, res) {
 
     await Game.updateOne(
       { _id: new mongoose.Types.ObjectId(req.body.game_id) },
-      { $set: { gamemode: req.body.gamemode, location: req.body.location } }
+      { $set: { gamemode: escapeHtml(req.body.gamemode), location: req.body.location } }
     );
 
     return res.send({ status: "success" });

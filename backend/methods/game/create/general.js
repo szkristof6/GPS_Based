@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const yup = require("yup");
+const escapeHtml = require('escape-html')
 
 const Game = require("../../../collections/game");
 
@@ -25,8 +26,8 @@ module.exports = async function (req, res) {
 
     const game = new Game({
       id: crypto.randomBytes(8).toString("hex"),
-      name: req.body.name,
-      desc: req.body.desc,
+      name: escapeHtml(req.body.name),
+      desc: escapeHtml(req.body.desc),
       date: req.body.date,
       password: hash,
       status: 0,

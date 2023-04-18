@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const escapeHtml = require('escape-html')
 
 const Game = require("../../collections/game");
 const Moderator = require("../../collections/moderator");
@@ -18,7 +19,7 @@ module.exports = async function (req, res) {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
-    const stateChange = req.url.split("/").pop();
+    const stateChange = escapeHtml(req.url.split("/").pop());
     const change = states[stateChange];
     if (!change) return res.code(400).send({ status: "error", message: "Not allowed!" });
 

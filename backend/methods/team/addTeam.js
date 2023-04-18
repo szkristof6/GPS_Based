@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const escapeHtml = require('escape-html')
 
 const Team = require("../../collections/team");
 
@@ -23,7 +24,7 @@ module.exports = async function (req, res) {
     await schema.validate(req.body);
 
     const team = new Team({
-      name: req.body.name,
+      name: escapeHtml(req.body.name),
       game_id: new mongoose.Types.ObjectId(req.body.game_id),
       point: 0,
       color: req.body.color,
