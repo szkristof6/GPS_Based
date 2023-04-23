@@ -2,7 +2,6 @@ import * as API from "../api.js";
 import * as Message from "../toast.js";
 
 const next = "join.html";
-const signin = "sign.html";
 const index = "index.html";
 
 window.addEventListener("load", () => {
@@ -15,10 +14,26 @@ window.addEventListener("load", () => {
 });
 
 const form = document.querySelector("form");
-const signinButton = document.querySelector("#signin");
 const facebookButton = document.querySelector("#facebook");
+const showButton = document.querySelector(".see_not_see");
 
-signinButton.addEventListener("click", () => window.location.replace(signin));
+showButton.addEventListener("click", (e) => {
+  const input = e.target.parentNode.querySelector("input");
+
+  if (e.target.classList.contains("not_see")) {
+    input.type = "text";
+
+    e.target.src = "media/hide.png";
+    e.target.classList.remove("not_see");
+    e.target.classList.add("see");
+  } else if (e.target.classList.contains("see")) {
+    input.type = "password";
+
+    e.target.src = "media/eye.png";
+    e.target.classList.remove("see");
+    e.target.classList.add("not_see");
+  }
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();

@@ -1,10 +1,18 @@
+/*BASIC STUFF ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 * {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
     "Helvetica Neue", sans-serif;
+
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 html {
   height: 100%;
   box-sizing: border-box;
+  display: -webkit-box;
 }
 button{
   background: none;
@@ -15,14 +23,24 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-
   /*background: linear-gradient(#141e30, #243b55);
   background-image: url("../media/background.png");*/
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../media/background.png");
   background-size: cover;
   background-repeat: no-repeat;
 }
+p{
+  color: #fff;
+  text-align: center;
+  margin: 0 0 0 0;
+}
+a{
+  color: #00b2ff;
+  font-weight: 700;
+  text-decoration: none;
+}
 
+/*BASIC STUFF ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 .white {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 16px;
@@ -59,52 +77,31 @@ body {
   -webkit-backdrop-filter: blur(5px);
 }
 
-.login-box h1,
-h4 {
+.login-box h1, h4 {
   margin: 0 0 30px;
   padding: 0;
   color: #fff;
   text-align: center;
 }
 
+.login-box h5{
+  margin: 0 0 10px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 400;
+}
+
 .login-box .user-box {
   position: relative;
-}
-
-.login-box .user-box input {
-  width: 100%;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 30px;
-  border: none;
-  border-bottom: 1px solid #fff;
-  outline: none;
-  background: transparent;
-}
-.login-box .user-box label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  pointer-events: none;
-  transition: 0.5s;
-}
-
-.login-box .user-box input:focus ~ label,
-.login-box .user-box input:valid ~ label {
-  top: -20px;
-  left: 0;
-  color: #fff;
-  font-size: 12px;
 }
 
 .buttons_1 {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .buttons_1 button {
@@ -113,12 +110,10 @@ h4 {
   color: white;
   text-decoration: none;
   padding: 9px 24px;
-  border-radius: 50px;
-  display: flex;
   align-items: center;
   height: 45px;
   cursor:pointer;
-  margin: 0 5%;
+  width: 100%;
 }
 
 .buttons_2 {
@@ -138,23 +133,8 @@ div.buttons_2 > * {
   max-width: 100px;
 }
 
-.server_message{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 355px;
-  max-width: 98%;
-  padding: 40px;
-  transform: translate(-50%, -50%);
-  box-sizing: border-box;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
-  border-radius: 10px;
-  color: #fff;
-  background-color: rgb(62, 9, 0);
-  font-weight: 500;
-  z-index: 200;
-}
 
+/*MOBILE OPTIMALIZE ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 @media only screen and (max-width: 400px) {
   .login-box {
     padding: 9%;
@@ -180,7 +160,121 @@ div.buttons_2 > * {
   }
 }
 
-/* Change Autocomplete styles in Chrome*/
+
+
+
+
+/*SERVER MESSAGE ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+.toast {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  border-radius: 12px;
+  background: #fff;
+  padding: 20px 35px 20px 25px;
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transform: translateX(calc(100% + 30px));
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+  
+}
+
+.toast.active {
+  transform: translateX(0%);
+}
+
+.toast .toast-content {
+  display: flex;
+  align-items: center;
+}
+
+.toast-content .check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  min-width: 35px;
+  background-color: #4070f4;
+  color: #fff;
+  font-size: 20px;
+  border-radius: 50%;
+  width: 30px;
+}
+
+
+.toast-content .message {
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
+}
+
+.message .text {
+  font-size: 16px;
+  font-weight: 400;
+  color: #666666;
+}
+
+.message .text.text-1 {
+  font-weight: 600;
+  color: #333;
+}
+
+.toast .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  padding: 5px;
+  cursor: pointer;
+  opacity: 0.7;
+  height: 20px;
+  width: 20px;
+}
+
+.toast .close:hover {
+  opacity: 1;
+}
+
+.toast .progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+
+}
+
+.toast .progress:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #4070f4;
+}
+
+.progress.active:before {
+  animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+  100% {
+    right: 100%;
+  }
+}
+
+/*MESSAGE TEST BUTTON ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+.tom{
+  cursor: pointer;
+}
+.tom:hover {
+  background-color: #0e4bf1;
+}
+.toast.active ~ button {
+  pointer-events: none;
+}
+
+/* Autocomplete styles in Chrome* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus,
@@ -192,4 +286,86 @@ select:-webkit-autofill:focus {
   -webkit-text-fill-color: white;
   -webkit-box-shadow: 0;
   transition: background-color 5000s ease-in-out 0s;
+}
+
+/*input field*/
+.form__group {
+  position: relative;
+  padding: 20px 0 0;
+  width: 100%;
+}
+
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  font-size: 17px;
+  color: #fff;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+  margin: 0 0 10px 0;
+}
+
+.form__field::placeholder {
+  color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 17px;
+  cursor: text;
+  top: 20px;
+}
+.form__field:-webkit-autofill ~ .form__label{
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: #38caef;
+  font-weight: 700;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: #9b9b9b;
+  pointer-events: none;
+}
+
+.form__field:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, #116399, #38caef);
+  border-image-slice: 1;
+}
+
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: #38caef;
+  font-weight: 700;
+}
+
+/* reset input */
+.form__field:required, .form__field:invalid {
+  box-shadow: none;
+}
+
+/*Password visibility*/
+.see_not_see{
+  width: 22px;
+  position: absolute;
+  right: 3px;
+  bottom: 22px;
+  cursor: pointer;
 }

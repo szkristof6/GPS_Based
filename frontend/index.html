@@ -37,21 +37,22 @@
       <form>
         <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
         <input type="hidden" name="action" value="validate_captcha" />
-
-        <div class="user-box">
-          <input type="email" name="email" required="" />
-          <label>E-Mail</label>
+        
+        <div class="form__group field">
+          <input type="email" name="email" class="form__field" placeholder="Email" required="">
+          <label for="name" class="form__label">E-Mail</label>
         </div>
-        <div class="user-box">
-          <input type="password" name="password" required="" />
-          <label>Password</label>
+
+        <div class="form__group field">
+          <input type="password" name="password" class="form__field" placeholder="Password" required="">
+          <label for="password" class="form__label">Password</label>
+          <img class="see_not_see not_see" src="media/eye.png" alt="">
         </div>
         <div class="buttons_1">
           <button id="login" class="white">Log in</button>
-          <button id="signin" class="white">Sign in</button>
         </div>
       </form>
-      <h4>or use your</h4>
+      <h5>or use your</h5>
       <div class="buttons_2">
         <div>
           <div
@@ -74,6 +75,7 @@
         </div>
         <button id="facebook"><img src="media/facebook.png" /></button>
       </div>
+      <p>Don't have an account?<a href="#">   Register</a></p>
     </div>
 
     <div class="container">
