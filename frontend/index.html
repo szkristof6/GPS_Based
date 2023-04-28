@@ -28,54 +28,99 @@
       };
     </script>
   </head>
+
   <body>
-    <!--
-      <div class="server_message">Mr László üzenete</div>
-    -->
-    <div class="login-box white_glass_background">
-      <h1>Login</h1>
-      <form>
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
-        <input type="hidden" name="action" value="validate_captcha" />
-        
-        <div class="form__group field">
-          <input type="email" name="email" class="form__field" placeholder="Email" required="">
-          <label for="name" class="form__label">E-Mail</label>
-        </div>
+    <div class="wrap1 displayBlock">
+      <div class="login-box white_glass_background">
+        <h1>Login</h1>
+        <form id="login">
+          <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+          <input type="hidden" name="action" value="validate_captcha" />
 
-        <div class="form__group field">
-          <input type="password" name="password" class="form__field" placeholder="Password" required="">
-          <label for="password" class="form__label">Password</label>
-          <img class="see_not_see not_see" src="media/eye.png" alt="">
-        </div>
-        <div class="buttons_1">
-          <button id="login" class="white">Log in</button>
-        </div>
-      </form>
-      <h5>or use your</h5>
-      <div class="buttons_2">
-        <div>
-          <div
-            id="g_id_onload"
-            data-client_id="905979947159-g4tuu6q59an8dfuejffso3ckuud79qei.apps.googleusercontent.com"
-            data-context="signin"
-            data-ux_mode="popup"
-            data-callback="googleLogin"
-            data-auto_prompt="false"
-          ></div>
+          <div class="form__group field">
+            <input type="email" name="email" class="form__field" placeholder="Email" required="" />
+            <label for="name" class="form__label">E-Mail</label>
+          </div>
 
-          <div
-            class="g_id_signin"
-            data-type="icon"
-            data-shape="circle"
-            data-theme="outline"
-            data-text="signin_with"
-            data-size="large"
-          ></div>
+          <div class="form__group field">
+            <input type="password" name="password" class="form__field" placeholder="Password" required="" />
+            <label for="password" class="form__label">Password</label>
+            <img class="see_not_see not_see" src="media/eye.png" alt="" />
+          </div>
+          <a href="reset-password.html">Forgot password?</a>
+          <div class="buttons_1">
+            <button type="submit" class="white">
+              <span class="button__text">Log in</span>
+            </button>
+          </div>
+        </form>
+        <h5>or use your</h5>
+        <div class="buttons_2">
+          <div>
+            <div
+              id="g_id_onload"
+              data-client_id="905979947159-g4tuu6q59an8dfuejffso3ckuud79qei.apps.googleusercontent.com"
+              data-context="signin"
+              data-ux_mode="popup"
+              data-callback="googleLogin"
+              data-auto_prompt="false"
+            ></div>
+
+            <div
+              class="g_id_signin"
+              data-type="icon"
+              data-shape="circle"
+              data-theme="outline"
+              data-text="signin_with"
+              data-size="large"
+            ></div>
+          </div>
+          <button id="facebook"><img src="media/facebook.png" /></button>
         </div>
-        <button id="facebook"><img src="media/facebook.png" /></button>
+        <p>Don't have an account?<a href="#" class="register"> Register</a></p>
       </div>
-      <p>Don't have an account?<a href="#">   Register</a></p>
+    </div>
+
+    <div class="wrap2 displayNone">
+      <div class="login-box white_glass_background">
+        <h1>Sign in</h1>
+        <form id="signin">
+          <input type="hidden" name="action" value="validate_captcha" />
+
+          <div class="form__group field">
+            <input type="text" name="email" class="form__field" placeholder="Email" required="" />
+            <label for="name" class="form__label">First name</label>
+          </div>
+          <div class="form__group field">
+            <input type="text" name="email" class="form__field" placeholder="Email" required="" />
+            <label for="name" class="form__label">Last name</label>
+          </div>
+          <div class="form__group field">
+            <input type="email" name="email" class="form__field" placeholder="Email" required="" />
+            <label for="name" class="form__label">E-mail</label>
+          </div>
+          <div class="form__group field">
+            <input type="password" name="email" class="form__field" placeholder="Email" required="" />
+            <label for="name" class="form__label">Password</label>
+          </div>
+          <div class="form__group field">
+            <input type="password" name="email" class="form__field" placeholder="Email" required="" />
+            <label for="name" class="form__label">Password again</label>
+          </div>
+          <div class="agree">
+            <input type="checkbox" name="email" class="form__field" placeholder="Email" required="" />
+            <p>Agree to our terms and conditions</p>
+          </div>
+
+          <div class="buttons_1">
+            <button type="submit" class="white">
+              <span class="button__text">Sign In</span>
+            </button>
+            <!--<button id="back" class="white">Back</button>-->
+          </div>
+        </form>
+        <p>Have you an account?<a href="#" class="register"> Log in</a></p>
+      </div>
     </div>
 
     <div class="container">
@@ -87,18 +132,6 @@
       </div>
     </div>
 
-    <div class="toast">
-      <div class="toast-content">
-        <img src="media/error.png" alt="" class="check" />
-
-        <div class="message">
-          <span class="text text-1"></span>
-          <span class="text text-2"></span>
-        </div>
-      </div>
-      <img src="media/log-out.png" alt="" class="close" />
-
-      <div class="progress"></div>
-    </div>
+    <ul class="notifications"></ul>
   </body>
 </html>

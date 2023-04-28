@@ -13,9 +13,13 @@ window.addEventListener("load", () => {
   loader.style.display = "none";
 });
 
-const form = document.querySelector("form");
-const facebookButton = document.querySelector("#facebook");
-const showButton = document.querySelector(".see_not_see");
+const wrap1 = document.querySelector(".wrap1");
+const wrap2 = document.querySelector(".wrap2");
+
+const loginForm = wrap1.querySelector("form#login");
+const signinForm = wrap2.querySelector("form#signin");
+const facebookButton = wrap1.querySelector("#facebook");
+const showButton = wrap1.querySelector(".see_not_see");
 
 showButton.addEventListener("click", (e) => {
   const input = e.target.parentNode.querySelector("input");
@@ -35,12 +39,12 @@ showButton.addEventListener("click", (e) => {
   }
 });
 
-form.addEventListener("submit", async (event) => {
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
-  const formData = new FormData(form);
+  const formData = new FormData(loginForm);
   const json = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -57,6 +61,40 @@ form.addEventListener("submit", async (event) => {
     }, Message.redirect_time);
   } else {
     Message.openToast(user.message, "Error", user.status);
+  }
+});
+
+signinForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
+
+  const formData = new FormData(signinForm);
+  const json = {
+    firstname: formData.get("first"),
+    lastname: formData.get("last"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+    passwordre: formData.get("passwordre"),
+    token,
+  };
+
+  if (json.password !== json.passwordre) {
+    console.log({
+      message: "The passwords don't match!",
+    });
+  } else {
+    const user = await API.fetch(json, "register", "POST");
+
+    if (user.status === "success") {
+      Message.openToast("The activation email has been sent to your e-mail address!", "Success", user.status);
+
+      setTimeout(() => {
+        window.location.replace(index);
+      }, Message.redirect_time);
+    } else {
+      Message.openToast(user.message, "Error", user.status);
+    }
   }
 });
 
@@ -106,3 +144,20 @@ export async function googleLogin(user) {
     Message.openToast(response.message, "Error", response.status);
   }
 }
+
+const registerButtons = document.querySelectorAll(".register");
+registerButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (wrap1.classList.contains("displayBlock")) {
+      wrap1.classList.remove("displayBlock");
+      wrap1.classList.add("displayNone");
+      wrap2.classList.remove("displayNone");
+      wrap2.classList.add("displayBlock");
+    } else {
+      wrap2.classList.remove("displayBlock");
+      wrap2.classList.add("displayNone");
+      wrap1.classList.remove("displayNone");
+      wrap1.classList.add("displayBlock");
+    }
+  });
+});
