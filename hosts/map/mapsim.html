@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Map/Mode Overview</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+<script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    <style>
+        	body {
+      font-family: 'Ubuntu Light', sans-serif;
+      font-weight: 300;
+  margin: 0;
+  position: relative; /* Added */
+}
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+		#upload-container { position: relative; width: 100%; top: 10px; z-index: 1;}
+		.man { opacity: 1; }
+		.opthiddenhidden { display: none; }
+		.opthiddenvisible { opacity: 1; }
+		#toggle-button { position: absolute; top: 0; right: 0; z-index: 9999; }
+				#overlay {
+  top: 30%;
+  left: 22%;
+  transform: translate(-50%, -50%); /* Adjusted the translation to center the overlay */
+  position: absolute;
+  z-index: 3; /* Increased the z-index to bring the overlay to the front */
+  color: rgba(229, 229, 203, 1);
+  background-color: rgba(106, 108, 101, 0.5);
+  padding: 20px;
+  text-align: center;
+  	  border-color: rgba(26, 18, 11, 0.9);
+	  border: 2px solid;
+		}
+				#content {
+  height: 100vh;
+  flex: 1;
+  position: relative; /* Added */
+  z-index: 0; /* Ensure content is behind the overlay */
+		}
+		
+		.marker {
+			border: 2px solid;
+			height: 20px;
+			width: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.hq {
+			height: 32px;
+			width: 57px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.outpost {
+			height: 32px;
+			width: 32px;
+		}
+		.village {
+			height: 32px;
+			width: 32px;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+		}
+		
+    </style>
+</head>
+<body>
+<div id='overlay'>
+		<h2>Map Overview</h2>
+ <div id='upload-container'>
+ 		<br>
+		<h3>Flags (! 1. !)</h3>
+		<input type='file' id='team0-flag' accept='.png' /> Team 0 (Admin)<br>
+        <input type='file' id='team1-flag' accept='.png' /> Team 1<br>
+        <input type='file' id='team2-flag' accept='.png' /> Team 2<br>
+		<br>
+		<h3>Map and Mode (! 2. !)</h3>
+        <input type='file' id='geojson-upload' accept='.geojson' /> Map<br>
+        <input type='file' id='json-upload' accept='.json' /> Mode<br>
+		<br>
+		<br>
+    </div>
+
+</div>
+<div id='content'> 
+    <div id='map'></div>
+    <script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiYnJ5Y2tlciIsImEiOiJjbGNieWoyODQwM2R6M3FzODBtemxodmt5In0.pNQmPDSASJiKcLbMVShzpw';
+
+var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/satellite-v9',
+  center: [0, 0],
+  zoom: 2
+});
+
+var teamColors = {
+  0: 'red',
+  1: 'green',
+  2: 'yellow'
+};
+
+var reader = new FileReader();
+var geojsonInput = document.getElementById('geojson-upload');
+
+geojsonInput.addEventListener('change', function() {
+  if (geojsonInput.files.length > 0) {
+    reader.readAsText(geojsonInput.files[0]);
+  }
+});
+
+reader.onload = function(event) {
+  var geojson = JSON.parse(event.target.result);
+  map.addSource('polygon', {
+    type: 'geojson',
+    data: geojson
+  });
+  map.addLayer({
+    id: 'polygon-layer',
+    type: 'line',
+    source: 'polygon',
+    paint: {
+      'line-color': 'red',
+      'line-width': 2
+    }
+  });
+
+  // Zoom the map to the first feature in the GeoJSON
+  if (geojson.features.length > 0) {
+    var coordinates = geojson.features[0].geometry.coordinates[0];
+    var centerLng = coordinates[0];
+    var centerLat = coordinates[1];
+    map.setCenter([centerLng, centerLat]);
+    map.setZoom(10); // You can adjust the zoom level as needed
+  }
+};
+
+var markers = [];
+
+function loadMarkersFromJSON(jsonData) {
+  markers = JSON.parse(jsonData);
+  
+  // Create an array of markers with properties
+  const mapMarkers = markers.map(markerData => {
+    const markerEl = document.createElement('div');
+    markerEl.classList.add('marker', markerData.type);
+	
+	// Get the team flag image file from the input element
+const teamFlagFile = document.getElementById(`team${markerData.team}-flag`).files[0];
+
+if (teamFlagFile) {
+  // Create a new image element for the team flag
+  const teamFlagImg = document.createElement('img');
+  teamFlagImg.src = URL.createObjectURL(teamFlagFile);
+  teamFlagImg.style.width = '100%';
+  teamFlagImg.style.height = '100%';
+  teamFlagImg.style.objectFit = 'cover';
+  if(markerData.type === 'village')
+  {
+  
+	teamFlagImg.style.borderRadius = '50%';
+  
+  }
+
+  // Add the team flag image to the marker element
+  markerEl.appendChild(teamFlagImg);
+} else {
+  // If no team flag image is selected, fill the marker with the team's color
+  markerEl.style.backgroundColor = teamColors[markerData.team];
+}
+	
+	markerEl.style.borderColor = teamColors[markerData.team];
+    const marker = new mapboxgl.Marker({
+      element: markerEl,
+      style: {
+		height: '20',
+		width: '20',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		border: '2px solid '
+      }
+    });
+    marker.setLngLat([markerData.lng, markerData.lat]);
+    return { 
+      marker: marker,
+      type: markerData.type,
+      team: markerData.team
+    };
+  });
+  
+  // Add all markers to the map
+  mapMarkers.forEach(mapMarker => {
+    mapMarker.marker.addTo(map);
+  });
+  
+  // Center map on first marker
+  if (markers.length > 0) {
+    map.setCenter([markers[0].lng, markers[0].lat]);
+    map.setZoom(10);
+  }
+}
+
+var jsonReader = new FileReader();
+var jsonInput = document.getElementById('json-upload');
+
+jsonInput.addEventListener('change', function() {
+  if (jsonInput.files.length > 0) {
+    jsonReader.readAsText(jsonInput.files[0]);
+  }
+});
+
+jsonReader.onload = function() {
+  loadMarkersFromJSON(jsonReader.result);
+};
+
+
+</script>
+	</div>
+</body>
+</html>

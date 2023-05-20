@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AirTRK™ for hosts</title>
+  <meta charset="UTF-8">
+
+  <style>
+    body {
+      font-family: 'Ubuntu Light', sans-serif;
+      font-weight: 300;
+	  padding: 0;
+	  margin: 0;
+	  height: 100vh;
+	  width: 100%;
+	  	  color: rgba(229, 229, 203, 1);
+		  
+    }
+	.firstrow {
+	
+		  background-color: rgba(26, 18, 11, 0.5);
+	
+	}
+    table {
+      border-collapse: collapse;
+      width: 100%;
+
+
+    }
+    td {
+      border: none;
+      text-align: center;
+	  margin: 0;
+    }
+    #table-div {
+      width: 100%;
+      margin: 0;
+    }
+	#title {
+		
+		
+	  text-align: left;
+	  width: 21%;
+	  font-size: 25px;
+	  border-color: rgba(213, 206, 163, 1);
+	  border-bottom: 2px solid;
+	
+	
+	
+	}
+	p {
+	
+	
+	font-site: 2px;
+	
+	}
+	#menuButtons {
+	
+	  border-color: rgba(213, 206, 163, 1);
+	  border-bottom: 2px solid;
+	
+	
+	
+	}
+	#time {
+	
+	  width: 7%;
+	  border-color: rgba(213, 206, 163, 1);
+	  border-bottom: 2px solid;
+	
+	}
+	.button {
+	
+	
+	
+   background-color: rgba(106, 108, 101, 0.3);
+  	  color: rgba(229, 229, 203, 1);
+  border: 1px solid rgba(213, 206, 163, 1);
+  width: 33%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  transform: skewX(-20deg);
+	
+	}
+	.button:hover {
+	
+	
+	background-color: rgba(213, 206, 163, 1);
+	color: rgba(26, 18, 11, 0.5);
+	
+	
+	}
+	
+		.subbutton {
+	
+	
+	top: 10%;
+   background-color: rgba(106, 108, 101, 0.8);
+  	  color: rgba(229, 229, 203, 1);
+  border: 1px solid rgba(213, 206, 163, 1);
+  width: 200px;
+  height: 50px;
+  padding-bottom: 5%;
+  padding-bottom: 5%;
+  margin: 2%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  transform: skewX(-20deg);
+	
+	}
+	.subbutton:hover {
+	
+	
+	background-color: rgba(213, 206, 163, 1);
+	color: rgba(26, 18, 11, 0.5);
+	
+	
+	}
+	
+	#menuDisabled {
+	
+	border-color: rgb(26, 18, 11);
+	color: rgb(26, 18, 11);
+	background-color: rgba(60, 42, 33, 0.3);
+	
+	}
+	
+.submenu {
+top: 5%;
+left: 80%;
+position: absolute;
+  padding-left: 0%;
+    width: 50px;
+	  margin: 10px;
+  visibility: hidden;
+  background-color: transparent;
+  z-index: 5;
+}
+
+.submenu.enabled {
+top: 20%;
+left: 80%;
+  visibility: visible;
+  position: absolute;
+  padding-left: 0%;
+  width: 50px;
+  z-index: 1;
+  margin: 10px;
+}
+	
+	#content {
+	
+	position: relative;
+	width: 99.4%;
+	height: 95.6%;
+	background-color: rgba(26, 18, 11, 1);
+	
+	}
+	
+	#ver {
+	
+	font-size: 16px;
+	z-index: 2;
+	
+	}
+	
+  </style>
+</head>
+<body>
+  <div id="table-div">
+    <table>
+      <tr class="firstrow">
+        <td colspan="3" id="title">AirTRK™ ᶠᵒʳ ʰᵒˢᵗˢ
+		<span id="ver">ver. 0.a230519<span></td>
+        <td colspan="9" id="menuButtons">
+		
+		<button class="button" id="menuCreate" onclick="toggleSubmenu()">Map&Mode©</button>
+		<button class="button" id="menuDisabled">X</button>
+		<button class="button" id="menuDisabled">X</button>
+		
+		</td>
+        <td colspan="2" id="time"><span id="current-time"></span></td>
+      </tr>
+      <tr class="submenu" id="submenu">
+		<td colspan="2"></td>
+        <td colspan="10">
+		
+		<button class="subbutton" id="createMap" onclick="showMMMap()" >Map</button>
+		<button class="subbutton" id="createMode" onclick="showMMMode()" >Mode</button>
+		<button class="subbutton" id="createOverview" onclick="showMMOverview()">Overview</button>
+		
+		</td>
+        <td colspan="2">	
+		</td>
+      </tr>
+    </table>
+  </div>
+  <iframe id="content"></iframe>
+
+  <script>
+function updateTime() {
+  var currentTime = new Date();
+  var hours = currentTime.getHours();
+  var minutes = currentTime.getMinutes();
+
+  // Pad single-digit hours and minutes with leading zeros
+  var formattedHours = hours.toString().padStart(2, '0');
+  var formattedMinutes = minutes.toString().padStart(2, '0');
+
+  document.getElementById("current-time").innerHTML = formattedHours + ":" + formattedMinutes;
+}
+
+// Update the time initially
+updateTime();
+
+// Refresh the time every minute
+setInterval(updateTime, 15000);
+
+
+var iframe = document.getElementById('content');
+iframe.setAttribute("scrolling", "no");
+		
+	
+	
+function toggleSubmenu() {
+  var submenu = document.querySelector(".submenu");
+  submenu.classList.toggle("enabled");
+}
+
+
+
+function showMMMap() {
+
+	
+	iframe.src = "mapsave.html";
+
+
+}
+
+function showMMMode() {
+
+	
+	iframe.src = "mapmode.html";
+
+
+}
+
+function showMMOverview() {
+
+	
+	iframe.src = "mapsim.html";
+
+
+}
+	
+	
+	
+	
+  </script>
+</body>
+</html>
+
+
+
+

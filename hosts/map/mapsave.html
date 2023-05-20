@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Map Save</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<style>
+
+body {
+      font-family: 'Ubuntu Light', sans-serif;
+      font-weight: 300;
+  margin: 0;
+  position: relative; /* Added */
+}
+
+
+#container {
+
+height: 100%;
+
+}
+
+
+
+#overlay {
+  top: 18%;
+  left: 22%;
+  transform: translate(-50%, -50%); /* Adjusted the translation to center the overlay */
+  position: absolute;
+  z-index: 3; /* Increased the z-index to bring the overlay to the front */
+  color: rgba(229, 229, 203, 1);
+  background-color: rgba(106, 108, 101, 0.5);
+  padding: 20px;
+  text-align: center;
+  	  border-color: rgba(26, 18, 11, 0.9);
+	  border: 2px solid;
+}
+
+#content {
+  height: 100vh;
+  flex: 1;
+  position: relative; /* Added */
+  z-index: 0; /* Ensure content is behind the overlay */
+}
+
+#map {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+.button {
+margin-left: 2%;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgba(229, 229, 203, 1);
+  border: 1px solid rgba(213, 206, 163, 1);
+  width: 20%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  transform: skewX(-20deg);
+}
+
+.button:hover {
+  background-color: rgba(213, 206, 163, 1);
+  color: rgba(26, 18, 11, 0.5);
+}
+
+input[type="text"] {
+  background-color: rgba(106, 108, 101, 0.3);
+    background-color: rgba(213, 206, 163, 0.2);
+	color: rgba(229, 229, 203, 1);
+	  	  border-color: rgba(26, 18, 11, 0.6);
+	  border: 2px solid;
+}
+
+</style>
+</head>
+<body>
+ <div id="container">
+   <div id="overlay">
+    <h2>Map Creator</h2>
+    <div class="calculation-box">
+      <p><h3>Click the map to draw a playspace, then click 'Save' to save the map.</h3></p>
+     <div id="calculated-area"></div>
+      <button class="button" type="button" onclick="savePolygon()">Save</button>
+    </div>
+  </div>
+  
+  <div id="content">
+    <div class="search-box">
+      <form>
+        <input type="text" id="latitude" placeholder="Latitude">
+        <input type="text" id="longitude" placeholder="Longitude">
+        <button type="button" onclick="centerMap()" class="button">Search (lat,lon)</button>
+      </form>
+    </div>
+    <div id="map"></div>
+  </div>
+<style>
+.search-box {
+  position: relative;
+  z-index: 6;
+  background-color: rgba(229, 229, 203, 0.4);
+  padding: 10px;
+  	  border-color: rgba(229, 229, 203, 1);
+	  border: 2px solid;
+}
+
+</style>
+
+<script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.css" type="text/css">
+<div id="map"></div>
+
+<script>
+    function downloadGeoJSON(geojson) {
+        const blob = new Blob([JSON.stringify(geojson)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'polygon.geojson';
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+	
+	var GeoJSONmap;
+	
+    function savePolygon() {
+        const data = draw.getAll();
+		GeoJSONmap = draw.getAll();
+        if (data.features.length > 0) {
+            downloadGeoJSON(data);
+        } else {
+            alert('Draw a polygon first.');
+        }
+    }
+
+
+	function centerMap() {
+  const latitude = parseFloat(document.getElementById('latitude').value);
+  const longitude = parseFloat(document.getElementById('longitude').value);
+  if (!isNaN(latitude) && !isNaN(longitude)) {
+    map.setCenter([longitude, latitude]);
+  } else {
+    alert('Please enter valid coordinates.');
+  }
+}
+
+	mapboxgl.accessToken = 'pk.eyJ1IjoiYnJ5Y2tlciIsImEiOiJjbGNieWoyODQwM2R6M3FzODBtemxodmt5In0.pNQmPDSASJiKcLbMVShzpw';
+    const map = new mapboxgl.Map({
+        container: 'map', // container ID
+        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+        style: 'mapbox://styles/mapbox/satellite-v9', // style URL
+			center: [0, 0],
+			zoom: 2
+    });
+
+    const draw = new MapboxDraw({
+        displayControlsDefault: false,
+        // Select which mapbox-gl-draw control buttons to add to the map.
+        controls: {
+            polygon: true,
+            trash: true
+        },
+        // Set mapbox-gl-draw to draw by default.
+        // The user does not have to click the polygon control button first.
+        defaultMode: 'draw_polygon'
+    });
+    map.addControl(draw);
+
+    map.on('draw.create', updateArea);
+    map.on('draw.delete', updateArea);
+    map.on('draw.update', updateArea);
+
+    function updateArea(e) {
+        const data = draw.getAll();
+        const answer = document.getElementById('calculated-area');
+        if (data.features.length > 0) {
+            const area = turf.area(data);
+            // Restrict the area to 2 decimal points.
+            const rounded_area = Math.round(area * 100) / 100;
+            answer.innerHTML = `<p><strong>${rounded_area}</strong></p><p>square meters</p>`;
+        } else {
+            answer.innerHTML = '';
+            if (e.type !== 'draw.delete')
+                alert('Click the map to draw a polygon.');
+        }
+    }
+	
+</script>
+</div>
+</body>
+</html>

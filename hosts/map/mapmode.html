@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mode Save</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
+	<style>
+	body {
+      font-family: 'Ubuntu Light', sans-serif;
+      font-weight: 300;
+  margin: 0;
+  position: relative; /* Added */
+}
+
+.button {
+margin-left: 2%;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgba(229, 229, 203, 1);
+  border: 1px solid rgba(213, 206, 163, 1);
+  width: 20%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  transform: skewX(-20deg);
+}
+
+.button:hover {
+  background-color: rgba(213, 206, 163, 1);
+  color: rgba(26, 18, 11, 0.5);
+}
+
+button {
+margin-left: 10%;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgba(255, 0, 0, 1);
+  border: 1px solid rgba(255, 0, 0, 1);
+  width: 20%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  transform: skewX(-20deg);
+}
+
+button:hover {
+  background-color: rgba(255, 0, 0, 1);
+  color: rgba(26, 18, 11, 0.5);
+}
+
+
+		.overlay {
+  top: 30%;
+  left: 22%;
+  transform: translate(-50%, -50%); /* Adjusted the translation to center the overlay */
+  position: absolute;
+  z-index: 3; /* Increased the z-index to bring the overlay to the front */
+  color: rgba(229, 229, 203, 1);
+  background-color: rgba(106, 108, 101, 0.5);
+  padding: 20px;
+  text-align: center;
+  	  border-color: rgba(26, 18, 11, 0.9);
+	  border: 2px solid;
+		}
+		#content {
+  height: 100vh;
+  flex: 1;
+  position: relative; /* Added */
+  z-index: 0; /* Ensure content is behind the overlay */
+		}
+#map-container {
+  position: relative;
+  height: 885px;
+  width: 100%;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+#map-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-right: -50%;
+}
+
+#map-overlay span {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px rgba(255, 0, 0, 1);
+}
+
+		.marker {
+			height: 20px;
+			width: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.hq {
+			height: 32px;
+			width: 57px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.outpost {
+			height: 32px;
+			width: 32px;
+		}
+		.village {
+			height: 32px;
+			width: 32px;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+		}
+		
+		#search-box {
+  position: relative;
+  z-index: 6;
+  background-color: rgba(229, 229, 203, 0.4);
+  padding: 10px;
+  	  border-color: rgba(229, 229, 203, 1);
+	  border: 2px solid;
+}
+
+input {
+  background-color: rgba(106, 108, 101, 0.3);
+    background-color: rgba(213, 206, 163, 0.2);
+	color: rgba(229, 229, 203, 1);
+	  	  border-color: rgba(26, 18, 11, 0.6);
+	  border: 2px solid;
+}
+
+select {
+  background-color: rgba(106, 108, 101, 0.3);
+    background-color: rgba(213, 206, 163, 0.2);
+	color: rgba(229, 229, 203, 1);
+	  	  border-color: rgba(26, 18, 11, 0.6);
+	  border: 2px solid;
+}
+
+#create-marker {
+
+	width:30%;
+
+
+}
+#save-markers {
+
+
+	width:30%;
+
+
+}
+
+#marker-list {
+
+	top: 75%;
+	left: 85%;
+	width: 20%;
+
+
+}
+		
+	</style>
+</head>
+<body>
+	<div class="overlay">
+		<h2>Mode Creator</h2>
+		<div id="variables">
+		
+		<div id="p-file">
+		<label for="polygon-file">Map:</label>
+		<input type="file" id="polygon-file">
+		</div>
+		<br>
+		
+		<label for="marker-type">Type:</label>
+		<select id="marker-type">
+			<option value="hq">HQ</option>
+			<option value="outpost">Outpost</option>
+			<option value="village">Village</option>
+		</select>
+		<br>
+		<br>
+		
+		<label for="marker-team">Team:</label>
+		<input type="number" id="marker-team" min="0" max="2" step="1" value="0">
+		<br>
+		<br>
+		
+		<div>
+		<div id="buttons">
+		<button class="button" id="create-marker">Create Marker</button>
+		<button class="button" id="save-markers">Save Markers</button>
+		<br>
+		
+		</div>
+		
+		</div>
+		</div>
+	</div>
+	<div class="overlay" id="marker-list">
+	Marker List
+  <ul id="markers"></ul>
+</div>
+
+	<div id="content">
+<div id="search-box">
+  <input type="text" id="lat" placeholder="Latitude">
+        <input type="text" id="long" placeholder="Longitude">
+  <button class="button"  id="search-btn">Search (lat,lon)</button>
+ </div>
+<div id="map-container">
+  <div id="map"></div>
+  <div id="map-overlay"><span>+</span></div>
+</div>
+
+
+	</div>
+	<script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
+	<script>
+		mapboxgl.accessToken = 'pk.eyJ1IjoiYnJ5Y2tlciIsImEiOiJjbGNiemR2NGwweTM5M29tcGoxaDI1ZHl4In0.9MSEB41XBJCs7K5CaSSAHw';
+		const map = new mapboxgl.Map({
+			container: 'map',
+			style: 'mapbox://styles/mapbox/satellite-v9',
+			center: [0, 0],
+			zoom: 2
+		});
+		
+
+function updateMarkerList() {
+  const markerList = document.getElementById('markers');
+  markerList.innerHTML = '';
+
+  markers.forEach((marker, index) => {
+    const listItem = document.createElement('li');
+    listItem.textContent = marker.name;
+    markerList.appendChild(listItem);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'X';
+    deleteButton.addEventListener('click', () => {
+      marker.marker.remove();
+      markers.splice(index, 1);
+      updateMarkerList();
+    });
+    listItem.appendChild(deleteButton);
+  });
+}
+
+
+		document.getElementById('polygon-file').addEventListener('change', (event) => {
+    const files = event.target.files;
+    if (files.length === 0) {
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        geojson = JSON.parse(event.target.result);
+        map.addSource('polygon', {
+            'type': 'geojson',
+            'data': geojson
+        });
+        map.addLayer({
+            'id': 'polygon-layer',
+            'type': 'fill',
+            'source': 'polygon',
+            'layout': {},
+            'paint': {
+                'fill-color': '#088',
+                'fill-opacity': 0.4
+            }
+        });
+        const bounds = new mapboxgl.LngLatBounds();
+        geojson.features[0].geometry.coordinates[0].forEach((coord) => {
+            bounds.extend(coord);
+        });
+        map.fitBounds(bounds, { padding: 50 });
+    };
+    reader.readAsText(files[0]);
+});
+
+
+		const markers = [];
+
+let markerCounter = 0;
+
+function createMarker(type, team) {
+  const markerEl = document.createElement('div');
+  markerEl.className = `marker ${type}`;
+  if (type === 'hq' && team === 0) {
+    markerEl.style.backgroundColor = 'red';
+  } else if (team === 0) {
+    markerEl.style.backgroundColor = 'red';
+  } else if (team === 1) {
+    markerEl.style.backgroundColor = 'green';
+  } else if (team === 2) {
+    markerEl.style.backgroundColor = 'yellow';
+  }
+  
+  const markerName = `${team}${type} No. ${markerCounter}`;
+  markerCounter++;
+
+  const marker = new mapboxgl.Marker(markerEl);
+  marker.setLngLat(map.getCenter()).addTo(map);
+
+  markers.push({ name: markerName, type, team, lng: marker.getLngLat().lng, lat: marker.getLngLat().lat, marker });
+
+  updateMarkerList();
+
+  return markerEl;
+}		
+		
+document.getElementById('create-marker').addEventListener('click', () => {
+  const type = document.getElementById('marker-type').value;
+  const team = parseInt(document.getElementById('marker-team').value);
+  const markerEl = createMarker(type, team);
+
+  const marker = new mapboxgl.Marker(markerEl);
+  marker.setLngLat(map.getCenter()).addTo(map);
+
+  
+
+  updateMarkerList();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('save-markers').addEventListener('click', function() {
+  const data = JSON.stringify(markers);
+  const a = document.createElement('a');
+  const file = new Blob([data], { type: 'application/json' });
+  a.href = URL.createObjectURL(file);
+  a.download = 'markers.json';
+  a.click();
+    console.log('Save markers clicked');
+  });
+});
+
+	function centerMap() {
+  const latitude = parseFloat(document.getElementById('latitude').value);
+  const longitude = parseFloat(document.getElementById('longitude').value);
+  if (!isNaN(latitude) && !isNaN(longitude)) {
+    map.setCenter([longitude, latitude]);
+  } else {
+    alert('Please enter valid coordinates.');
+  }
+}
+	</script>
+</body>
+</html>
