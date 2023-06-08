@@ -19,7 +19,7 @@ const gameSchema = new mongoose.Schema(
     desc: {
       type: String,
       required: true,
-      max: 500,
+      max: 200,
     },
     password: {
       type: String,
@@ -41,6 +41,10 @@ const gameSchema = new mongoose.Schema(
         type: Number,
         required: false,
       },
+    },
+    map_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
     },
     status: {
       type: Number,

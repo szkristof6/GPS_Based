@@ -55,8 +55,7 @@ fastify.get("/user/logout", { preHandler: [fastify.verify] }, logoutUser); // Ki
 
 // Game methods - Minden olyan funkció, ami a játékhoz tartozik
 
-const general = require("./methods/game/create/general");
-const gamemode = require("./methods/game/create/gamemode");
+const createGame = require("./methods/game/createGame");
 
 const joinGame = require("./methods/game/joinGame");
 const updateLocation = require("./methods/game/updateLocation");
@@ -66,8 +65,7 @@ const getPlayers = require("./methods/game/getPlayers");
 
 const changeGameStatus = require("./methods/game/changeGameStatus");
 
-fastify.post("/game/create/general", { preHandler: [fastify.verify, fastify.captcha] }, general); // Játék létrehozása 1
-fastify.post("/game/create/gamemode", { preHandler: [fastify.verify, fastify.captcha] }, gamemode); // Játék létrehozása 2
+fastify.post("/game/create", { preHandler: [fastify.verify, fastify.captcha] }, createGame); // Játék létrehozása 1
 
 fastify.post("/game/join", { preHandler: [fastify.verify, fastify.captcha] }, joinGame); // Csatlakozás a játékba
 fastify.post("/game/update/location", { preHandler: [fastify.verify] }, updateLocation); // Pozició frissítés
@@ -80,6 +78,11 @@ fastify.get("/game/status/start", { preHandler: [fastify.verify, fastify.captcha
 fastify.get("/game/status/stop", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: stop
 fastify.get("/game/status/pause", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: pause
 fastify.get("/game/status/resume", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: resume
+
+// Upload methods - 
+
+const pictureUpload = require("./methods/upload/picture");
+fastify.post("/upload/picture", pictureUpload);
 
 // Chat methods -
 

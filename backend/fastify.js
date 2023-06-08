@@ -11,6 +11,8 @@ const fastify = require("fastify")({ serverFactory });
 
 require("dotenv").config();
 
+fastify.register(require('@fastify/multipart'));
+
 fastify.register(require("fastify-socket.io"), {
   cors: {
     origin: process.env.NODE_ENV === "dev" ? "*" : process.env.CLIENT_URI,

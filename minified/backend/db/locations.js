@@ -1,1 +1,0 @@
-const db=require("./db"),locations=db.get("locations");module.exports=locations;

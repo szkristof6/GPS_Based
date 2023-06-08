@@ -1,1 +1,0 @@
-const users=require("../../db/users");async function loginUser(s,e){try{const s=await users.find();e.send(s)}catch(s){e.send(s)}}module.exports=loginUser;

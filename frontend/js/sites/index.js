@@ -9,7 +9,7 @@ window.addEventListener("load", () => {
     if (response.status === "allowed") window.location.replace(next);
   });
 
-  const loader = document.querySelector(".container");
+  const loader = document.querySelector(".loader_container");
   loader.style.display = "none";
 });
 
@@ -17,7 +17,11 @@ const wrap1 = document.querySelector(".wrap1");
 const wrap2 = document.querySelector(".wrap2");
 
 const loginForm = wrap1.querySelector("form#login");
+const loginButton = loginForm.querySelector(".white");
+
 const signinForm = wrap2.querySelector("form#signin");
+const signinButton = signinForm.querySelector(".white");
+
 const facebookButton = wrap1.querySelector("#facebook");
 const showButton = wrap1.querySelector(".see_not_see");
 
@@ -42,6 +46,8 @@ showButton.addEventListener("click", (e) => {
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  loginButton.classList.toggle("button--loading");
+
   const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
   const formData = new FormData(loginForm);
@@ -52,6 +58,7 @@ loginForm.addEventListener("submit", async (event) => {
   };
 
   const user = await API.fetch(json, "login/user", "POST");
+  loginButton.classList.toggle("button--loading");
 
   if (user.status === "success") {
     Message.openToast("You will be redirected in a second", "Success", user.status);
@@ -66,6 +73,8 @@ loginForm.addEventListener("submit", async (event) => {
 
 signinForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  signinButton.classList.toggle("button--loading");
 
   const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
@@ -85,6 +94,7 @@ signinForm.addEventListener("submit", async (event) => {
     });
   } else {
     const user = await API.fetch(json, "register", "POST");
+    signinButton.classList.toggle("button--loading");
 
     if (user.status === "success") {
       Message.openToast("The activation email has been sent to your e-mail address!", "Success", user.status);

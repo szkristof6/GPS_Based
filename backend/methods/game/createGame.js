@@ -3,9 +3,9 @@ const crypto = require("crypto");
 const yup = require("yup");
 const escapeHtml = require('escape-html')
 
-const Game = require("../../../collections/game");
+const Game = require("../../collections/game");
 
-const { trimmedString, dateTime } = require("../../../schema");
+const { trimmedString, dateTime } = require("../../schema");
 
 module.exports = async function (req, res) {
   try {

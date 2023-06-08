@@ -1,1 +1,0 @@
-require("dotenv").config();const fastify=require("../fastify");function JWT_sign(e){const s={user_id:e._id,username:e.username,iss:"https://api.stagenex.hu"};return fastify.jwt.sign(s,{expiresIn:"1d"})}module.exports=JWT_sign;
