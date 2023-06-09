@@ -16,7 +16,7 @@ fastify.get("/", (req, res) => res.send({ status: "disallowed" }));
 
 fastify.get("/page/verify", { preHandler: [fastify.verify] }, (req, res) => {
   if (!req.verified) return res.send({ status: "disallowed" });
-  return res.send({ status: "allowed" });
+  return res.send({ status: "allowed", permission: req.user.permission });
 });
 
 fastify.get("/page/socket/verify", (req, res) => {
@@ -67,13 +67,13 @@ const getPlayers = require("./methods/game/getPlayers");
 
 const changeGameStatus = require("./methods/game/changeGameStatus");
 
-fastify.post("/game/create", createGame); // Játék létrehozása 1
+fastify.post("/game/create",{ preHandler: [fastify.verify] }, createGame); // Játék létrehozása 1
 
 fastify.post("/game/join", { preHandler: [fastify.verify, fastify.captcha] }, joinGame); // Csatlakozás a játékba
 fastify.post("/game/update/location", { preHandler: [fastify.verify] }, updateLocation); // Pozició frissítés
 fastify.get("/game/data", { preHandler: [fastify.verify] }, getGame); // Játék adatok lekérdezése
-fastify.get("/game/list/admin", getGames); // Adminként kezelt játékok lekérdezése
-fastify.get("/game/data/admin/:id", getGame2); // Adminként kezelt játékok lekérdezése
+fastify.get("/game/list/admin", { preHandler: [fastify.verify] }, getGames); // Adminként kezelt játékok lekérdezése
+fastify.get("/game/data/admin/:id", { preHandler: [fastify.verify] }, getGame2); // Adminként kezelt játékok lekérdezése
 fastify.get("/game/status", { preHandler: [fastify.verify] }, getStatus); // Játék státus lekérdezés
 fastify.get("/game/players", { preHandler: [fastify.verify] }, getPlayers); // Játékosok lekérdezése
 
@@ -88,9 +88,9 @@ fastify.get("/game/status/resume", { preHandler: [fastify.verify, fastify.captch
 const pictureUpload = require("./methods/upload/picture");
 const servePicture = require("./methods/upload/servePicture");
 
-fastify.post("/upload/picture", pictureUpload);
+fastify.post("/upload/picture", { preHandler: [fastify.verify] }, pictureUpload);
 
-fastify.get("/cdn/p/:hash", servePicture)
+fastify.get("/cdn/p/:hash", { preHandler: [fastify.verify] }, servePicture);
 
 // Chat methods -
 
@@ -107,24 +107,6 @@ const getPlayerData = require("./methods/player/getPlayerData");
 
 fastify.post("/player/add", { preHandler: [fastify.verify] }, addPlayer); // Játékos hozzásadáse
 fastify.get("/player/data", { preHandler: [fastify.verify] }, getPlayerData); // Játékos adatok lekérdezése
-
-// Team methods
-
-const addTeam = require("./methods/team/addTeam");
-const listTeams = require("./methods/team/listTeams");
-const deleteTeam = require("./methods/team/deleteTeam");
-
-fastify.post("/team/add", { preHandler: [fastify.verify, fastify.captcha] }, addTeam); // Csapat hozzásadáse
-fastify.get("/team/list", { preHandler: [fastify.verify] }, listTeams); // Csapatok kilistázása
-fastify.delete("/team/delete", { preHandler: [fastify.verify, fastify.captcha] }, deleteTeam); // Csapat törlése
-
-// Obejct methods
-
-const addObject = require("./methods/object/addObject");
-const deleteObject = require("./methods/object/deleteObject");
-
-fastify.post("/object/add", { preHandler: [fastify.verify, fastify.captcha] }, addObject); // Objektum hozzásadáse
-fastify.delete("/object/delete", { preHandler: [fastify.verify, fastify.captcha] }, deleteObject); // Objektum törlése
 
 // Moderator methods
 

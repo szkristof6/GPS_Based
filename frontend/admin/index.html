@@ -1,105 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/index.css" />
     <title>Game</title>
-</head>
-<body>
+
+    <script src="../js/axios/axios.min.js"></script>
+  </head>
+  <body>
     <!-- NAVIGATION -->
     <div class="navigation">
-        <ul>
-            <li class="list active">
-                <a href="#" id="menu_1">
-                    <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
-                    <span class="text ">home</span>
-                </a>
-            </li>
-            <li class="list">
-                <a href="#" id="menu_2">
-                    <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
-                    <span class="text">Profile</span>
-                </a>
-            </li>
-            <li class="list">
-                <a href="#" id="menu_3">
-                    <span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span>
-                    <span class="text">Messages</span>
-                </a>
-            </li>
-            <li class="list">
-                <a href="#" id="menu_4">
-                    <span class="icon"><ion-icon name="image-outline"></ion-icon></span>
-                    <span class="text">Photos</span>
-                </a>
-            </li>
-            <li class="list" id="menu_5">
-                <a href="#">
-                    <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
-                    <span class="text">Setting</span>
-                </a>
-            </li>
-            <div class="indicator"></div>
-        </ul>
+      <ul>
+        <li class="list active">
+          <a href="#" id="menu_1">
+            <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+            <span class="text">home</span>
+          </a>
+        </li>
+        <li class="list">
+          <a href="#" id="menu_2">
+            <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+            <span class="text">Profile</span>
+          </a>
+        </li>
+        <li class="list">
+          <a href="#" id="menu_3">
+            <span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span>
+            <span class="text">Messages</span>
+          </a>
+        </li>
+        <li class="list">
+          <a href="#" id="menu_4">
+            <span class="icon"><ion-icon name="image-outline"></ion-icon></span>
+            <span class="text">Photos</span>
+          </a>
+        </li>
+        <li class="list" id="menu_5">
+          <a href="#">
+            <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+            <span class="text">Setting</span>
+          </a>
+        </li>
+        <div class="indicator"></div>
+      </ul>
     </div>
 
     <!-- CONTENT -->
     <iframe id="iframe" src="pages/welcome.html"></iframe>
 
     <!-- SCRIPTS -->
-    <script type="text/javascript">
-        const list = document.querySelectorAll('.list');
-        function activelink() {
-            list.forEach((item) =>
-                item.classList.remove('active'));
-            this.classList.add('active');
-
-        }
-        list.forEach((item) =>
-            item.addEventListener('click', activelink));
-
-    </script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <!--<script src="JavaSC/mapMenu.js"></script>-->
-    <script>
-        // Get the HTML element
-        const menu1 = document.getElementById('menu_1');
-        const menu2 = document.getElementById('menu_2');
-        const menu3 = document.getElementById('menu_3');
-        const menu4 = document.getElementById('menu_4');
-        const menu5 = document.getElementById('menu_5');
-        const iframe = document.getElementById('iframe');
-
-
-
-        //liasteners
-        menu1.addEventListener('click', function () {
-            console.log('Menu 1 clicked!');
-            iframe.src = "pages/welcome.html";
-        });
-
-        menu2.addEventListener('click', function () {
-            console.log('Menu 2 clicked!');
-            iframe.src = "pages/mapsave.html";
-        });
-
-        menu3.addEventListener('click', function () {
-            console.log('Menu 3 clicked!');
-            iframe.src = "pages/mapmode.html";
-        });
-
-        menu4.addEventListener('click', function () {
-            console.log('Menu 4 clicked!');
-            iframe.src = "pages/mapsim.html";
-        });
-
-        menu5.addEventListener('click', function () {
-            console.log('Menu 5 clicked!');
-            iframe.src = "pages/admin.html";
-        });
-    </script>
-</body>
+    <script type="module" src="js/index.js"></script>
+  </body>
 </html>

@@ -2,11 +2,12 @@ import * as API from "../api.js";
 import * as Message from "../toast.js";
 
 const next = "waiting.html";
+const admin = "admin/";
 const index = "index.html";
 
 window.addEventListener("load", () => {
   API.fetch("", "page/verify", "GET").then((response) => {
-
+    if (response.status === "allowed" && response.permission === 10 ) window.location.replace(admin);
     if (response.status === "disallowed") window.location.replace(index);
   });
 

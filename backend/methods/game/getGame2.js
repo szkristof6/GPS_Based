@@ -5,7 +5,7 @@ const Team = require("../../collections/team");
 
 module.exports = async function (req, res) {
   try {
-    // if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
     const game = await Game.findOne({ _id: req.params.id });
     const map = await Map.findOne({ _id: game.map_id });

@@ -10,13 +10,12 @@ const Object = require("../../collections/object");
 
 const { trimmedString, dateTime, adminArray, locationArray, objectsArray } = require("../../schema");
 
-const imageUpload = require("../upload/picture");
 const mongoose = require("mongoose");
 
 module.exports = async function (req, res) {
   try {
-    //if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
-    //if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+    // if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
     const schema = yup.object().shape({
       name: trimmedString.max(255),
@@ -36,7 +35,7 @@ module.exports = async function (req, res) {
     const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
 
     const map = new Map({
-      user_id: new mongoose.Types.ObjectId(111),
+      user_id: new mongoose.Types.ObjectId(req.body.user_id),
       location: req.body.map,
     });
 
@@ -74,7 +73,7 @@ module.exports = async function (req, res) {
 
     await object.save();
 
-    return res.send({ status: "success", savedGame });
+    return res.send({ status: "success" });
   } catch (error) {
     return res.send(error);
   }

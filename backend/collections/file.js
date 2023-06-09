@@ -20,6 +20,10 @@ const fileSchema = new mongoose.Schema(
       trim: true,
       max: 255,
     },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
   },
   { timestamps: true }
 );

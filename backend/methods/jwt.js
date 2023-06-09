@@ -5,12 +5,11 @@ const JwtRefresh = require("../collections/jwt_refresh");
 const { fastify } = require("../fastify");
 const { setCookie } = require("./cookie");
 
-
 const tokenTime = "10m";
 const refreshTime = "30d";
 
 function JWT_sign(user, expiresIn) {
-  return fastify.jwt.sign({ user_id: user._id }, { expiresIn });
+  return fastify.jwt.sign({ user_id: user._id, permission: user.permission }, { expiresIn });
 }
 
 async function jwtMiddleware(request, reply) {
@@ -68,8 +67,7 @@ async function setJWTCookie(user, res) {
     const refresh = JWT_sign(user, refreshTime);
 
     const existing = await JwtRefresh.findOne({ user_id: user._id });
-    if (existing)
-      await JwtRefresh.updateOne({ user_id: user._id }, { $set: { token: refresh } });
+    if (existing) await JwtRefresh.updateOne({ user_id: user._id }, { $set: { token: refresh } });
     else {
       const refreshToken = new JwtRefresh({
         user_id: user._id,

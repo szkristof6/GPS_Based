@@ -3,12 +3,14 @@ const path = require("path");
 const sharp = require("sharp");
 const escapeHtml = require("escape-html");
 const crypto = require("crypto");
-const base64url = require('base64url');
+const base64url = require("base64url");
+const mongoose = require("mongoose");
 
 const File = require("../../collections/file");
 
-
 module.exports = async function (request, reply) {
+  if (!request.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
   const uploadDir = "uploads";
   const files = await request.saveRequestFiles();
 
@@ -22,7 +24,7 @@ module.exports = async function (request, reply) {
     }
 
     const fileExtension = path.extname(file.filename);
-    const fileName =  escapeHtml(file.filename.replace(fileExtension, ""));
+    const fileName = escapeHtml(file.filename.replace(fileExtension, ""));
     const tempFilePath = path.join(uploadDir, `${fileName}${fileExtension}`);
 
     try {
@@ -49,8 +51,9 @@ module.exports = async function (request, reply) {
       const filetoDB = new File({
         name: uniqueFilename,
         type: "webp",
-        id: base64url(crypto.randomBytes(64).toString("hex")).substring(0, 25)
-      })
+        id: base64url(crypto.randomBytes(64).toString("hex")).substring(0, 25),
+        user_id: new mongoose.Types.ObjectId(request.user.user_id)
+      });
 
       const savedFile = await filetoDB.save();
 

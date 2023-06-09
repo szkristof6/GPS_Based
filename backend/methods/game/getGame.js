@@ -11,13 +11,14 @@ module.exports = async function (req, res) {
 
     const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(gameID.value) });
 
+    
+
     return res.send({
       status: "success",
       game: {
         location: game.location,
         status: game.status,
       },
-      objects: []
     });
   } catch (error) {
     return res.send(error);

@@ -11,6 +11,8 @@ const supportedFormats = ["jpg", "jpeg", "png", "webp"];
 
 // API endpoint to retrieve the current public image
 module.exports = async function (request, reply) {
+  if (!request.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+
   // Logic to fetch the requested image from your server based on the provided hash and format
   const hash = request.params.hash;
   const { width, height } = request.query;
