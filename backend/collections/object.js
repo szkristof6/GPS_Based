@@ -2,31 +2,32 @@ const mongoose = require("mongoose");
 
 const objectSchema = new mongoose.Schema(
   {
-    type: {
-      type: String,
-      required: true,
-      trim: true,
-      max: 255,
-    },
-    location: {
-      x: {
-        type: Number,
-        required: true,
-      },
-      y: {
-        type: Number,
-        required: true,
-      },
-    },
-    radius: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    game_id: {
+    map_id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    objects: [
+      {
+        type: {
+          type: String,
+          required: true,
+        },
+        team_id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+        },
+        location: {
+          x: {
+            type: Number,
+            required: true,
+          },
+          y: {
+            type: Number,
+            required: true,
+          },
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

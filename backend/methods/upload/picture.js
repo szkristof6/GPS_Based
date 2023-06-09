@@ -1,56 +1,75 @@
 const fs = require("fs");
+const path = require("path");
 const sharp = require("sharp");
-const path = require('path');
+const escapeHtml = require("escape-html");
+const crypto = require("crypto");
+const base64url = require('base64url');
+
+const File = require("../../collections/file");
 
 
 module.exports = async function (request, reply) {
   const uploadDir = "uploads";
+  const files = await request.saveRequestFiles();
 
-  // Create the uploads directory if it doesn't exist
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
+  if (!files || files.length === 0) {
+    return [{ status: "error", message: "No files uploaded" }];
   }
 
-  const data = await request.file();
+  const uploadPromises = files.map(async (file) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return { status: "error", message: "Only image files are allowed" };
+    }
 
-  if (!data || !data.mimetype.startsWith("image/")) {
-    reply.code(400).send({ error: "Only image files are allowed" });
-    return;
-  }
+    const fileExtension = path.extname(file.filename);
+    const fileName =  escapeHtml(file.filename.replace(fileExtension, ""));
+    const tempFilePath = path.join(uploadDir, `${fileName}${fileExtension}`);
 
-  const fileExtension = path.extname(data.filename);
-  const fileName = data.filename.replace(fileExtension, "");
-  const tempFilePath = `${uploadDir}/${fileName}${fileExtension}`;
-
-  const fileStream = fs.createWriteStream(tempFilePath);
-
-  data.file.pipe(fileStream);
-
-  fileStream.on("error", (err) => {
-    console.error(err);
-    reply.code(500).send({ error: "Internal Server Error" });
-  });
-
-  fileStream.on("finish", async () => {
     try {
-      // Generate a unique filename for the compressed image
+      // Create a readable stream from the file data
+      const fileStream = fs.createReadStream(file.filepath);
+
+      // Save the file stream to disk
+      await new Promise((resolve, reject) => {
+        fileStream.pipe(fs.createWriteStream(tempFilePath)).on("finish", resolve).on("error", reject);
+      });
+
       const uniqueFilename = `${Date.now()}_${fileName}.webp`;
+      const tempFileWebpPath = path.join(uploadDir, uniqueFilename);
 
-      const tempFileWebpPath = `${uploadDir}/${uniqueFilename}.webp`;
-
-      // Convert the uploaded image to webp format
+      // Compress and convert the uploaded image to WebP format
       await sharp(tempFilePath)
         .toFormat("webp")
-        .webp({ quality: 80 }) // Set the desired WEBP quality
+        .webp({ quality: 80 }) // Set the desired WebP quality
         .toFile(tempFileWebpPath);
 
       // Remove the temporary uploaded file
-      fs.unlinkSync(tempFilePath);
+      await fs.promises.unlink(tempFilePath);
 
-      reply.send({ message: "File uploaded and converted to WEBP successfully" });
+      const filetoDB = new File({
+        name: uniqueFilename,
+        type: "webp",
+        id: base64url(crypto.randomBytes(64).toString("hex")).substring(0, 25)
+      })
+
+      const savedFile = await filetoDB.save();
+
+      return { status: "success", file: savedFile.id };
     } catch (err) {
-      console.error(err);
-      reply.code(500).send({ error: "Internal Server Error" });
+      console.error(`Error processing file: ${file.filename}`, err);
+      return { status: "error", message: `Error processing file: ${file.filename}` };
     }
+  });
+
+  const results = await Promise.all(uploadPromises);
+
+  let error = false;
+  results.forEach((element) => {
+    if (element.status === "error") return reply.code(400).send({ status: "error", message: element.message });
+  });
+
+  return reply.send({
+    status: error === false ? "success" : "error",
+    files: results.map((x) => x.file),
   });
 };

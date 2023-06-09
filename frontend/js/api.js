@@ -21,7 +21,25 @@ export const fetch = async (data, route, method) => {
     });
 
     return response.data;
-  } catch ({response: error}) {
+  } catch ({ response: error }) {
+    return error.data;
+  }
+};
+
+export const fetchForm = async (data, route) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      url: `${backend_uri}/${route}`,
+      data,
+      withCredentials: true,
+    });
+
+    return response.data;
+  } catch ({ response: error }) {
     return error.data;
   }
 };

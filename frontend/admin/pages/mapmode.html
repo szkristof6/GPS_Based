@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mode Save</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/mapMode.css" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+  </head>
+  <body>
+    <div class="overlay">
+      <h2>Mode Creator</h2>
+      <div id="variables">
+        <div id="p-file">
+          <label for="polygon-file">Map:</label>
+          <input type="file" id="polygon-file" />
+        </div>
+        <br />
+
+        <label for="marker-type">Type:</label>
+        <select id="marker-type">
+          <option value="hq">HQ</option>
+          <option value="outpost">Outpost</option>
+          <option value="village">Village</option>
+        </select>
+        <br />
+        <br />
+
+        <!--<label for="marker-team">Team:</label>
+      <input type="number" id="marker-team" min="0" max="2" step="1" value="0">-->
+        <label for="marker-team">team:</label>
+        <select name="marker-team" id="marker-team">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        <br />
+        <br />
+
+        <div>
+          <div id="buttons">
+            <button class="button" id="create-marker">Create Marker</button>
+            <button class="button" id="save-markers">Save Markers</button>
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="overlay" id="marker-list">
+      Marker List
+      <ul id="markers"></ul>
+    </div>
+    <div class="container">
+      <input placeholder="lat/long" required="" class="input" name="text" type="text" />
+      <div class="icon">
+        <svg viewBox="0 0 512 512" class="ionicon" xmlns="http://www.w3.org/2000/svg">
+          <title>Search</title>
+          <path
+            stroke-width="32"
+            stroke-miterlimit="10"
+            stroke="currentColor"
+            fill="none"
+            d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
+          ></path>
+          <path
+            d="M338.29 338.29L448 448"
+            stroke-width="32"
+            stroke-miterlimit="10"
+            stroke-linecap="round"
+            stroke="currentColor"
+            fill="none"
+          ></path>
+        </svg>
+      </div>
+    </div>
+    <div id="content">
+      <!--<div id="search-box">
+      <input type="text" id="lat" placeholder="Latitude">
+      <input type="text" id="long" placeholder="Longitude">
+      <button class="button" id="search-btn">Search (lat,lon)</button>
+    </div>
+    <button id='toggle-button'>Search</button>-->
+
+      <div id="map-container">
+        <div id="map"></div>
+        <div id="map-overlay"><span>+</span></div>
+      </div>
+    </div>
+  </body>
+  <script src="../js/mapMode.js"></script>
+</html>

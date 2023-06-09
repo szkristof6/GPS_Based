@@ -1,0 +1,227 @@
+/*COLORS*/
+:root {
+    --col1: #536332;
+    --col2: #789249;
+    --col3: #92ae5e;
+}
+
+/*---------------------------------------------------------------------*/
+body {
+    font-family: 'Ubuntu Light', sans-serif;
+    font-weight: 300;
+    margin: 0;
+    position: relative;
+    overflow: hidden
+}
+
+button{
+    cursor: pointer;
+}
+
+
+.overlay {
+    top: 30%;
+    left: 22%;
+    transform: translate(-50%, -50%);
+    /* Adjusted the translation to center the overlay */
+    position: absolute;
+    z-index: 3;
+    /* Increased the z-index to bring the overlay to the front */
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#content {
+    height: 100vh;
+    flex: 1;
+    position: relative;
+    /* Added */
+    z-index: 0;
+    /* Ensure content is behind the overlay */
+}
+
+#map-container {
+    position: relative;
+    height: 885px;
+    width: 100%;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#map-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-right: -50%;
+}
+
+#map-overlay span {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px rgba(255, 0, 0, 1);
+}
+
+.marker {
+    height: 20px;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hq {
+    height: 32px;
+    width: 57px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.outpost {
+    height: 32px;
+    width: 32px;
+}
+
+.village {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#search-box {
+    position: relative;
+    z-index: 6;
+    background-color: rgba(229, 229, 203, 0.4);
+    padding: 10px;
+    border-color: rgba(229, 229, 203, 1);
+    border: 2px solid;
+    display: none;
+}
+
+input {
+    background-color: rgba(106, 108, 101, 0.3);
+    background-color: rgba(213, 206, 163, 0.2);
+    color: rgba(229, 229, 203, 1);
+    border-color: rgba(26, 18, 11, 0.6);
+    border: 2px solid;
+}
+
+select {
+    background-color: rgba(106, 108, 101, 0.3);
+    background-color: rgba(213, 206, 163, 0.2);
+    color: rgba(229, 229, 203, 1);
+    border-color: rgba(26, 18, 11, 0.6);
+    border: 2px solid;
+}
+
+#create-marker {
+    width: 30%;
+}
+
+#save-markers {
+    width: 30%;
+}
+
+#marker-list {
+    top: 75%;
+    left: 85%;
+    width: 20%;
+}
+
+/*file upload css*/
+label {
+    display: inline-block;
+    background-color: #575b28;
+    color: white;
+    padding: 0.5rem;
+    font-family: sans-serif;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+#toggle-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    background-color: #9dab5e;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/*search button*/
+.container {
+    position: absolute;
+    --size-button: 40px;
+    z-index: 9999;
+    top: 30px;
+    left: 30px;
+  }
+  
+  .input {
+    padding-left: var(--size-button);
+    height: var(--size-button);
+    font-size: 15px;
+    border: none;
+    color: #fff;
+    outline: none;
+    width: 0px;
+    transition: all ease 0.3s;
+    background-color: #f4f5f8;
+    box-shadow: 1.5px 1.5px 3px #0e0e0e, -1.5px -1.5px 3px rgb(95 94 94 / 25%), inset 0px 0px 0px #0e0e0e, inset 0px -0px 0px #5f5e5e;
+    border-radius: 50px;
+    cursor: pointer;
+  }
+  
+  .input:focus,
+  .input:not(:invalid) {
+    width: 200px;
+    cursor: text;
+    box-shadow: 0px 0px 0px #0e0e0e, 0px 0px 0px rgb(95 94 94 / 25%), inset 1.5px 1.5px 3px #0e0e0e, inset -1.5px -1.5px 3px #5f5e5e;
+  }
+  
+  .input:focus + .icon,
+  .input:not(:invalid) + .icon {
+    pointer-events: all;
+    cursor: pointer;
+  }
+  
+  .container .icon {
+    position: absolute;
+    width: 25px;
+    top: 0;
+    left: 0;
+    padding: 8px;
+    pointer-events: none;
+  }
+  
+  .container .icon svg {
+    width: 100%;
+    height: 100%;
+  }

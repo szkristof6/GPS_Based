@@ -4,36 +4,46 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/sign.css" />
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/loader.css" />
     <link rel="stylesheet" href="css/toast.css" />
-    <title>Password reset</title>
+    <title>Be a member</title>
 
     <script src="https://www.google.com/recaptcha/api.js?render=6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG"></script>
-    <script src="js/sites/reset.js" type="module"></script>
+
+    <script src="js/sites/sign.js" type="module"></script>
     <script src="js/axios/axios.min.js"></script>
   </head>
   <body>
     <div class="login-box white_glass_background">
-      <h1>Password reset</h1>
+      <h1>Sign in</h1>
       <form>
         <input type="hidden" name="action" value="validate_captcha" />
 
         <div class="user-box">
-          <input type="text" name="email" required="" />
-          <label>E-mail address</label>
+          <input type="text" name="first" required="" />
+          <label>First name</label>
+        </div>
+        <div class="user-box">
+          <input type="text" name="last" required="" />
+          <label>Last name</label>
+        </div>
+        <div class="user-box">
+          <input type="email" name="email" required="" />
+          <label>E-mail</label>
         </div>
         <div class="user-box">
           <input type="password" name="password" required="" />
-          <label>New password</label>
+          <label>Password</label>
         </div>
         <div class="user-box">
           <input type="password" name="passwordre" required="" />
-          <label>New password again</label>
+          <label>Password again</label>
         </div>
         <div class="buttons_1">
-          <button id="send" class="white">Send</button>
-          <button id="back" class="white">Home</button>
+          <button id="signin" class="white">Sign in</button>
+          <button id="back" class="white">Back</button>
         </div>
       </form>
     </div>
@@ -45,7 +55,7 @@
         <div class="block"></div>
       </div>
     </div>
- 
+  
     <ul class="notifications"></ul>
   </body>
 </html>

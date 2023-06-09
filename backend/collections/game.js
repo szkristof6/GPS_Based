@@ -16,21 +16,11 @@ const gameSchema = new mongoose.Schema(
       trim: true,
       max: 255,
     },
-    desc: {
-      type: String,
-      required: true,
-      max: 200,
-    },
     password: {
       type: String,
       required: true,
       min: 10,
       max: 255,
-    },
-    gamemode: {
-      type: String,
-      required: false,
-      trim: true,
     },
     location: {
       x: {

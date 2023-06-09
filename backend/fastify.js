@@ -1,4 +1,5 @@
 const http = require("http");
+const path = require("path");
 
 let fastify_server;
 
@@ -11,7 +12,8 @@ const fastify = require("fastify")({ serverFactory });
 
 require("dotenv").config();
 
-fastify.register(require('@fastify/multipart'));
+fastify.register(require("@fastify/multipart"), { });
+
 
 fastify.register(require("fastify-socket.io"), {
   cors: {

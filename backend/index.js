@@ -60,16 +60,20 @@ const createGame = require("./methods/game/createGame");
 const joinGame = require("./methods/game/joinGame");
 const updateLocation = require("./methods/game/updateLocation");
 const getGame = require("./methods/game/getGame");
+const getGame2 = require("./methods/game/getGame2");
+const getGames = require("./methods/game/getGames");
 const getStatus = require("./methods/game/getStatus");
 const getPlayers = require("./methods/game/getPlayers");
 
 const changeGameStatus = require("./methods/game/changeGameStatus");
 
-fastify.post("/game/create", { preHandler: [fastify.verify, fastify.captcha] }, createGame); // Játék létrehozása 1
+fastify.post("/game/create", createGame); // Játék létrehozása 1
 
 fastify.post("/game/join", { preHandler: [fastify.verify, fastify.captcha] }, joinGame); // Csatlakozás a játékba
 fastify.post("/game/update/location", { preHandler: [fastify.verify] }, updateLocation); // Pozició frissítés
 fastify.get("/game/data", { preHandler: [fastify.verify] }, getGame); // Játék adatok lekérdezése
+fastify.get("/game/list/admin", getGames); // Adminként kezelt játékok lekérdezése
+fastify.get("/game/data/admin/:id", getGame2); // Adminként kezelt játékok lekérdezése
 fastify.get("/game/status", { preHandler: [fastify.verify] }, getStatus); // Játék státus lekérdezés
 fastify.get("/game/players", { preHandler: [fastify.verify] }, getPlayers); // Játékosok lekérdezése
 
@@ -79,10 +83,14 @@ fastify.get("/game/status/stop", { preHandler: [fastify.verify, fastify.captcha]
 fastify.get("/game/status/pause", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: pause
 fastify.get("/game/status/resume", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: resume
 
-// Upload methods - 
+// File methods -
 
 const pictureUpload = require("./methods/upload/picture");
+const servePicture = require("./methods/upload/servePicture");
+
 fastify.post("/upload/picture", pictureUpload);
+
+fastify.get("/cdn/p/:hash", servePicture)
 
 // Chat methods -
 

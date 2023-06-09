@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      * {
+        font-family: Arial, sans-serif;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #f2f2f2;
+        color: #333;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      td {
+        background-color: #fff;
+        color: #666;
+      }
+
+      button {
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+        font-size: medium;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .circle-button {
+        position: absolute;
+        top: 30px;
+        left: 40px;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+      }
+
+      .circle-button img {
+        display: block;
+        width: 25px;
+        margin: auto;
+      }
+      .content {
+        display: none;
+      }
+    </style>
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="../../js/axios/axios.min.js"></script>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <th>Game name</th>
+        <th>Watch</th>
+      </tr>
+    </table>
+    <div class="content">
+      <div id="map"></div>
+      <button class="circle-button">
+        <img src="../media/play.png" alt="Play" />
+      </button>
+    </div>
+
+    <script type="module" src="../js/admin.js"></script>
+  </body>
+</html>
