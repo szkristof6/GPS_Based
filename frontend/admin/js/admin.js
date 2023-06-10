@@ -12,9 +12,7 @@ const map = new mapboxgl.Map({
   zoom: 5, // starting zoom
 });
 
-window.addEventListener("load", async () => {
-  const data = await API.fetch("", "game/list/admin", "GET");
-
+function drawTable(data) {
   data.game.forEach((game) => {
     const rowElement = document.createElement("tr");
 
@@ -34,6 +32,12 @@ window.addEventListener("load", async () => {
 
     gamesTable.appendChild(rowElement);
   });
+}
+
+window.addEventListener("load", async () => {
+  const data = await API.fetch("", "game/list/admin", "GET");
+
+  drawTable(data);
 });
 
 function drawMapBorder(data) {
@@ -101,6 +105,52 @@ function placeMarkers(data) {
   });
 }
 
+function displayStatus(status) {
+  const states = {
+    0: ["hourglass.png"],
+    1: ["start.png"],
+    2: ["pause.png", "end.png"],
+    3: ["play.png", "end.png"],
+  };
+
+  if(status === 4) {
+    console.log("vege");
+    return;
+  }
+
+  const icons = document.querySelector(".icons");
+  icons.innerHTML = "";
+
+  const statusImages = states[Number(status)];
+
+  statusImages.forEach((image, index) => {
+    const buttonDiv = document.createElement("button");
+    buttonDiv.setAttribute("class", `circle-button button${index + 1}`);
+
+    buttonDiv.addEventListener("click", (e) => changeStatus(image.split(".")[0]));
+
+    const imgTag = document.createElement("img");
+    imgTag.setAttribute("src", `../media/icons/${image}`);
+
+    buttonDiv.appendChild(imgTag);
+    icons.appendChild(buttonDiv);
+  });
+}
+
+async function changeStatus(image){
+  const states = {
+    hourglass: "waiting",
+    start: "start",
+    pause: "pause",
+    play: "resume",
+    end: "stop",
+  };
+
+  const data = await API.fetch("", `game/status/${states[image]}`, "GET");
+
+  displayStatus(data.newStatus)
+}
+
 async function joinGame(game_id) {
   const data = await API.fetch("", `game/data/admin/${game_id}`, "GET");
 
@@ -111,6 +161,8 @@ async function joinGame(game_id) {
 
   drawMapBorder(data);
   placeMarkers(data);
+
+  displayStatus(data.game.status);
 
   contentDiv.style.display = "block";
 }

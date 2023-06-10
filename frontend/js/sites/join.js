@@ -1,7 +1,7 @@
 import * as API from "../api.js";
 import * as Message from "../toast.js";
 
-const next = "waiting.html";
+const next = "team.html";
 const admin = "admin/";
 const index = "index.html";
 
@@ -19,7 +19,7 @@ const form = document.querySelector("form");
 const joinButton = document.querySelector("#JoinRoom");
 const logoutButton = document.querySelector("#logout");
 
-console.log("3a1b5d76d7c5728");
+console.log("ccc6adba559bf65f");
 console.log("teszt123");
 
 form.addEventListener("submit", (event) => event.preventDefault());
@@ -53,5 +53,26 @@ joinButton.addEventListener("click", async (event) => {
     }, Message.redirect_time);
   } else {
     Message.openToast(game.message, "Error", game.status);
+  }
+});
+
+//pasword visibilty
+const showButton = document.querySelector(".see_not_see");
+
+showButton.addEventListener("click", (e) => {
+  const input = e.target.parentNode.querySelector("input");
+
+  if (e.target.classList.contains("not_see")) {
+    input.type = "text";
+
+    e.target.src = "media/hide.png";
+    e.target.classList.remove("not_see");
+    e.target.classList.add("see");
+  } else if (e.target.classList.contains("see")) {
+    input.type = "password";
+
+    e.target.src = "media/eye.png";
+    e.target.classList.remove("see");
+    e.target.classList.add("not_see");
   }
 });

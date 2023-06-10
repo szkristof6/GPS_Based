@@ -65,6 +65,9 @@ const getGames = require("./methods/game/getGames");
 const getStatus = require("./methods/game/getStatus");
 const getPlayers = require("./methods/game/getPlayers");
 
+const joinTeam = require("./methods/game/joinTeam");
+const listTeam = require("./methods/game/listTeam");
+
 const changeGameStatus = require("./methods/game/changeGameStatus");
 
 fastify.post("/game/create",{ preHandler: [fastify.verify] }, createGame); // Játék létrehozása 1
@@ -76,6 +79,9 @@ fastify.get("/game/list/admin", { preHandler: [fastify.verify] }, getGames); // 
 fastify.get("/game/data/admin/:id", { preHandler: [fastify.verify] }, getGame2); // Adminként kezelt játékok lekérdezése
 fastify.get("/game/status", { preHandler: [fastify.verify] }, getStatus); // Játék státus lekérdezés
 fastify.get("/game/players", { preHandler: [fastify.verify] }, getPlayers); // Játékosok lekérdezése
+
+fastify.post("/game/team/join", { preHandler: [fastify.verify, fastify.captcha] }, joinTeam); // Csatlakozás a játékba
+fastify.get("/game/team/list", { preHandler: [fastify.verify, fastify.captcha] }, listTeam); // Csatlakozás a játékba
 
 fastify.get("/game/status/waiting", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: waiting
 fastify.get("/game/status/start", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: start

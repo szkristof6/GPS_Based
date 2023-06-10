@@ -52,3 +52,24 @@ form.addEventListener("submit", async (event) => {
     }
   }
 });
+
+//pasword visibilty
+const showButton = document.querySelector(".see_not_see");
+
+showButton.addEventListener("click", (e) => {
+  const input = e.target.parentNode.querySelector("input");
+
+  if (e.target.classList.contains("not_see")) {
+    input.type = "text";
+
+    e.target.src = "media/hide.png";
+    e.target.classList.remove("not_see");
+    e.target.classList.add("see");
+  } else if (e.target.classList.contains("see")) {
+    input.type = "password";
+
+    e.target.src = "media/eye.png";
+    e.target.classList.remove("see");
+    e.target.classList.add("not_see");
+  }
+});

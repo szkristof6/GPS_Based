@@ -41,7 +41,6 @@ async function getData(pos) {
   const crd = pos.coords;
 
   const playerData = {
-    team_id: "64309e291629620849cd5ff1",
     location: {
       x: crd.longitude,
       y: crd.latitude,

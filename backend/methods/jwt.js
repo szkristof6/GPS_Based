@@ -44,8 +44,8 @@ async function getNewToken(request, reply) {
 
       if (!existing) request.verified = false;
       else {
-        const token = fastify.jwt.sign({ user_id: decodedToken.user_id }, { expiresIn: tokenTime });
-        const refresh = fastify.jwt.sign({ user_id: decodedToken.user_id }, { expiresIn: refreshTime });
+        const token = fastify.jwt.sign({ user_id: decodedToken.user_id, permission: decodedToken.permission  }, { expiresIn: tokenTime });
+        const refresh = fastify.jwt.sign({ user_id: decodedToken.user_id, permission: decodedToken.permission }, { expiresIn: refreshTime });
 
         await JwtRefresh.updateOne({ user_id: decodedToken.user_id }, { $set: { token: refresh } });
 

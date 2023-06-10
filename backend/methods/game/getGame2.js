@@ -3,6 +3,8 @@ const Map = require("../../collections/map");
 const Object = require("../../collections/object");
 const Team = require("../../collections/team");
 
+const { setCookie } = require("../cookie");
+
 module.exports = async function (req, res) {
   try {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
@@ -17,12 +19,15 @@ module.exports = async function (req, res) {
       location: object.location,
       id: object._id,
       team: {
-        image: teams.filter(x => x._id.toString() === object.team_id.toString())[0].image
+        image: teams.filter((x) => x._id.toString() === object.team_id.toString())[0].image,
       },
     }));
 
+    res = setCookie("g_id", game._id.toString(), res);
+
     return res.send({
       status: "success",
+      game: { status: game.status },
       map: map.location,
       objects: objectsWithPictures,
       teams: teams.map((team) => ({ image: team.image, point: team.point })),

@@ -12,6 +12,14 @@ window.addEventListener("load", async () => {
 
   getPlayerData();
 
+  const data = await API.fetch("", "game/data", "GET");
+
+  map.setCenter([data.objects[0].location.x, data.objects[0].location.y]);
+  map.setZoom(10); // You can adjust the zoom level as needed
+
+  drawMapBorder(data);
+  placeMarkers(data);
+
   navigator.geolocation.watchPosition(
     onSuccess,
     (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"),
@@ -33,53 +41,106 @@ window.addEventListener("load", async () => {
 
     getLocationOfPlayers();
   }, refresh_rate);
+
+  const loader = document.querySelector(".container");
+  loader.style.display = "none";
 });
 
 if (!mapboxgl.supported()) {
   Message.openToast("Your browser does not support Mapbox GL", "Error", "error");
 }
 
-async function setMap() {
-  const response = await API.fetch("", "game/data", "GET");
+mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
 
-  if (response.status === "success") {
-    const { game } = response;
+const map = new mapboxgl.Map({
+  container: "map",
+  style: "mapbox://styles/mapbox/outdoors-v12?optimize=true",
+  center: [0, 0],
+  zoom: 8,
+  //minZoom: 15,
+  performanceMetricsCollection: false,
+});
 
-    mapboxgl.accessToken =
-      "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
+map.addControl(new mapboxgl.NavigationControl());
 
-    const map = new mapboxgl.Map({
-      container: "map",
-      style: "mapbox://styles/mapbox/outdoors-v12?optimize=true",
-      center: [game.location.y, game.location.x],
-      zoom: 8,
-      //minZoom: 15,
-      performanceMetricsCollection: false,
-    });
+map.addControl(
+  new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
+    trackUserLocation: true,
+    showUserHeading: true,
+  })
+);
 
-    map.addControl(new mapboxgl.NavigationControl());
+map.on("click", (e) => {
+  console.log(JSON.stringify(e.lngLat.wrap()));
+});
 
-    map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true,
-        },
-        trackUserLocation: true,
-        showUserHeading: true,
-      })
-    );
-
-    map.on("click", (e) => {
-      console.log(JSON.stringify(e.lngLat.wrap()));
-    });
-
-    return map;
-  }
-  Message.openToast(response.message, "Error", response.status);
-  return null;
+function drawMapBorder(data) {
+  map.addSource("polygon", {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [data.map.map((x) => [x.x, x.y])],
+      },
+    },
+  });
+  map.addLayer({
+    id: "polygon-layer",
+    type: "line",
+    source: "polygon",
+    paint: {
+      "line-color": "red",
+      "line-width": 2,
+    },
+  });
 }
 
-const map = await setMap();
+function placeMarkers(data) {
+  const mapMarkers = data.objects.map((markerData) => {
+    const markerEl = document.createElement("div");
+    markerEl.classList.add("marker", markerData.type);
+
+    // Create a new image element for the team flag
+    const teamFlagImg = document.createElement("img");
+    teamFlagImg.src = new URL(`${API.default}/cdn/p/${markerData.team.image}?width=32&height=32`);
+    teamFlagImg.style.width = "32px";
+    teamFlagImg.style.height = "32px";
+    teamFlagImg.style.objectFit = "cover";
+    if (markerData.type === "village") {
+      teamFlagImg.style.borderRadius = "50%";
+    }
+
+    // Add the team flag image to the marker element
+    markerEl.appendChild(teamFlagImg);
+
+    const marker = new mapboxgl.Marker({
+      element: markerEl,
+      style: {
+        height: "20",
+        width: "20",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        border: "2px solid ",
+      },
+    });
+    marker.setLngLat([markerData.location.x, markerData.location.y]);
+    return {
+      marker,
+      type: markerData.type,
+      team: markerData.team,
+    };
+  });
+
+  // Add all markers to the map
+  mapMarkers.forEach((mapMarker) => {
+    mapMarker.marker.addTo(map);
+  });
+}
 
 async function getPlayerData() {
   const response = await API.fetch("", "player/data", "GET");

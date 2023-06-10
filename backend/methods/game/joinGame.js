@@ -18,7 +18,7 @@ module.exports = async function (req, res) {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
     const schema = yup.object().shape({
-      id: trimmedString.length(15),
+      id: trimmedString.length(16),
       password: trimmedString,
       token: trimmedString,
     });

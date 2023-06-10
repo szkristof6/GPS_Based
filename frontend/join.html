@@ -19,14 +19,17 @@
       <form>
         <input type="hidden" name="action" value="validate_captcha" />
 
-        <div class="user-box">
-          <input type="text" name="id" required="" />
-          <label>Room number</label>
+        <div class="form__group field">
+          <input type="text" name="id" class="form__field" placeholder="Room number" required="" />
+          <label for="id" class="form__label">Room number</label>
         </div>
-        <div class="user-box">
-          <input type="password" name="password" required="" />
-          <label>Room password</label>
+
+        <div class="form__group field">
+          <input type="password" name="password" class="form__field" placeholder="Password" required="" />
+          <label for="password" class="form__label">Room password</label>
+          <img class="see_not_see not_see" src="media/eye.png" alt="" />
         </div>
+
         <div class="buttons_1">
           <button id="JoinRoom" class="white">Join</button>
           <button id="logout" class="white">Log Out</button>
