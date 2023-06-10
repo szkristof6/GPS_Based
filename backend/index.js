@@ -70,7 +70,7 @@ const listTeam = require("./methods/game/listTeam");
 
 const changeGameStatus = require("./methods/game/changeGameStatus");
 
-fastify.post("/game/create",{ preHandler: [fastify.verify] }, createGame); // Játék létrehozása 1
+fastify.post("/game/create",{ preHandler: [fastify.verify, fastify.captcha] }, createGame); // Játék létrehozása 1
 
 fastify.post("/game/join", { preHandler: [fastify.verify, fastify.captcha] }, joinGame); // Csatlakozás a játékba
 fastify.post("/game/update/location", { preHandler: [fastify.verify] }, updateLocation); // Pozició frissítés
@@ -83,11 +83,11 @@ fastify.get("/game/players", { preHandler: [fastify.verify] }, getPlayers); // J
 fastify.post("/game/team/join", { preHandler: [fastify.verify, fastify.captcha] }, joinTeam); // Csatlakozás a játékba
 fastify.get("/game/team/list", { preHandler: [fastify.verify, fastify.captcha] }, listTeam); // Csatlakozás a játékba
 
-fastify.get("/game/status/waiting", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: waiting
-fastify.get("/game/status/start", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: start
-fastify.get("/game/status/stop", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: stop
-fastify.get("/game/status/pause", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: pause
-fastify.get("/game/status/resume", { preHandler: [fastify.verify, fastify.captcha] }, changeGameStatus); // Játék státus: resume
+fastify.get("/game/status/waiting", { preHandler: [fastify.verify] }, changeGameStatus); // Játék státus: waiting
+fastify.get("/game/status/start", { preHandler: [fastify.verify] }, changeGameStatus); // Játék státus: start
+fastify.get("/game/status/stop", { preHandler: [fastify.verify] }, changeGameStatus); // Játék státus: stop
+fastify.get("/game/status/pause", { preHandler: [fastify.verify] }, changeGameStatus); // Játék státus: pause
+fastify.get("/game/status/resume", { preHandler: [fastify.verify] }, changeGameStatus); // Játék státus: resume
 
 // File methods -
 

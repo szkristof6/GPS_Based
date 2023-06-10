@@ -1,4 +1,5 @@
 import * as API from "../../js/api.js";
+import * as Message from "../../js/toast.js";
 
 const refresh_rate = 5 * 1000;
 
@@ -53,6 +54,9 @@ window.addEventListener("load", async () => {
   const data = await API.fetch("", "game/list/admin", "GET");
 
   drawTable(data);
+
+  const loader = document.querySelector(".loader_container");
+  loader.style.display = "none";
 });
 
 function drawMapBorder(data) {
@@ -128,7 +132,7 @@ function displayStatus(status) {
     3: ["play.png", "end.png"],
   };
 
-  if(status === 4) {
+  if (status === 4) {
     console.log("vege");
     return;
   }
@@ -152,7 +156,7 @@ function displayStatus(status) {
   });
 }
 
-async function changeStatus(image){
+async function changeStatus(image) {
   const states = {
     hourglass: "waiting",
     start: "start",
@@ -163,25 +167,29 @@ async function changeStatus(image){
 
   const data = await API.fetch("", `game/status/${states[image]}`, "GET");
 
-  displayStatus(data.newStatus)
+  displayStatus(data.newStatus);
 }
 
 async function joinGame(game_id) {
+  Message.openToast("Joining to game..", "Success", "success");
+
   const data = await API.fetch("", `game/data/admin/${game_id}`, "GET");
 
-  gamesTable.style.display = "none";
+  if (data.status === "success") {
+    gamesTable.style.display = "none";
 
-  map.setCenter([data.objects[0].location.x, data.objects[0].location.y]);
-  map.setZoom(10); // You can adjust the zoom level as needed
+    map.setCenter([data.objects[0].location.x, data.objects[0].location.y]);
+    map.setZoom(10); // You can adjust the zoom level as needed
 
-  drawMapBorder(data);
-  placeMarkers(data);
+    drawMapBorder(data);
+    placeMarkers(data);
 
-  displayStatus(data.game.status);
+    displayStatus(data.game.status);
 
-  setInterval(async () => getLocationOfPlayers(), refresh_rate);
+    setInterval(async () => getLocationOfPlayers(), refresh_rate);
 
-  contentDiv.style.display = "block";
+    contentDiv.style.display = "block";
+  } else Message.openToast(data.message, "Error", data.status);
 }
 
 function paintPlayer(player) {

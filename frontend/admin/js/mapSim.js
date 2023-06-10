@@ -1,4 +1,5 @@
 import * as API from "../../js/api.js";
+import * as Message from "../../js/toast.js";
 
 mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
 
@@ -179,6 +180,8 @@ form.addEventListener("submit", async (e) => {
 
   const imageUpload = await API.fetchForm(formData, "upload/picture");
 
+  const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
+
   const json = {
     name: formData.get("name"),
     password: formData.get("password"),
@@ -190,9 +193,11 @@ form.addEventListener("submit", async (e) => {
       location: { x: object.lng, y: object.lat },
     })),
     images: imageUpload.files,
+    token
   };
 
   const response = await API.fetch(json, "game/create", "POST");
 
-  console.log(response);
+  if(response.status === "success") Message.openToast("Game successfully created!", "Success", response.status);
+  else Message.openToast(response.message, "Error", response.status);
 });

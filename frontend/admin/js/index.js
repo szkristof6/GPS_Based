@@ -1,4 +1,5 @@
 import * as API from "../../js/api.js";
+import * as Message from "../../js/toast.js";
 
 const admin = "admin/";
 const index = "/index.html";

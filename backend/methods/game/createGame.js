@@ -14,7 +14,7 @@ const mongoose = require("mongoose");
 
 module.exports = async function (req, res) {
   try {
-    // if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+    if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
     const schema = yup.object().shape({
@@ -27,7 +27,7 @@ module.exports = async function (req, res) {
       //map: locationArray,
       //objects: objectsArray,
 
-      //token: trimmedString,
+      token: trimmedString,
     });
 
     await schema.validate(req.body);
