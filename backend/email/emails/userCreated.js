@@ -7,7 +7,7 @@ module.exports = async function (email, token, user_id) {
     Thank you for signing up for our app! We hope you will enjoy your time with us!
 
     First of all, please verify your account!
-    Click on this link to continue: https://map.stagenex.hu/verify?token=${token}&user_id=${user_id}
+    Click on this link to continue: https://airtrk.hu/verify?token=${token}&user_id=${user_id}
     </p>
     `;
 
