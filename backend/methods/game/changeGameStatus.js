@@ -3,7 +3,6 @@ const escapeHtml = require("escape-html");
 
 const Game = require("../../collections/game");
 const Moderator = require("../../collections/moderator");
-const User = require("../../collections/user");
 
 const states = {
   inactive: 0,
@@ -17,7 +16,6 @@ const states = {
 module.exports = async function (req, res) {
   try {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed! 1" });
-    // if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
     const stateChange = escapeHtml(req.url.split("/").pop());
     const change = states[stateChange];

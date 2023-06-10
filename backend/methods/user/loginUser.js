@@ -37,9 +37,9 @@ module.exports = async function (req, res) {
     const password = await bcrypt.compare(req.body.password, user.password);
     if (!password) return res.code(400).send({ status: "error", message: "The password is incorrect!" });
 
-    await setJWTCookie(user, res);
+    const jwt = await setJWTCookie(user, res);
 
-    return res.send({ status: "success" });
+    return res.send({ status: "success", jwt });
   } catch (error) {
     return res.send(error);
   }

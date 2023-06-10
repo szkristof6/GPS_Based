@@ -14,12 +14,10 @@ Ha létezik visszaadjuk mindent
 
 module.exports = async function (req, res) {
   try {
-    // if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
     const schema = yup.object().shape({
       id: objectID,
-      // token: trimmedString,
     });
 
     await schema.validate(req.body);
@@ -29,7 +27,7 @@ module.exports = async function (req, res) {
 
     res = setCookie("t_id", team._id.toString(), res);
 
-    return res.send({ status: "success" });
+    return res.send({ status: "success", t_id: team._id.toString() });
   } catch (error) {
     return res.send(error);
   }

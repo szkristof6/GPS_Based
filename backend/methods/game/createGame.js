@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const yup = require("yup");
 const escapeHtml = require("escape-html");
+const mongoose = require("mongoose");
 
 const Game = require("../../collections/game");
 const Team = require("../../collections/team");
@@ -9,8 +10,6 @@ const Map = require("../../collections/map");
 const Object = require("../../collections/object");
 
 const { trimmedString, dateTime, adminArray, locationArray, objectsArray } = require("../../schema");
-
-const mongoose = require("mongoose");
 
 module.exports = async function (req, res) {
   try {
@@ -35,7 +34,7 @@ module.exports = async function (req, res) {
     const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
 
     const map = new Map({
-      user_id: new mongoose.Types.ObjectId(req.body.user_id),
+      user_id: new mongoose.Types.ObjectId(req.user.user_id),
       location: req.body.map,
     });
 

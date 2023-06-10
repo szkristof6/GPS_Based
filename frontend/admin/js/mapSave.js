@@ -1,5 +1,3 @@
-import * as Message from "../../js/toast.js";
-
 function downloadGeoJSON(geojson) {
   const blob = new Blob([JSON.stringify(geojson)], { type: "application/json" });
   const link = document.createElement("a");

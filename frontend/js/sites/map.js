@@ -30,7 +30,7 @@ window.addEventListener("load", async () => {
     const response = await API.fetch("", "game/status", "GET");
     if (response.status === "success") {
       const { game } = response;
-      if (game.status === 1) {
+      if (game.status === 1 || game.status === 3) {
         Message.openToast("You will be redirected in a second", "The game has stopped", "error");
 
         setTimeout(() => {

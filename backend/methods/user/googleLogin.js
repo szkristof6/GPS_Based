@@ -45,9 +45,9 @@ module.exports = async function (req, res) {
 
     const savedUser = await user.save();
 
-    await setJWTCookie(savedUser, res);
+    const jwt = await setJWTCookie(savedUser, res);
 
-    return res.send({ status: "success" });
+    return res.send({ status: "success", jwt });
   } catch (error) {
     if (error.message.startsWith("E11000")) error.message = "This account already exists!";
     return res.send(error);

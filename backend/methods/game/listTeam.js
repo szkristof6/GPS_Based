@@ -6,7 +6,7 @@ const Team = require("../../collections/team");
 module.exports = async function (req, res) {
   try {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
-
+    
     const gameID = req.unsignCookie(req.cookies.g_id);
     if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
 

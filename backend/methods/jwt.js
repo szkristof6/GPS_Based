@@ -15,7 +15,6 @@ function JWT_sign(user, expiresIn) {
 async function jwtMiddleware(request, reply) {
   try {
     const token = request.unsignCookie(request.cookies.token);
-
     if (!token.valid) request.verified = false;
 
     const decodedToken = fastify.jwt.verify(token.value);
@@ -23,8 +22,11 @@ async function jwtMiddleware(request, reply) {
     if (decodedToken) {
       request.verified = true;
       request.user = decodedToken;
+
+      return;
     }
   } catch (error) {
+    console.log(error);
     if (error.code === "FAST_JWT_EXPIRED") await getNewToken(request, reply);
     else {
       request.verified = false;
@@ -44,8 +46,14 @@ async function getNewToken(request, reply) {
 
       if (!existing) request.verified = false;
       else {
-        const token = fastify.jwt.sign({ user_id: decodedToken.user_id, permission: decodedToken.permission  }, { expiresIn: tokenTime });
-        const refresh = fastify.jwt.sign({ user_id: decodedToken.user_id, permission: decodedToken.permission }, { expiresIn: refreshTime });
+        const token = fastify.jwt.sign(
+          { user_id: decodedToken.user_id, permission: decodedToken.permission },
+          { expiresIn: tokenTime }
+        );
+        const refresh = fastify.jwt.sign(
+          { user_id: decodedToken.user_id, permission: decodedToken.permission },
+          { expiresIn: refreshTime }
+        );
 
         await JwtRefresh.updateOne({ user_id: decodedToken.user_id }, { $set: { token: refresh } });
 
@@ -80,7 +88,7 @@ async function setJWTCookie(user, res) {
     res = setCookie("token", token, res);
     res = setCookie("refreshToken", refresh, res);
 
-    return true;
+    return { token, refresh };
   } catch (error) {
     return res.send(error);
   }

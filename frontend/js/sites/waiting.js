@@ -67,7 +67,7 @@ async function getData(pos) {
 
         const { game } = response;
 
-        if (parseInt(game.status) > 1) {
+        if (parseInt(game.status) === 2) {
           Message.openToast("You will be redirected in a second", "The game has begun", "success");
 
           setTimeout(() => {

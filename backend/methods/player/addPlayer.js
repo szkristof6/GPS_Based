@@ -71,7 +71,7 @@ module.exports = async function (req, res) {
 
     res = setCookie("p_id", player._id.toString(), res);
 
-    return res.send({ status: "success" });
+    return res.send({ status: "success", p_id: player._id.toString() });
   } catch (error) {
     return res.send(error);
   }

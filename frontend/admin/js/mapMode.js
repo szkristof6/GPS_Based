@@ -1,5 +1,3 @@
-import * as Message from "../../js/toast.js";
-
 mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
 
 const map = new mapboxgl.Map({

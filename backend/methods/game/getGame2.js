@@ -31,6 +31,7 @@ module.exports = async function (req, res) {
       map: map.location,
       objects: objectsWithPictures,
       teams: teams.map((team) => ({ image: team.image, point: team.point })),
+      g_id: game._id.toString(),
     });
   } catch (error) {
     return res.send(error);
