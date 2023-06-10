@@ -54,7 +54,7 @@ mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzO
 
 const map = new mapboxgl.Map({
   container: "map",
-  style: "mapbox://styles/mapbox/outdoors-v12?optimize=true",
+  style: "mapbox://styles/mapbox/satellite-streets-v11?optimize=true",
   center: [0, 0],
   zoom: 8,
   //minZoom: 15,
@@ -164,7 +164,7 @@ function paintPlayer(player) {
   player_image.src = `${new URL(player.user.image)}`;
   player_image.style.width = `40px`;
   player_image.style.height = `40px`;
-  player_image.style.border = `5px solid ${player.team.color}`;
+  player_image.style.borderRadius = "50%";
 
   new mapboxgl.Marker(player_image).setLngLat([player.location.x, player.location.y]).addTo(map);
 }

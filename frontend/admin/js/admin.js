@@ -1,16 +1,31 @@
 import * as API from "../../js/api.js";
 
+const refresh_rate = 5 * 1000;
+
 const gamesTable = document.querySelector("table");
 const contentDiv = document.querySelector(".content");
 
 mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
+
 const map = new mapboxgl.Map({
-  container: "map", // container ID
-  // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-  style: "mapbox://styles/mapbox/streets-v12", // style URL
-  center: [0, 0], // starting position [lng, lat]
-  zoom: 5, // starting zoom
+  container: "map",
+  style: "mapbox://styles/mapbox/satellite-streets-v11?optimize=true",
+  center: [0, 0],
+  zoom: 2,
+  performanceMetricsCollection: false,
 });
+
+map.addControl(new mapboxgl.NavigationControl());
+
+map.addControl(
+  new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
+    trackUserLocation: true,
+    showUserHeading: true,
+  })
+);
 
 function drawTable(data) {
   data.game.forEach((game) => {
@@ -164,5 +179,31 @@ async function joinGame(game_id) {
 
   displayStatus(data.game.status);
 
+  setInterval(async () => getLocationOfPlayers(), refresh_rate);
+
   contentDiv.style.display = "block";
+}
+
+function paintPlayer(player) {
+  const player_image = document.createElement("img");
+  player_image.className = "player-icon";
+  player_image.src = `${new URL(player.user.image)}`;
+  player_image.style.width = `40px`;
+  player_image.style.height = `40px`;
+  player_image.style.borderRadius = "50%";
+
+  new mapboxgl.Marker(player_image).setLngLat([player.location.x, player.location.y]).addTo(map);
+}
+
+async function getLocationOfPlayers() {
+  const response = await API.fetch("", "game/players", "GET");
+
+  if (response.status === "success") {
+    if (response.count != 0) {
+      document.querySelectorAll(".player-icon").forEach((e) => e.remove());
+      response.players.forEach((player) => paintPlayer(player));
+    }
+  } else {
+    Message.openToast(response.message, "Error", response.status);
+  }
 }

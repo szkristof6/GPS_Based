@@ -29,14 +29,27 @@ function centerMap() {
   }
 }
 
-mapboxgl.accessToken = "pk.eyJ1IjoiYnJ5Y2tlciIsImEiOiJjbGNieWoyODQwM2R6M3FzODBtemxodmt5In0.pNQmPDSASJiKcLbMVShzpw";
+mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
+
 const map = new mapboxgl.Map({
-  container: "map", // container ID
-  // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-  style: "mapbox://styles/mapbox/satellite-v9", // style URL
+  container: "map",
+  style: "mapbox://styles/mapbox/satellite-streets-v11?optimize=true",
   center: [0, 0],
   zoom: 2,
+  performanceMetricsCollection: false,
 });
+
+map.addControl(new mapboxgl.NavigationControl());
+
+map.addControl(
+  new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
+    trackUserLocation: true,
+    showUserHeading: true,
+  })
+);
 
 const draw = new MapboxDraw({
   displayControlsDefault: false,

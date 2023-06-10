@@ -1,10 +1,24 @@
-mapboxgl.accessToken = 'pk.eyJ1IjoiYnJ5Y2tlciIsImEiOiJjbGNiemR2NGwweTM5M29tcGoxaDI1ZHl4In0.9MSEB41XBJCs7K5CaSSAHw';
+mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzOWppZWx4ank0In0.OJNQ_-pHbE3BWnyGQSAeUQ";
+
 const map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/satellite-v9',
-    center: [0, 0],
-    zoom: 2
+  container: "map",
+  style: "mapbox://styles/mapbox/satellite-streets-v11?optimize=true",
+  center: [0, 0],
+  zoom: 2,
+  performanceMetricsCollection: false,
 });
+
+map.addControl(new mapboxgl.NavigationControl());
+
+map.addControl(
+  new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
+    trackUserLocation: true,
+    showUserHeading: true,
+  })
+);
 
 
 function updateMarkerList() {

@@ -32,8 +32,6 @@ module.exports = async function (req, res) {
     const isModerator = await Moderator.findOne({ game_id, user_id }).then((moderator) => (moderator ? true : false));
     const isAdmin = req.user.permission === 10 ? true : false;
 
-    console.log(req.user);
-
     if (isModerator || isAdmin) await Game.updateOne({ _id: game_id }, { $set: { status: change } });
     else return res.code(400).send({ status: "error", message: "Not allowed! 4" });
 
