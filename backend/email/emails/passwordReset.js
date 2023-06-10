@@ -7,7 +7,7 @@ module.exports = async function (email, token, user_id) {
     You have requested a password reset!
 
     In case the person requested the new password consider this email as nothing.
-    Otherwise click on this link to continue: https://map.stagenex.hu/reset?token=${token}&user_id=${user_id}
+    Otherwise click on this link to continue: https://airtrk.hu/reset?token=${token}&user_id=${user_id}
     </p>
     `;
 
