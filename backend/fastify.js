@@ -14,7 +14,7 @@ require("dotenv").config();
 
 fastify.register(require("@fastify/multipart"), { });
 
-
+/*
 fastify.register(require("fastify-socket.io"), {
   cors: {
     origin: process.env.NODE_ENV === "dev" ? "*" : process.env.CLIENT_URI,
@@ -22,6 +22,8 @@ fastify.register(require("fastify-socket.io"), {
   },
   path: "/socket/",
 });
+*/
+
 fastify.register(require("@fastify/cookie"), {
   secret: process.env.COOKIE_SECRET,
   hook: "onRequest",

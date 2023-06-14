@@ -1,6 +1,10 @@
-const mongoose = require("mongoose");
+const { database } = require("../mongodb");
 
-const fileSchema = new mongoose.Schema(
+module.exports = database.collection("file");
+
+// const mongoose = require("mongoose");
+
+/* const fileSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -29,3 +33,5 @@ const fileSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("File", fileSchema);
+
+*/

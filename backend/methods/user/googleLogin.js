@@ -5,8 +5,7 @@ require("dotenv").config();
 
 const User = require("../../collections/user");
 
-const { setJWTCookie } = require("../jwt");
-
+const { JWT_sign, tokenTime } = require("../jwt");
 const { trimmedString } = require("../../schema");
 
 module.exports = async function (req, res) {
@@ -26,28 +25,29 @@ module.exports = async function (req, res) {
     });
     const payload = ticket.getPayload();
 
-    const existing = await User.findOne({ email: payload.email });
+    const existing = await User.findOne({ email: payload.email }, { projection: { login_method: 1 } });
     if (existing) {
       if (existing.login_method != "google")
         return res.code(400).send({ status: "error", message: "Email method was used for signin!" });
-      await setJWTCookie(existing, res);
 
-      return res.send({ status: "success" });
+      const jwt = await setJWTCookie(existing, res);
+
+      return res.send({ status: "success", access_token: jwt });
     }
 
-    const user = new User({
+    const newUser = {
       name: payload.name,
       email: payload.email,
       login_method: "google",
       image: payload.picture,
       permission: 1,
-    });
+    };
 
-    const savedUser = await user.save();
+    const savedUser = await User.insertOne(newUser);
 
     const jwt = await setJWTCookie(savedUser, res);
 
-    return res.send({ status: "success", jwt });
+    return res.send({ status: "success", access_token: jwt });
   } catch (error) {
     if (error.message.startsWith("E11000")) error.message = "This account already exists!";
     return res.send(error);

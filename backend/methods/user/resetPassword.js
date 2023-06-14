@@ -36,7 +36,7 @@ module.exports = async function resetPassword(req, res) {
     const password = await bcrypt.compare(req.body.user_token, passwordResetToken.token);
     if (!password) return res.code(400).send({ status: "error", message: "Invalid or expired password reset token!" });
 
-    const user = await User.findOne({ _id: user_id });
+    const user = await User.findOne({ _id: user_id }, { projection: { email: 1 } });
     if (req.body.email !== user.email)
       return res.code(400).send({ status: "error", message: "Account with the given email does not exist!" });
 

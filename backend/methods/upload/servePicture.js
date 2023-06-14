@@ -11,7 +11,7 @@ const supportedFormats = ["jpg", "jpeg", "png", "webp"];
 
 // API endpoint to retrieve the current public image
 module.exports = async function (request, reply) {
-  if (!request.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+  // if (!request.verified) return reply.code(400).send({ status: "error", message: "Not allowed!" });
 
   // Logic to fetch the requested image from your server based on the provided hash and format
   const hash = request.params.hash;
@@ -19,26 +19,23 @@ module.exports = async function (request, reply) {
 
   // Check if the requested format is supported
   if (!hash) {
-    reply.status(400).send({ error: "Server Error!" });
-    return;
+    return reply.status(400).send({ error: "Server Error!" });
   }
 
-  const file = await File.findOne({ id: hash });
+  const file = await File.findOne({ id: hash }, { projection: { type: 1 } });
 
   if (!file) return reply.status(400).send({ error: "Server Error!" });
 
   // Check if the requested format is supported
   if (!supportedFormats.includes(file.type.toLowerCase())) {
-    reply.status(400).send({ error: "Unsupported file format" });
-    return;
+    return reply.status(400).send({ error: "Unsupported file format" });
   }
 
   const imagePath = path.join(process.cwd(), "uploads", `${file.name}`);
 
   // Check if the file exists
   if (!fs.existsSync(imagePath)) {
-    reply.status(404).send({ error: "Image not found" });
-    return;
+    return reply.status(404).send({ error: "Image not found" });
   }
 
   // Read the image file
@@ -46,14 +43,12 @@ module.exports = async function (request, reply) {
   try {
     image = fs.readFileSync(imagePath);
   } catch (err) {
-    reply.status(500).send({ error: "Failed to read the image file" });
-    return;
+    return reply.status(500).send({ error: "Failed to read the image file" });
   }
 
   // Additional validation/sanitization checks on the file data
   if (image.length === 0) {
-    reply.status(400).send({ error: "Invalid image file" });
-    return;
+    return reply.status(400).send({ error: "Invalid image file" });
   }
 
   // Resize the image if width and height are provided

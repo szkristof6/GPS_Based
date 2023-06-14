@@ -1,13 +1,9 @@
-const mongoose = require("mongoose");
-
 require("dotenv").config();
 
 const captchaMiddleware = require("./methods/captcha");
 const { jwtMiddleware } = require("./methods/jwt");
 
 const { fastify, fastify_server } = require("./fastify");
-
-mongoose.connect(process.env.MONGO_URI);
 
 fastify.decorate("verify", jwtMiddleware);
 fastify.decorate("captcha", captchaMiddleware);
@@ -19,6 +15,7 @@ fastify.get("/page/verify", { preHandler: [fastify.verify] }, (req, res) => {
   return res.send({ status: "allowed", permission: req.user.permission });
 });
 
+/*
 fastify.get("/page/socket/verify", (req, res) => {
   try {
     const token = req.unsignCookie(req.cookies.token);
@@ -32,6 +29,7 @@ fastify.get("/page/socket/verify", (req, res) => {
     res.send({ status: "disallowed" });
   }
 });
+*/
 
 // User methods - Minden olyan funkció, ami a felhasználóhoz tartozik
 
@@ -123,6 +121,7 @@ fastify.post("/moderator/add", { preHandler: [fastify.verify, fastify.captcha] }
 fastify.delete("/moderator/delete", { preHandler: [fastify.verify, fastify.captcha] }, deleteModerator); // Moderátor törlése
 
 fastify.ready(() => {
+  /*
   fastify.io.use(async function (socket, next) {
     console.log(socket.handshake.query);
     if (socket.handshake.query && socket.handshake.query.token) {
@@ -149,6 +148,7 @@ fastify.ready(() => {
   fastify.io.on("connection", (socket) => {
     socket.on("test", async (param, send) => send(param));
   });
+*/
 
   fastify_server.listen({ port: process.env.PORT }, (error) => {
     console.log(`Fastify server started at port: ${process.env.PORT}`);

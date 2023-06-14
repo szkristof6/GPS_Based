@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
@@ -6,27 +5,25 @@ require("dotenv").config();
 
 const Token = require("../collections/token");
 
-async function insertToken(id, method) {
-const user_id = new mongoose.Types.ObjectId(id);
-
-  const existing = await Token.findOne({ user_id });
-  if (existing) await Token.removeOne({ user_id });
+async function insertToken(user_id, method) {
+  const existing = await Token.countDocuments({ user_id }).then((num) => num === 1);
+  if (existing) await Token.deleteOne({ user_id });
 
   const resetToken = crypto.randomBytes(32).toString("hex");
   const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(resetToken, salt));
 
-  const token = new Token({
+  const newToken = {
     user_id,
     token: hash,
     method,
-  });
-  await token.save();
+  };
+  await Token.insertOne(newToken);
 
   return resetToken;
 }
 
-async function verifyToken(id, method, minutes) {
-  const userVerifyToken = await Token.findOne({ user_id: new mongoose.Types.ObjectId(id) });
+async function verifyToken(user_id, method, minutes) {
+  const userVerifyToken = await Token.findOne({ user_id });
   if (!userVerifyToken || userVerifyToken.method !== method)
     return { status: "error", message: "Invalid or expired password reset token!" };
 
@@ -37,8 +34,8 @@ async function verifyToken(id, method, minutes) {
   return { status: "valid", token: userVerifyToken.token };
 }
 
-async function removeToken(id) {
-  const query = await Token.deleteOne({ user_id: new mongoose.Types.ObjectId(id) });
+async function removeToken(user_id) {
+  const query = await Token.deleteOne({ user_id });
 
   return query;
 }

@@ -1,3 +1,8 @@
+const { database } = require("../mongodb");
+
+module.exports = database.collection('jwt');
+
+/*
 const mongoose = require("mongoose");
 
 const jwtRefreshSchema = new mongoose.Schema(
@@ -18,3 +23,4 @@ const jwtRefreshSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("JwtRefresh", jwtRefreshSchema);
+*/

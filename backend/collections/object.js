@@ -1,3 +1,7 @@
+const { database } = require("../mongodb");
+
+module.exports = database.collection('object');
+/*
 const mongoose = require("mongoose");
 
 const objectSchema = new mongoose.Schema(
@@ -33,3 +37,5 @@ const objectSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Object", objectSchema);
+
+*/

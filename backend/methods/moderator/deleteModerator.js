@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const yup = require("yup");
 
 const Moderator = require("../../collections/moderator");
@@ -22,7 +21,7 @@ module.exports = async function (req, res) {
 
     await schema.validate(req.body);
 
-    await Moderator.deleteOne({ _id: new mongoose.Types.ObjectId(req.body.moderator_id) });
+    await Moderator.deleteOne({ _id: req.body.moderator_id });
 
     return res.send({ status: "success" });
   } catch (error) {

@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-
 const Player = require("../../collections/player");
 const User = require("../../collections/user");
 const Team = require("../../collections/team");
@@ -14,38 +12,29 @@ Majd visszaadjuk a végleges listát a felhasznló képével együtt
 */
 
 module.exports = async function (req, res) {
-  try {
-    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+	try {
+		if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+		if (!req.query.g_id) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    const gameID = req.unsignCookie(req.cookies.g_id);
-    if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
+		const { g_id: game_id } = req.query;
 
-    const players = await Player.find({ game_id: new mongoose.Types.ObjectId(gameID.value) });
-    if (!players) return res.code(400).send({ status: "error", message: "There are zero players in this game!" });
+		const players = await Player.find({ game_id }, { projection: { user_id: 1, team_id: 1, location_id: 1 } });
+		if (!players) return res.code(400).send({ status: "error", message: "There are zero players in this game!" });
 
-    const cleaned = []; // Létrehozunk egy üres listát
+		const cleaned = new Array(); // Létrehozunk egy üres listát
 
-    for (const player of players) {
-      if (player.user_id.toString() !== req.user.user_id) {
-        const user = await User.findOne({ _id: player.user_id });
-        const team = await Team.findOne({ _id: player.team_id });
-        const location = await Location.findOne({ _id: player.location_id });
+		for (const player of players) {
+			if (player.user_id !== req.user.user_id) {
+				const user = await User.findOne({ _id: player.user_id }, { projection: { name: 1, image: 1 } });
+				const team = await Team.findOne({ _id: player.team_id }, { projection: { image: 1 } });
+				const location = await Location.findOne({ _id: player.location_id }, { projection: { location: 1 } });
 
-        cleaned.push({
-          user: {
-            name: user.name,
-            image: user.image,
-          },
-          team: {
-            color: team.color,
-          },
-          location: location.location,
-        });
-      }
-    }
+				cleaned.push({ user, team, location });
+			}
+		}
 
-    return res.send({ status: "success", count: cleaned.length, players: cleaned });
-  } catch (error) {
-    return res.send(error);
-  }
+		return res.send({ status: "success", count: cleaned.length, players: cleaned });
+	} catch (error) {
+		return res.send(error);
+	}
 };

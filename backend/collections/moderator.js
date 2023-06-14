@@ -1,3 +1,8 @@
+const { database } = require("../mongodb");
+
+module.exports = database.collection('moderator');
+
+/*
 const mongoose = require("mongoose");
 
 const moderatorSchema = new mongoose.Schema(
@@ -20,3 +25,5 @@ const moderatorSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Moderator", moderatorSchema);
+
+*/

@@ -38,16 +38,16 @@ module.exports = async function (req, res) {
       .map((param) => param.join("="))
       .join("&");
 
-    const user = new User({
+    const newUser = {
       name,
       password: hash,
       email: escapeHtml(req.body.email),
       login_method: "email",
       image: `https://eu.ui-avatars.com/api/?${imageParams}`,
       permission: 0,
-    });
+    };
 
-    const savedUser = await user.save();
+    const savedUser = await User.insertOne(newUser);
 
     await insertToken(savedUser._id, "verify").then((token) => userCreated(savedUser.email, token, savedUser._id));
 

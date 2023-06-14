@@ -5,8 +5,7 @@ require("dotenv").config();
 
 const User = require("../../collections/user");
 
-const { setJWTCookie } = require("../jwt");
-
+const { JWT_sign, tokenTime } = require("../jwt");
 const { trimmedString, emailTrimmed } = require("../../schema");
 
 /*
@@ -25,7 +24,10 @@ module.exports = async function (req, res) {
     });
     await schema.validate(req.body);
 
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne(
+      { email: req.body.email },
+      { projection: { login_method: 1, permission: 1, password: 1 } }
+    );
     if (!user) return res.code(400).send({ status: "error", message: "This account does not exist! Please sign in!" });
     if (user.login_method !== "email")
       return res.code(400).send({ status: "error", message: "Provider method was used for signin!" });
@@ -37,9 +39,9 @@ module.exports = async function (req, res) {
     const password = await bcrypt.compare(req.body.password, user.password);
     if (!password) return res.code(400).send({ status: "error", message: "The password is incorrect!" });
 
-    const jwt = await setJWTCookie(user, res);
+    const jwt = JWT_sign(user, tokenTime);
 
-    return res.send({ status: "success", jwt });
+    return res.send({ status: "success", access_token: jwt });
   } catch (error) {
     return res.send(error);
   }

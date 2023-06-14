@@ -1,28 +1,26 @@
-const mongoose = require("mongoose");
-
 const Game = require("../../collections/game");
 const Player = require("../../collections/player");
 
 module.exports = async function (req, res) {
-  try {
-    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+	try {
+		if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+		if (!req.query.g_id) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    const gameID = req.unsignCookie(req.cookies.g_id);
-    if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
+		const { g_id: game_id } = req.query;
 
-    const count = await Player.count({ game_id: new mongoose.Types.ObjectId(gameID.value) });
-    const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(gameID.value) });
-    if (!game) return { status: "error", message: "An error has occured!" };
+		const count = await Player.countDocuments({ game_id });
+		const game = await Game.findOne({ _id: game_id }, { projection: { date: 1, status: 1 } });
+		if (!game) return { status: "error", message: "An error has occured!" };
 
-    return res.send({
-      status: "success",
-      game: {
-        count,
-        time: game.date,
-        status: game.status,
-      },
-    });
-  } catch (error) {
-    return res.send(error);
-  }
+		return res.send({
+			status: "success",
+			game: {
+				count,
+				time: game.date,
+				status: game.status,
+			},
+		});
+	} catch (error) {
+		return res.send(error);
+	}
 };

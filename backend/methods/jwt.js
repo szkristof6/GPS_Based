@@ -1,12 +1,11 @@
 require("dotenv").config();
 
-const JwtRefresh = require("../collections/jwt_refresh");
+const JWT = require("../collections/jwt");
 
 const { fastify } = require("../fastify");
 const { setCookie } = require("./cookie");
 
-const tokenTime = "10m";
-const refreshTime = "30d";
+const tokenTime = "30d";
 
 function JWT_sign(user, expiresIn) {
   return fastify.jwt.sign({ user_id: user._id, permission: user.permission }, { expiresIn });
@@ -14,26 +13,28 @@ function JWT_sign(user, expiresIn) {
 
 async function jwtMiddleware(request, reply) {
   try {
-    const token = request.unsignCookie(request.cookies.token);
-    if (!token.valid) request.verified = false;
+    let token;
+    if (request.query.access_token) token = request.query.access_token;
 
-    const decodedToken = fastify.jwt.verify(token.value);
+    const decodedToken = fastify.jwt.verify(token);
 
     if (decodedToken) {
-      request.verified = true;
-      request.user = decodedToken;
+      const existing = JWT.countDocuments({ user_id: decodedToken.user_id }).then((num) => num === 1);
+
+      if (existing !== 1) request.verified = false;
+      else {
+        request.verified = true;
+        request.body = decodedToken;
+      }
 
       return;
     }
   } catch (error) {
-    console.log(error);
-    if (error.code === "FAST_JWT_EXPIRED") await getNewToken(request, reply);
-    else {
-      request.verified = false;
-    }
+    request.verified = false;
   }
 }
 
+/*
 async function getNewToken(request, reply) {
   try {
     const refreshToken = request.unsignCookie(request.cookies.refreshToken);
@@ -69,26 +70,29 @@ async function getNewToken(request, reply) {
   }
 }
 
+*/
+
 async function setJWTCookie(user, res) {
   try {
     const token = JWT_sign(user, tokenTime);
-    const refresh = JWT_sign(user, refreshTime);
 
-    const existing = await JwtRefresh.findOne({ user_id: user._id });
-    if (existing) await JwtRefresh.updateOne({ user_id: user._id }, { $set: { token: refresh } });
+    // const refresh = JWT_sign(user, refreshTime);
+
+    const existing = JWT.countDocuments({ user_id: user._id }).then((num) => num === 1);
+    if (existing) await JWT.updateOne({ user_id: user._id }, { $set: { token: refresh } });
     else {
-      const refreshToken = new JwtRefresh({
+      const newJWT = {
         user_id: user._id,
         token: refresh,
-      });
+      };
 
-      await refreshToken.save();
+      await JWT.insertOne(newJWT);
     }
 
-    res = setCookie("token", token, res);
-    res = setCookie("refreshToken", refresh, res);
+    // res = setCookie("token", token, res);
+    //res = setCookie("refreshToken", refresh, res);
 
-    return { token, refresh };
+    return token;
   } catch (error) {
     return res.send(error);
   }

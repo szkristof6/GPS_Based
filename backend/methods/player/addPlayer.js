@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const yup = require("yup");
 
 const Player = require("../../collections/player");
@@ -7,8 +6,9 @@ const Moderator = require("../../collections/moderator");
 const User = require("../../collections/user");
 
 const { setCookie } = require("../cookie");
+const { ObjectId } = require("../../mongodb");
 
-const { objectID, locationObject } = require("../../schema");
+const { locationObject } = require("../../schema");
 
 /*
 Megnézzük, hogy a kliensről érkező adatok megfelelőek-e
@@ -19,60 +19,48 @@ Ha nem, akkor eltároljuk az adatbázisban és visszatérünk..
 */
 
 module.exports = async function (req, res) {
-  try {
-    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+	try {
+		if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+		if (!req.query.g_id || !req.query.t_id) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    const gameID = req.unsignCookie(req.cookies.g_id);
-    if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
+		const schema = yup.object().shape({ location: locationObject });
+		await schema.validate(req.body);
 
-    const teamID = req.unsignCookie(req.cookies.t_id);
-    if (!teamID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
+		const { g_id: game_id, t_id: team_id } = req.query;
+		const { user_id } = req.user;
 
-    const schema = yup.object().shape({
-      location: locationObject,
-    });
+		const isAdmin = req.user.permission === 10 ? true : false;
+		const isModerator = await Moderator.findOne({ game_id, user_id }).then((moderator) => (moderator ? true : false));
+		if (isModerator || isAdmin) return res.send({ status: "moderator" });
 
-    await schema.validate(req.body);
+		const existing = await Player.findOne({ game_id, user_id });
+		if (existing) return res.send({ status: "inplay", p_id: existing._id });
 
-    const game_id = new mongoose.Types.ObjectId(gameID.value);
-    const user_id = new mongoose.Types.ObjectId(req.user.user_id);
-    const team_id = new mongoose.Types.ObjectId(teamID.value);
+		const player_id = new ObjectId();
 
-    const isModerator = await Moderator.findOne({ game_id, user_id }).then((moderator) => (moderator ? true : false));
-    const isAdmin = await User.findOne({ _id: user_id }).then((user) => (user.permission === 10 ? true : false));
-    if (isModerator || isAdmin) return res.send({ status: "moderator" });
+		const newLocation = {
+			_id: new ObjectId(),
+			location: req.body.location,
+			player_id,
+			game_id,
+		};
 
-    const existing = await Player.findOne({ game_id, user_id });
-    if (existing) {
-      res = setCookie("p_id", existing._id.toString(), res);
-      return res.send({ status: "inplay" });
-    }
+		const newPlayer = {
+			_id: player_id,
+			user_id,
+			game_id,
+			location_id: location._id,
+			team_id,
+			point: 0,
+		};
 
-    const player_id = new mongoose.Types.ObjectId();
+		await Location.insertOne(newLocation);
+		await Player.insertOne(newPlayer);
 
-    const location = new Location({
-      _id: new mongoose.Types.ObjectId(),
-      location: req.body.location,
-      player_id,
-      game_id,
-    });
+		// res = setCookie("p_id", player._id.toString(), res);
 
-    const player = new Player({
-      _id: player_id,
-      user_id,
-      game_id,
-      location_id: location._id,
-      team_id,
-      point: 0,
-    });
-
-    await location.save();
-    await player.save();
-
-    res = setCookie("p_id", player._id.toString(), res);
-
-    return res.send({ status: "success", p_id: player._id.toString() });
-  } catch (error) {
-    return res.send(error);
-  }
+		return res.send({ status: "success", p_id: newPlayer._id });
+	} catch (error) {
+		return res.send(error);
+	}
 };

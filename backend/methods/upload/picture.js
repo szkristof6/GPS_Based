@@ -4,7 +4,6 @@ const sharp = require("sharp");
 const escapeHtml = require("escape-html");
 const crypto = require("crypto");
 const base64url = require("base64url");
-const mongoose = require("mongoose");
 
 const File = require("../../collections/file");
 
@@ -48,14 +47,14 @@ module.exports = async function (request, reply) {
       // Remove the temporary uploaded file
       await fs.promises.unlink(tempFilePath);
 
-      const filetoDB = new File({
+      const newFile = {
         name: uniqueFilename,
         type: "webp",
         id: base64url(crypto.randomBytes(64).toString("hex")).substring(0, 25),
-        user_id: new mongoose.Types.ObjectId(request.user.user_id)
-      });
+        user_id: request.user.user_id,
+      };
 
-      const savedFile = await filetoDB.save();
+      const savedFile = await File.insertOne(newFile);
 
       return { status: "success", file: savedFile.id };
     } catch (err) {

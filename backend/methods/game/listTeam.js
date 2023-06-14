@@ -1,21 +1,17 @@
-const mongoose = require("mongoose");
-
-const Game = require("../../collections/game");
 const Team = require("../../collections/team");
 
 module.exports = async function (req, res) {
   try {
     if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
-    
-    const gameID = req.unsignCookie(req.cookies.g_id);
-    if (!gameID.valid) return res.code(400).send({ status: "error", message: "Not allowed!" });
+    if (!req.query.g_id) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    const game = await Game.findOne({ _id: new mongoose.Types.ObjectId(gameID.value) });
-    const teams = await Team.find({ game_id: game._id });
+		const { g_id: game_id } = req.query;
+
+    const teams = await Team.find({ game_id }, { projection: { image: 1, _id: 1 } });
 
     return res.send({
       status: "success",
-      teams: teams.map((team) => ({ image: team.image, id: team._id })),
+      teams,
     });
   } catch (error) {
     return res.send(error);

@@ -1,3 +1,7 @@
+const { database } = require("../mongodb");
+
+module.exports = database.collection('map');
+/* 
 const mongoose = require("mongoose");
 
 const mapSchema = new mongoose.Schema(
@@ -23,3 +27,5 @@ const mapSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Map", mapSchema);
+
+*/

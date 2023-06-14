@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const yup = require("yup");
 
 const Moderator = require("../../collections/moderator");
@@ -23,13 +22,14 @@ module.exports = async function (req, res) {
 
     await schema.validate(req.body);
 
-    const moderator = new Moderator({
-      user_id: new mongoose.Types.ObjectId(req.user.user_id),
-      game_id: new mongoose.Types.ObjectId(req.body.game_id),
+    const newModerator = {
+      user_id: req.user.user_id,
+      game_id: req.body.game_id,
       permission: req.body.permission,
-    });
+    };
 
-    const savedModerator = await moderator.save();
+		const savedModerator = await Moderator.insertOne(newModerator);
+
     return res.send({ status: "success", id: savedModerator._id.toString() });
   } catch (error) {
     return res.send(error);

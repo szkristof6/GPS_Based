@@ -33,9 +33,9 @@ module.exports = async function (req, res) {
     const password = await bcrypt.compare(req.body.password, game.password);
     if (!password) return res.code(400).send({ status: "error", message: "The password is incorrect!" });
 
-    res = setCookie("g_id", game._id.toString(), res);
+    // res = setCookie("g_id", game._id.toString(), res);
 
-    return res.send({ status: "success", g_id: game._id.toString() });
+    return res.send({ status: "success", g_id: game._id });
   } catch (error) {
     return res.send(error);
   }

@@ -1,18 +1,16 @@
 const Game = require("../../collections/game");
 
 module.exports = async function (req, res) {
-  try {
-    if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
+	try {
+		if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-    const game = await Game.find();
+		const game = await Game.find({}, { projection: { _id: 1, name: 1 } });
 
-    const reducedGames = game.map((item) => ({ name: item.name, id: item._id }));
-
-    return res.send({
-      status: "success",
-      game: reducedGames,
-    });
-  } catch (error) {
-    return res.send(error);
-  }
+		return res.send({
+			status: "success",
+			game,
+		});
+	} catch (error) {
+		return res.send(error);
+	}
 };

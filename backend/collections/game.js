@@ -1,3 +1,8 @@
+const { database } = require("../mongodb");
+
+module.exports = database.collection('game');
+
+/*
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema(
@@ -51,3 +56,4 @@ const gameSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Game", gameSchema);
+*/

@@ -3,13 +3,11 @@ const yup = require("yup");
 const User = require("../../collections/user");
 
 const { setJWTCookie } = require("../jwt");
-
 const { trimmedString } = require("../../schema");
 
 module.exports = async function (req, res) {
   try {
     if (req.body.status != "connected") return res.code(400).send({ message: "Not connected!" });
-
     if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
     const schema = yup.object().shape({
@@ -25,29 +23,30 @@ module.exports = async function (req, res) {
 
     const facebook_response = fetch(url).then((response) => response.json());
 
-    const existing = await User.findOne({ email: facebook_response.email });
+    const existing = await User.findOne({ email: facebook_response.email }, { projection: { login_method: 1 } });
     if (existing) {
       if (existing.login_method != "facebook")
         return res.code(400).send({ status: "error", message: "Email method was used for signin!" });
 
-      await setJWTCookie(existing, res);
+      const jwt = await setJWTCookie(existing, res);
 
-      return res.send({ status: "success" });
+      return res.send({ status: "success", access_token: jwt });
     }
 
-    const user = new User({
+    const newUser = {
       name: facebook_response.name,
       email: facebook_response.email,
       login_method: "facebook",
       image: facebook_response.picture.data.url,
       permission: 1,
-    });
+    };
 
-    const savedUser = await user.save();
+    const savedUser = await User.insertOne(newUser);
 
     const jwt = await setJWTCookie(savedUser, res);
 
-    return res.send({ status: "success", jwt });
+    return res.send({ status: "success", access_token: jwt });
+
   } catch (error) {
     if (error.message.startsWith("E11000")) error.message = "This account already exists!";
     return res.send(error);

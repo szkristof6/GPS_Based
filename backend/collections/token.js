@@ -1,3 +1,7 @@
+const { database } = require("../mongodb");
+
+module.exports = database.collection('token');
+/*
 const mongoose = require("mongoose");
 
 const tokenSchema = new mongoose.Schema(
@@ -23,3 +27,4 @@ const tokenSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Token", tokenSchema);
+*/
