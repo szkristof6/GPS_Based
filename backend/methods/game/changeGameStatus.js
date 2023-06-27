@@ -1,4 +1,5 @@
 const escapeHtml = require("escape-html");
+const { ObjectId } = require("mongodb");
 
 const Game = require("../../collections/game");
 const Moderator = require("../../collections/moderator");
@@ -17,8 +18,9 @@ module.exports = async function (req, res) {
 		if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed! 1" });
 		if (!req.query.g_id) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
-		const stateChange = escapeHtml(req.url.split("/").pop());
+		const stateChange = escapeHtml(req.url.split("/").pop()).split("?")[0];
 		const change = states[stateChange];
+
 		if (!change) return res.code(400).send({ status: "error", message: "Not allowed! 2" });
 
 		const { g_id: game_id } = req.query;
@@ -27,7 +29,7 @@ module.exports = async function (req, res) {
 		const isModerator = await Moderator.findOne({ game_id, user_id }).then((moderator) => (moderator ? true : false));
 		const isAdmin = req.user.permission === 10 ? true : false;
 
-		if (isModerator || isAdmin) await Game.updateOne({ _id: game_id }, { $set: { status: change } });
+		if (isModerator || isAdmin) await Game.updateOne({ _id: new ObjectId(game_id) }, { $set: { status: change } });
 		else return res.code(400).send({ status: "error", message: "Not allowed! 4" });
 
 		return res.send({ status: "success", newStatus: change });

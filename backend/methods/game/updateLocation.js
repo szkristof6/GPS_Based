@@ -1,4 +1,5 @@
 const yup = require("yup");
+const { ObjectId } = require("mongodb");
 
 const Player = require("../../collections/player");
 const Location = require("../../collections/location");
@@ -14,7 +15,7 @@ Majd frissítjük a játékos pozicióját
 module.exports = async function (req, res) {
 	try {
 		if (!req.verified) return res.code(400).send({ status: "error", message: "Not allowed!" });
-		if (!req.query.g_id) return res.code(400).send({ status: "error", message: "Not allowed!" });
+		if (!req.query.p_id) return res.code(400).send({ status: "error", message: "Not allowed!" });
 
 		const { p_id: player_id } = req.query;
 
@@ -22,18 +23,18 @@ module.exports = async function (req, res) {
 
 		await schema.validate(req.body);
 
-		const player = await Player.findOne({ _id: player_id }, { projection: { _id: 1, game_id: 1 } });
+		const player = await Player.findOne({ _id: new ObjectId(player_id) }, { projection: { _id: 1, game_id: 1 } });
 		if (!player) return res.code(400).send({ status: "error", message: "The player was not found!" });
 
 		const newLocation = {
 			location: req.body.location,
-			player_id: player._id,
-			game_id: player.game_id,
+			player_id,
+			game_id: player.game_id.toString(),
 		};
 
 		const savedLocation = await Location.insertOne(newLocation);
 
-		await Player.updateOne({ _id: savedLocation.player_id }, { $set: { location_id: savedLocation._id } });
+		await Player.updateOne({ _id: new ObjectId(player_id) }, { $set: { location_id: savedLocation.insertedId } });
 		return res.send({ status: "success" });
 	} catch (error) {
 		return res.send(error);

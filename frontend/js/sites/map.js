@@ -6,13 +6,13 @@ const back = "waiting.html";
 const refresh_rate = 5 * 1000;
 
 window.addEventListener("load", async () => {
-  API.fetch("", "page/verify", "GET").then((response) => {
+  API.fetch("", `page/verify?access_token=${Cookies.get("access_token") || ""}`, "GET").then((response) => {
     if (response.status === "disallowed") window.location.replace(index);
   });
 
   getPlayerData();
 
-  const data = await API.fetch("", "game/data", "GET");
+  const data = await API.fetch("", `game/data?access_token=${Cookies.get("access_token")}&g_id=${Cookies.get("g_id")}`, "GET");
 
   map.setCenter([data.objects[0].location.x, data.objects[0].location.y]);
   map.setZoom(10); // You can adjust the zoom level as needed
@@ -27,7 +27,7 @@ window.addEventListener("load", async () => {
   );
 
   setInterval(async () => {
-    const response = await API.fetch("", "game/status", "GET");
+    const response = await API.fetch("", `game/status?access_token=${Cookies.get("access_token")}&g_id=${Cookies.get("g_id")}`, "GET");
     if (response.status === "success") {
       const { game } = response;
       if (game.status === 1 || game.status === 3) {
@@ -84,7 +84,7 @@ function drawMapBorder(data) {
       type: "Feature",
       geometry: {
         type: "Polygon",
-        coordinates: [data.map.map((x) => [x.x, x.y])],
+        coordinates: [data.map.location.map((x) => [x.x, x.y])],
       },
     },
   });
@@ -106,7 +106,7 @@ function placeMarkers(data) {
 
     // Create a new image element for the team flag
     const teamFlagImg = document.createElement("img");
-    teamFlagImg.src = new URL(`${API.default}/cdn/p/${markerData.team.image}?width=32&height=32`);
+    teamFlagImg.src = new URL(`${API.default}/cdn/p/${markerData.team.image}?access_token=${Cookies.get("access_token")}&width=32&height=32`);
     teamFlagImg.style.width = "32px";
     teamFlagImg.style.height = "32px";
     teamFlagImg.style.objectFit = "cover";
@@ -143,7 +143,7 @@ function placeMarkers(data) {
 }
 
 async function getPlayerData() {
-  const response = await API.fetch("", "player/data", "GET");
+  const response = await API.fetch("", `player/data?access_token=${Cookies.get("access_token")}&p_id=${Cookies.get("p_id")}`, "GET");
 
   if (response.status === "success") {
     const { data } = response;
@@ -170,7 +170,7 @@ function paintPlayer(player) {
 }
 
 async function getLocationOfPlayers() {
-  const response = await API.fetch("", "game/players", "GET");
+  const response = await API.fetch("", `game/players?access_token=${Cookies.get("access_token")}&g_id=${Cookies.get("g_id")}`, "GET");
 
   if (response.status === "success") {
     if (response.count != 0) {
@@ -198,6 +198,6 @@ async function onSuccess(pos) {
     },
   };
 
-  const update = await API.fetch(json, "game/update/location", "POST");
+  const update = await API.fetch(json, `game/update/location?access_token=${Cookies.get("access_token")}&p_id=${Cookies.get("p_id")}`, "POST");
   if (update.status !== "success") Message.openToast(update.message, "Error", update.status);
 }

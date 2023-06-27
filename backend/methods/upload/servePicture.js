@@ -11,7 +11,7 @@ const supportedFormats = ["jpg", "jpeg", "png", "webp"];
 
 // API endpoint to retrieve the current public image
 module.exports = async function (request, reply) {
-  // if (!request.verified) return reply.code(400).send({ status: "error", message: "Not allowed!" });
+  if (!request.verified) return reply.code(400).send({ status: "error", message: "Not allowed!" });
 
   // Logic to fetch the requested image from your server based on the provided hash and format
   const hash = request.params.hash;
@@ -22,7 +22,7 @@ module.exports = async function (request, reply) {
     return reply.status(400).send({ error: "Server Error!" });
   }
 
-  const file = await File.findOne({ id: hash }, { projection: { type: 1 } });
+  const file = await File.findOne({ id: hash }, { projection: { type: 1, name: 1 } });
 
   if (!file) return reply.status(400).send({ error: "Server Error!" });
 
@@ -66,6 +66,7 @@ module.exports = async function (request, reply) {
   reply
     .header("Content-Type", `image/${file.type}`)
     .header("Cross-Origin-Resource-Policy", "cross-origin") // Replace with your frontend server's address
+    .header("Cross-Origin-Opener-Policy", "cross-origin") // Replace with your frontend server's address
     .header("Access-Control-Allow-Methods", "GET");
   reply.send(image);
 };

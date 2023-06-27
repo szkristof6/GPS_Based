@@ -1,8 +1,7 @@
 const yup = require("yup");
+const { ObjectId } = require("mongodb");
 
 const Team = require("../../collections/team");
-
-const { setCookie } = require("../cookie");
 
 const { objectID } = require("../../schema");
 
@@ -21,7 +20,7 @@ module.exports = async function (req, res) {
 
 		await schema.validate(req.body);
 
-		const team = await Team.findOne({ _id: req.body.id }, { projection: { _id: 1 } });
+		const team = await Team.findOne({ _id: new ObjectId(req.body.id) }, { projection: { _id: 1 } });
 		if (!team) return res.code(400).send({ status: "error", message: "This team does not exist!" });
 
 		// res = setCookie("t_id", team._id.toString(), res);

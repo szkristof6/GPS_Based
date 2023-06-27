@@ -1,3 +1,5 @@
+const { ObjectId } = require("mongodb");
+
 const Player = require("../../collections/player");
 const User = require("../../collections/user");
 const Game = require("../../collections/game");
@@ -16,11 +18,11 @@ module.exports = async function (req, res) {
 
 		const { p_id: player_id } = req.query;
 
-		const player = await Player.findOne({ _id: player_id }, { projection: { point: 1 } });
-		const user = await User.findOne({ _id: player.user_id }, { projection: { name: 1, image: 1, permission: 1 } });
-		const game = await Game.findOne({ _id: player.game_id }, { projection: { name: 1, gamemode: 1, location: 1, date: 1 } });
-		const team = await Team.findOne({ _id: player.team_id }, { projection: { name: 1, point: 1, image: 1 } });
-		const location = await Location.findOne({ _id: player.location_id }, { projection: { location: 1 } });
+		const player = await Player.findOne({ _id: new ObjectId(player_id) }, { projection: { point: 1, user_id: 1, game_id: 1, team_id: 1, location_id: 1 } });
+		const user = await User.findOne({ _id: new ObjectId(player.user_id) }, { projection: { name: 1, image: 1, permission: 1 } });
+		const game = await Game.findOne({ _id: new ObjectId(player.game_id) }, { projection: { name: 1, gamemode: 1, location: 1, date: 1 } });
+		const team = await Team.findOne({ _id: new ObjectId(player.team_id) }, { projection: { name: 1, point: 1, image: 1 } });
+		const location = await Location.findOne({ _id: new ObjectId(player.location_id) }, { projection: { location: 1 } });
 
 		const data = {
 			player,

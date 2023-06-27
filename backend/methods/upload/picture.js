@@ -52,11 +52,12 @@ module.exports = async function (request, reply) {
         type: "webp",
         id: base64url(crypto.randomBytes(64).toString("hex")).substring(0, 25),
         user_id: request.user.user_id,
+        createdAt: new Date(),
       };
 
-      const savedFile = await File.insertOne(newFile);
+      await File.insertOne(newFile);
 
-      return { status: "success", file: savedFile.id };
+      return { status: "success", file: newFile.id };
     } catch (err) {
       console.error(`Error processing file: ${file.filename}`, err);
       return { status: "error", message: `Error processing file: ${file.filename}` };

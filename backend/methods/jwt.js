@@ -3,35 +3,38 @@ require("dotenv").config();
 const JWT = require("../collections/jwt");
 
 const { fastify } = require("../fastify");
-const { setCookie } = require("./cookie");
 
 const tokenTime = "30d";
 
 function JWT_sign(user, expiresIn) {
-  return fastify.jwt.sign({ user_id: user._id, permission: user.permission }, { expiresIn });
+	return fastify.jwt.sign({ user_id: user._id, permission: user.permission }, { expiresIn });
 }
 
 async function jwtMiddleware(request, reply) {
-  try {
-    let token;
-    if (request.query.access_token) token = request.query.access_token;
+	try {
+		let token;
+		if (request.query.access_token) token = request.query.access_token;
+		else {
+			request.verified = false;
+			return;
+		}
+		
+		const decodedToken = fastify.jwt.verify(token);
+		
+		if (decodedToken) {
+			const existing = await JWT.countDocuments({ user_id: decodedToken.user_id }).then((num) => num === 1);
 
-    const decodedToken = fastify.jwt.verify(token);
+			if (!existing) request.verified = false;
+			else {
+				request.verified = true;
+				request.user = decodedToken;
+			}
 
-    if (decodedToken) {
-      const existing = JWT.countDocuments({ user_id: decodedToken.user_id }).then((num) => num === 1);
-
-      if (existing !== 1) request.verified = false;
-      else {
-        request.verified = true;
-        request.body = decodedToken;
-      }
-
-      return;
-    }
-  } catch (error) {
-    request.verified = false;
-  }
+			return;
+		}
+	} catch (error) {
+		request.verified = false;
+	}
 }
 
 /*
@@ -73,29 +76,30 @@ async function getNewToken(request, reply) {
 */
 
 async function setJWTCookie(user, res) {
-  try {
-    const token = JWT_sign(user, tokenTime);
+	try {
+		const token = JWT_sign(user, tokenTime);
 
-    // const refresh = JWT_sign(user, refreshTime);
+		// const refresh = JWT_sign(user, refreshTime);
 
-    const existing = JWT.countDocuments({ user_id: user._id }).then((num) => num === 1);
-    if (existing) await JWT.updateOne({ user_id: user._id }, { $set: { token: refresh } });
-    else {
-      const newJWT = {
-        user_id: user._id,
-        token: refresh,
-      };
+		const existing = await JWT.countDocuments({ user_id: user._id }).then((num) => num === 1);
+		if (existing) await JWT.updateOne({ user_id: user._id }, { $set: { token } });
+		else {
+			const newJWT = {
+				user_id: user._id.toString(),
+				token,
+				createdAt: new Date(),
+			};
 
-      await JWT.insertOne(newJWT);
-    }
+			await JWT.insertOne(newJWT);
+		}
 
-    // res = setCookie("token", token, res);
-    //res = setCookie("refreshToken", refresh, res);
+		// res = setCookie("token", token, res);
+		//res = setCookie("refreshToken", refresh, res);
 
-    return token;
-  } catch (error) {
-    return res.send(error);
-  }
+		return token;
+	} catch (error) {
+		return res.send(error);
+	}
 }
 
 module.exports = { JWT_sign, jwtMiddleware, setJWTCookie };

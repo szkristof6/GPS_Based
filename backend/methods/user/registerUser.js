@@ -45,6 +45,7 @@ module.exports = async function (req, res) {
       login_method: "email",
       image: `https://eu.ui-avatars.com/api/?${imageParams}`,
       permission: 0,
+      createdAt: new Date(),
     };
 
     const savedUser = await User.insertOne(newUser);

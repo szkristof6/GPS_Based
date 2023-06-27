@@ -5,51 +5,55 @@ require("dotenv").config();
 
 const User = require("../../collections/user");
 
-const { JWT_sign, tokenTime } = require("../jwt");
+const { setJWTCookie } = require("../jwt");
 const { trimmedString } = require("../../schema");
 
 module.exports = async function (req, res) {
-  if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
+	if (!req.captchaVerify) return res.code(400).send({ status: "error", message: "Captcha failed!" });
 
-  const schema = yup.object().shape({
-    credential: trimmedString,
-    token: trimmedString,
-  });
-  await schema.validate(req.body);
+	const schema = yup.object().shape({
+		credential: trimmedString,
+		token: trimmedString,
+	});
+	await schema.validate(req.body);
 
-  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: req.body.credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-    const payload = ticket.getPayload();
+	const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+	try {
+		const ticket = await client.verifyIdToken({
+			idToken: req.body.credential,
+			audience: process.env.GOOGLE_CLIENT_ID,
+		});
+		const payload = ticket.getPayload();
 
-    const existing = await User.findOne({ email: payload.email }, { projection: { login_method: 1 } });
-    if (existing) {
-      if (existing.login_method != "google")
-        return res.code(400).send({ status: "error", message: "Email method was used for signin!" });
+		const existing = await User.findOne({ email: payload.email }, { projection: { login_method: 1, permission: 1 } });
+		if (existing) {
+			if (existing.login_method != "google") return res.code(400).send({ status: "error", message: "Email method was used for signin!" });
 
-      const jwt = await setJWTCookie(existing, res);
+			const jwt = await setJWTCookie(existing, res);
 
-      return res.send({ status: "success", access_token: jwt });
-    }
+			const next = existing.permission > 5 ? "admin" : "join";
 
-    const newUser = {
-      name: payload.name,
-      email: payload.email,
-      login_method: "google",
-      image: payload.picture,
-      permission: 1,
-    };
+			return res.send({ status: "success", access_token: jwt, next });
+		}
 
-    const savedUser = await User.insertOne(newUser);
+		const newUser = {
+			name: payload.name,
+			email: payload.email,
+			login_method: "google",
+			image: payload.picture,
+			permission: 1,
+			createdAt: new Date(),
+		};
 
-    const jwt = await setJWTCookie(savedUser, res);
+		const savedUser = await User.insertOne(newUser);
 
-    return res.send({ status: "success", access_token: jwt });
-  } catch (error) {
-    if (error.message.startsWith("E11000")) error.message = "This account already exists!";
-    return res.send(error);
-  }
+		const jwt = await setJWTCookie(savedUser, res);
+
+		const next = savedUser.permission > 5 ? "admin" : "join";
+
+		return res.send({ status: "success", access_token: jwt, next });
+	} catch (error) {
+		if (error.message.startsWith("E11000")) error.message = "This account already exists!";
+		return res.send(error);
+	}
 };

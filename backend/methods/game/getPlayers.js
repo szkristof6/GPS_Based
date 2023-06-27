@@ -18,7 +18,7 @@ module.exports = async function (req, res) {
 
 		const { g_id: game_id } = req.query;
 
-		const players = await Player.find({ game_id }, { projection: { user_id: 1, team_id: 1, location_id: 1 } });
+		const players = await Player.find({ game_id }, { projection: { user_id: 1, team_id: 1, location_id: 1 } }).toArray();
 		if (!players) return res.code(400).send({ status: "error", message: "There are zero players in this game!" });
 
 		const cleaned = new Array(); // Létrehozunk egy üres listát

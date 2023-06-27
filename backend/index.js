@@ -12,7 +12,9 @@ fastify.get("/", (req, res) => res.send({ status: "disallowed" }));
 
 fastify.get("/page/verify", { preHandler: [fastify.verify] }, (req, res) => {
   if (!req.verified) return res.send({ status: "disallowed" });
-  return res.send({ status: "allowed", permission: req.user.permission });
+  const next = req.user.permission > 5 ? "admin" : "join";
+
+  return res.send({ status: "allowed", next });
 });
 
 /*

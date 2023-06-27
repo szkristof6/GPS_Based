@@ -16,6 +16,7 @@ async function insertToken(user_id, method) {
     user_id,
     token: hash,
     method,
+    createdAt: new Date(),
   };
   await Token.insertOne(newToken);
 

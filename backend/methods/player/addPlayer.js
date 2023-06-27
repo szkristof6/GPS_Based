@@ -1,12 +1,10 @@
 const yup = require("yup");
+const { ObjectId } = require("mongodb");
 
 const Player = require("../../collections/player");
 const Location = require("../../collections/location");
 const Moderator = require("../../collections/moderator");
 const User = require("../../collections/user");
-
-const { setCookie } = require("../cookie");
-const { ObjectId } = require("../../mongodb");
 
 const { locationObject } = require("../../schema");
 
@@ -49,11 +47,11 @@ module.exports = async function (req, res) {
 			_id: player_id,
 			user_id,
 			game_id,
-			location_id: location._id,
+			location_id: newLocation._id,
 			team_id,
 			point: 0,
 		};
-
+		
 		await Location.insertOne(newLocation);
 		await Player.insertOne(newPlayer);
 

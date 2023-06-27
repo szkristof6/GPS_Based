@@ -1,3 +1,5 @@
+const { ObjectId } = require("mongodb");
+
 const Game = require("../../collections/game");
 const Map = require("../../collections/map");
 const Object = require("../../collections/object");
@@ -10,17 +12,17 @@ module.exports = async function (req, res) {
 
 		const { g_id: game_id } = req.query;
 
-		const game = await Game.findOne({ _id: game_id }, { projection: { status: 1 } });
-		const map = await Map.findOne({ _id: game.map_id }, { projection: { location: 1 } });
-		const object = await Object.findOne({ map_id: map._id }, { projection: { type: 1, location: 1, _id: 1, team_id: 1 } });
-		const teams = await Team.find({ game_id: game._id }, { projection: { _id: 1, image: 1, point: 1 } });
+		const game = await Game.findOne({ _id: new ObjectId(game_id) }, { projection: { status: 1, map_id: 1 } });
+		const map = await Map.findOne({ _id: new ObjectId(game.map_id) }, { projection: { location: 1 } });
+		const object = await Object.findOne({ map_id: map._id.toString() }, { projection: { objects: 1, _id: 1 } });
+		const teams = await Team.find({ game_id: game._id.toString() }, { projection: { _id: 1, image: 1, point: 1 } }).toArray();
 
 		const objectsWithPictures = object.objects.map((object) => ({
 			type: object.type,
 			location: object.location,
 			id: object._id,
 			team: {
-				image: teams.filter((x) => x._id === object.team_id)[0].image,
+				image: teams.filter((x) => x._id.toString() === object.team_id)[0].image,
 			},
 		}));
 

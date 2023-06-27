@@ -1,3 +1,5 @@
+const { ObjectId } = require("mongodb");
+
 const Game = require("../../collections/game");
 const Player = require("../../collections/player");
 
@@ -9,7 +11,7 @@ module.exports = async function (req, res) {
 		const { g_id: game_id } = req.query;
 
 		const count = await Player.countDocuments({ game_id });
-		const game = await Game.findOne({ _id: game_id }, { projection: { date: 1, status: 1 } });
+		const game = await Game.findOne({ _id: new ObjectId(game_id) }, { projection: { date: 1, status: 1 } });
 		if (!game) return { status: "error", message: "An error has occured!" };
 
 		return res.send({

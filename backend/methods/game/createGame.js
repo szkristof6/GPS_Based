@@ -35,6 +35,7 @@ module.exports = async function (req, res) {
 		const newMap = {
 			user_id: req.user.user_id,
 			location: req.body.map,
+			createdAt: new Date(),
 		};
 
 		const savedMap = await Map.insertOne(newMap);
@@ -42,10 +43,11 @@ module.exports = async function (req, res) {
 		const newGame = {
 			id: crypto.randomBytes(8).toString("hex"),
 			name: escapeHtml(req.body.name),
-			map_id: savedMap._id,
+			map_id: savedMap.insertedId.toString(),
 			date: req.body.date,
 			password: hash,
 			status: 0,
+			createdAt: new Date(),
 		};
 
 		const savedGame = await Game.insertOne(newGame);
@@ -55,18 +57,20 @@ module.exports = async function (req, res) {
 		for (const image of req.body.images) {
 			const newTeam = {
 				image,
-				game_id: savedGame._id,
+				game_id: savedGame.insertedId.toString(),
 				point: 0,
+				createdAt: new Date(),
 			};
 
 			const savedTeam = await Team.insertOne(newTeam);
 
-			teamIds.push(savedTeam._id);
+			teamIds.push(savedTeam.insertedId.toString());
 		}
 
 		const newObject = {
-			map_id: savedMap._id,
-			objects: req.body.objects.map((object) => ({ ...object, team_id: teamIds[object.team - 1] })),
+			map_id: savedMap.insertedId.toString(),
+			objects: req.body.objects.map((object) => ({ ...object, team_id: teamIds[object.team] })),
+			createdAt: new Date(),
 		};
 
 		await Object.insertOne(newObject);

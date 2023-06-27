@@ -39,6 +39,7 @@ module.exports = async function (req, res) {
       login_method: "facebook",
       image: facebook_response.picture.data.url,
       permission: 1,
+      createdAt: new Date(),
     };
 
     const savedUser = await User.insertOne(newUser);
