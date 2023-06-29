@@ -26,6 +26,9 @@ module.exports = async function (req, res) {
 
     await schema.validate(req.body);
 
+    const exist = await User.findOne({ email: escapeHtml(req.body.email) });
+    if(exist) return res.code(400).send({ status: "error", message: "This user exists in our database!" });
+
     const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
 
     const name = escapeHtml(`${req.body.firstname} ${req.body.lastname}`);
@@ -50,7 +53,7 @@ module.exports = async function (req, res) {
 
     const savedUser = await User.insertOne(newUser);
 
-    await insertToken(savedUser._id, "verify").then((token) => userCreated(savedUser.email, token, savedUser._id));
+    await insertToken(savedUser.insertedId.toString(), "verify").then((token) => userCreated(newUser.email, token, savedUser.insertedId));
 
     return res.send({ status: "success", message: "Please verify your e-mail address!" });
   } catch (error) {

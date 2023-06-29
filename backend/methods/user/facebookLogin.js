@@ -23,14 +23,16 @@ module.exports = async function (req, res) {
 
     const facebook_response = fetch(url).then((response) => response.json());
 
-    const existing = await User.findOne({ email: facebook_response.email }, { projection: { login_method: 1 } });
+    const existing = await User.findOne({ email: facebook_response.email });
     if (existing) {
       if (existing.login_method != "facebook")
         return res.code(400).send({ status: "error", message: "Email method was used for signin!" });
 
       const jwt = await setJWTCookie(existing, res);
 
-      return res.send({ status: "success", access_token: jwt });
+		const next = existing.permission > 5 ? "admin" : "join";
+
+      return res.send({ status: "success", access_token: jwt, next });
     }
 
     const newUser = {
@@ -46,7 +48,9 @@ module.exports = async function (req, res) {
 
     const jwt = await setJWTCookie(savedUser, res);
 
-    return res.send({ status: "success", access_token: jwt });
+		const next = savedUser.permission > 5 ? "admin" : "join";
+
+    return res.send({ status: "success", access_token: jwt, next });
 
   } catch (error) {
     if (error.message.startsWith("E11000")) error.message = "This account already exists!";

@@ -15,9 +15,9 @@ window.addEventListener("load", async () => {
 	const data = await API.fetch("", `game/team/list?access_token=${Cookies.get("access_token")}&g_id=${Cookies.get("g_id")}`, "GET");
 
 	const team1Button = document.querySelector(".team1");
-	team1Button.setAttribute("id", data.teams[0]._id);
+	team1Button.setAttribute("id", data.teams[0].id);
 	const team2Button = document.querySelector(".team2");
-	team2Button.setAttribute("id", data.teams[1]._id);
+	team2Button.setAttribute("id", data.teams[1].id);
 
 	const loader = document.querySelector(".container");
 	loader.style.display = "none";

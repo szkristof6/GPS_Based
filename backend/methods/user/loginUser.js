@@ -5,13 +5,8 @@ require("dotenv").config();
 
 const User = require("../../collections/user");
 
-const { JWT_sign, tokenTime } = require("../jwt");
+const { setJWTCookie } = require("../jwt");
 const { trimmedString, emailTrimmed } = require("../../schema");
-
-/*
-Nagyon hasonló a regisztrációhoz, annyi különbséggel, hogy nem beteszünk az adatbázisba, hanem keresünk benne
-Ha megtaláltuk a felhasználüt, akkor visszaadjuk a tokent a felhasználónak
-*/
 
 module.exports = async function (req, res) {
   try {
@@ -24,10 +19,7 @@ module.exports = async function (req, res) {
     });
     await schema.validate(req.body);
 
-    const user = await User.findOne(
-      { email: req.body.email },
-      { projection: { login_method: 1, permission: 1, password: 1 } }
-    );
+    const user = await User.findOne({ email: req.body.email });
     if (!user) return res.code(400).send({ status: "error", message: "This account does not exist! Please sign in!" });
     if (user.login_method !== "email")
       return res.code(400).send({ status: "error", message: "Provider method was used for signin!" });
@@ -39,9 +31,11 @@ module.exports = async function (req, res) {
     const password = await bcrypt.compare(req.body.password, user.password);
     if (!password) return res.code(400).send({ status: "error", message: "The password is incorrect!" });
 
-    const jwt = JWT_sign(user, tokenTime);
+		const jwt = await setJWTCookie(user, res);
 
-    return res.send({ status: "success", access_token: jwt });
+		const next = user.permission > 5 ? "admin" : "join";
+
+    return res.send({ status: "success", access_token: jwt, next });
   } catch (error) {
     return res.send(error);
   }

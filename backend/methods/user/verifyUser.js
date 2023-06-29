@@ -1,4 +1,5 @@
 const yup = require("yup");
+const { ObjectId } = require("mongodb");
 
 require("dotenv").config();
 
@@ -29,7 +30,7 @@ module.exports = async function verifyUser(req, res) {
     const token = await verifyToken(user_id, "verify", 5);
     if (token.status !== "valid") return res.code(400).send(token);
 
-    await User.updateOne({ _id: user_id }, { $set: { permission: 1 } });
+    await User.updateOne({ _id: new ObjectId(user_id) }, { $set: { permission: 1 } });
     await removeToken(user_id);
 
     return res.send({ status: "success" });

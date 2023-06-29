@@ -25,7 +25,7 @@ module.exports = async function (req, res) {
 		});
 		const payload = ticket.getPayload();
 
-		const existing = await User.findOne({ email: payload.email }, { projection: { login_method: 1, permission: 1 } });
+		const existing = await User.findOne({ email: payload.email });
 		if (existing) {
 			if (existing.login_method != "google") return res.code(400).send({ status: "error", message: "Email method was used for signin!" });
 

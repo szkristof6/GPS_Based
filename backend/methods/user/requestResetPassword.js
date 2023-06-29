@@ -34,7 +34,7 @@ module.exports = async function (req, res) {
         message: "This account uses provider login! Please contect the used provider!",
       });
 
-    insertToken(user._id, "reset").then((token) => passwordReset(user.email, token, user._id));
+    insertToken(user._id.toString(), "reset").then((token) => passwordReset(user.email, token, user._id));
 
     return res.send({ status: "success", message: "The e-mail has been sent!" });
   } catch (error) {

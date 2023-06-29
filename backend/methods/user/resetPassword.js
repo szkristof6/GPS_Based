@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const yup = require("yup");
+const { ObjectId } = require("mongodb");
 
 require("dotenv").config();
 
@@ -36,12 +37,12 @@ module.exports = async function resetPassword(req, res) {
     const password = await bcrypt.compare(req.body.user_token, passwordResetToken.token);
     if (!password) return res.code(400).send({ status: "error", message: "Invalid or expired password reset token!" });
 
-    const user = await User.findOne({ _id: user_id }, { projection: { email: 1 } });
+    const user = await User.findOne({ _id: new ObjectId(user_id) }, { projection: { email: 1 } });
     if (req.body.email !== user.email)
       return res.code(400).send({ status: "error", message: "Account with the given email does not exist!" });
 
     const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
-    await User.updateOne({ _id: user_id }, { $set: { password: hash } });
+    await User.updateOne({ _id: new ObjectId(user_id) }, { $set: { password: hash } });
 
     await removeToken(user_id);
 

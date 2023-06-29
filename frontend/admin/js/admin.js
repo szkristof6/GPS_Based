@@ -29,8 +29,14 @@ map.addControl(
 	})
 );
 
-function drawTable(data) {
-	data.game.forEach((game) => {
+const teamColors = {
+	0: "red",
+	1: "green",
+	2: "yellow",
+};
+
+function drawTable(games) {
+	games.forEach((game) => {
 		const rowElement = document.createElement("tr");
 
 		const nameElement = document.createElement("th");
@@ -52,22 +58,22 @@ function drawTable(data) {
 }
 
 window.addEventListener("load", async () => {
-	const data = await API.fetch("", `game/list/admin?access_token=${Cookies.get("access_token")}`, "GET");
+	const data = await API.fetch("", `game/list?access_token=${Cookies.get("access_token")}`, "GET");
 
-	drawTable(data);
+	drawTable(data.games);
 
 	const loader = document.querySelector(".loader_container");
 	loader.style.display = "none";
 });
 
-function drawMapBorder(data) {
+function drawMapBorder(location) {
 	map.addSource("polygon", {
 		type: "geojson",
 		data: {
 			type: "Feature",
 			geometry: {
 				type: "Polygon",
-				coordinates: [data.map.location.map((x) => [x.x, x.y])],
+				coordinates: [location.map((x) => [x.x, x.y])],
 			},
 		},
 	});
@@ -82,35 +88,31 @@ function drawMapBorder(data) {
 	});
 }
 
-function placeMarkers(data) {
-	const mapMarkers = data.objects.map((markerData) => {
+function placeMarkers(objects) {
+	const mapMarkers = objects.map((markerData) => {
 		const markerEl = document.createElement("div");
 		markerEl.classList.add("marker", markerData.type);
 
 		// Create a new image element for the team flag
 		const teamFlagImg = document.createElement("img");
-		teamFlagImg.src = new URL(`${API.default}/cdn/p/${markerData.team.image}?access_token=${Cookies.get("access_token")}&width=32&height=32`);
-		teamFlagImg.style.width = "32px";
+		teamFlagImg.src = new URL(`${API.default}/cdn/p/${markerData.team.image}?access_token=${Cookies.get("access_token")}`);
+
 		teamFlagImg.style.height = "32px";
 		teamFlagImg.style.objectFit = "cover";
 		if (markerData.type === "village") {
 			teamFlagImg.style.borderRadius = "50%";
+			teamFlagImg.style.width = "32px";
+		} else {
+			teamFlagImg.style.width = "55px";
 		}
+
+		teamFlagImg.style.border = "2px solid";
+		teamFlagImg.style.borderColor = teamColors[markerData.id];
 
 		// Add the team flag image to the marker element
 		markerEl.appendChild(teamFlagImg);
 
-		const marker = new mapboxgl.Marker({
-			element: markerEl,
-			style: {
-				height: "20",
-				width: "20",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				border: "2px solid ",
-			},
-		});
+		const marker = new mapboxgl.Marker({ element: markerEl });
 		marker.setLngLat([markerData.location.x, markerData.location.y]);
 		return {
 			marker,
@@ -184,8 +186,8 @@ async function joinGame(game_id) {
 		map.setCenter([data.objects[0].location.x, data.objects[0].location.y]);
 		map.setZoom(10); // You can adjust the zoom level as needed
 
-		drawMapBorder(data);
-		placeMarkers(data);
+		drawMapBorder(data.map.location);
+		placeMarkers(data.objects);
 
 		displayStatus(data.game.status);
 
@@ -203,7 +205,7 @@ function paintPlayer(player) {
 	player_image.style.height = `40px`;
 	player_image.style.borderRadius = "50%";
 
-	new mapboxgl.Marker(player_image).setLngLat([player.location.x, player.location.y]).addTo(map);
+	new mapboxgl.Marker(player_image).setLngLat([player.location.location.x, player.location.location.y]).addTo(map);
 }
 
 async function getLocationOfPlayers() {

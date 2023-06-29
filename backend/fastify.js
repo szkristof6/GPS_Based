@@ -1,5 +1,4 @@
 const http = require("http");
-const path = require("path");
 
 let fastify_server;
 
@@ -11,6 +10,8 @@ const serverFactory = (handler, opts) => {
 const fastify = require("fastify")({ serverFactory });
 
 require("dotenv").config();
+
+fastify.register(require('@fastify/redis'), { host: 'localhost', password: process.env.REDIS_PASSWORD });
 
 fastify.register(require("@fastify/multipart"), { });
 

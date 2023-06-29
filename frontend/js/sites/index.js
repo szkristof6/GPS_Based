@@ -71,7 +71,8 @@ loginForm.addEventListener("submit", async (event) => {
 		Cookie.set("access_token", user.access_token);
 
 		setTimeout(() => {
-			//window.location.replace(next);
+			if (user.next === "admin") window.location.replace(admin);
+			else window.location.replace(`${user.next}.html`);
 		}, Message.redirect_time);
 	} else {
 		Message.openToast(user.message, "Error", user.status);
@@ -107,7 +108,8 @@ signinForm.addEventListener("submit", async (event) => {
 			Message.openToast("The activation email has been sent to your e-mail address!", "Success", user.status);
 
 			setTimeout(() => {
-				//window.location.replace(index);
+				if (user.next === "admin") window.location.replace(admin);
+				else window.location.replace(`${user.next}.html`);
 			}, Message.redirect_time);
 		} else {
 			Message.openToast(user.message, "Error", user.status);
@@ -136,7 +138,8 @@ facebookButton.addEventListener("click", async (event) => {
 			Cookie.set("access_token", response.access_token);
 
 			setTimeout(() => {
-				//window.location.replace(next);
+				if (response.next === "admin") window.location.replace(admin);
+				else window.location.replace(`${response.next}.html`);
 			}, Message.redirect_time);
 		} else {
 			Message.openToast(response.message, "Error", response.status);

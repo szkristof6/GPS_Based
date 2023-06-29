@@ -46,6 +46,7 @@ async function getData(pos) {
 
 	const player = await API.fetch(playerData, `player/add?access_token=${Cookies.get("access_token")}&g_id=${Cookies.get("g_id")}&t_id=${Cookies.get("t_id")}`, "POST");
 
+	/*
 	if (player.status === "moderator") {
 		Message.openToast("In a second you will be redirected..", "You are a moderator", "success");
 
@@ -53,6 +54,7 @@ async function getData(pos) {
 			window.location.replace(moderator);
 		}, Message.redirect_time);
 	}
+*/
 
 	if (player.status === "success" || player.status === "inplay") {
     Cookie.set("p_id", player.p_id);

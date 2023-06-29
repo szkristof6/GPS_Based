@@ -95,12 +95,17 @@ jsonReader.onload = function () {
 			// Create a new image element for the team flag
 			const teamFlagImg = document.createElement("img");
 			teamFlagImg.src = URL.createObjectURL(teamFlagFile);
-			teamFlagImg.style.width = "32px";
 			teamFlagImg.style.height = "32px";
 			teamFlagImg.style.objectFit = "cover";
 			if (markerData.type === "village") {
 				teamFlagImg.style.borderRadius = "50%";
+				teamFlagImg.style.width = "32px";
+			} else {
+				teamFlagImg.style.width = "55px";
 			}
+
+			teamFlagImg.style.border = "2px solid";
+			teamFlagImg.style.borderColor = teamColors[markerData.team];
 
 			// Add the team flag image to the marker element
 			markerEl.appendChild(teamFlagImg);
@@ -109,18 +114,7 @@ jsonReader.onload = function () {
 			markerEl.style.backgroundColor = teamColors[markerData.team];
 		}
 
-		markerEl.style.borderColor = teamColors[markerData.team];
-		const marker = new mapboxgl.Marker({
-			element: markerEl,
-			style: {
-				height: "20",
-				width: "20",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				border: "2px solid ",
-			},
-		});
+		const marker = new mapboxgl.Marker({ element: markerEl });
 		marker.setLngLat([markerData.lng, markerData.lat]);
 		return {
 			marker: marker,
@@ -178,7 +172,7 @@ form.addEventListener("submit", async (e) => {
 		}
 	}
 
-	const imageUpload = await API.fetchForm(formData, `upload/picture?access_token=${Cookies.get("access_token")}`);
+	const imageUpload = await API.fetchForm(formData, `upload/picture?access_token=${Cookies.get("access_token")}&width=64&height=64`);
 
 	const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 

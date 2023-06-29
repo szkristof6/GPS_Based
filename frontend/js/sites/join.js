@@ -6,11 +6,14 @@ const next = "team.html";
 const admin = "admin/";
 const index = "index.html";
 
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
 	API.fetch("", `page/verify?access_token=${Cookies.get("access_token") || ""}`, "GET").then((response) => {
 		if (response.status === "allowed" && response.permission === 10) window.location.replace(admin);
 		if (response.status === "disallowed") window.location.replace(index);
 	});
+
+	const response = await API.fetch("", `game/list?access_token=${Cookies.get("access_token")}`, "GET");
+	console.log(response);
 
 	const loader = document.querySelector(".container");
 	loader.style.display = "none";

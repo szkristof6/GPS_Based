@@ -11,7 +11,7 @@ module.exports = async function (req, res) {
 		const { g_id: game_id } = req.query;
 
 		const count = await Player.countDocuments({ game_id });
-		const game = await Game.findOne({ _id: new ObjectId(game_id) }, { projection: { date: 1, status: 1 } });
+		const game = await Game.findOne({ _id: new ObjectId(game_id) });
 		if (!game) return { status: "error", message: "An error has occured!" };
 
 		return res.send({

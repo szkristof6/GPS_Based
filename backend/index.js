@@ -17,22 +17,6 @@ fastify.get("/page/verify", { preHandler: [fastify.verify] }, (req, res) => {
   return res.send({ status: "allowed", next });
 });
 
-/*
-fastify.get("/page/socket/verify", (req, res) => {
-  try {
-    const token = req.unsignCookie(req.cookies.token);
-
-    if (!token.valid) res.send({ status: "disallowed" });
-
-    const decodedToken = fastify.jwt.verify(token.value);
-
-    if (decodedToken) return res.send({ status: "allowed" });
-  } catch (error) {
-    res.send({ status: "disallowed" });
-  }
-});
-*/
-
 // User methods - Minden olyan funkció, ami a felhasználóhoz tartozik
 
 const facebookLogin = require("./methods/user/facebookLogin");
@@ -61,7 +45,7 @@ const joinGame = require("./methods/game/joinGame");
 const updateLocation = require("./methods/game/updateLocation");
 const getGame = require("./methods/game/getGame");
 const getGame2 = require("./methods/game/getGame2");
-const getGames = require("./methods/game/getGames");
+const listGames = require("./methods/game/listGames");
 const getStatus = require("./methods/game/getStatus");
 const getPlayers = require("./methods/game/getPlayers");
 
@@ -70,12 +54,13 @@ const listTeam = require("./methods/game/listTeam");
 
 const changeGameStatus = require("./methods/game/changeGameStatus");
 
+
 fastify.post("/game/create", { preHandler: [fastify.verify, fastify.captcha] }, createGame); // Játék létrehozása 1
 
 fastify.post("/game/join", { preHandler: [fastify.verify, fastify.captcha] }, joinGame); // Csatlakozás a játékba
 fastify.post("/game/update/location", { preHandler: [fastify.verify] }, updateLocation); // Pozició frissítés
 fastify.get("/game/data", { preHandler: [fastify.verify] }, getGame); // Játék adatok lekérdezése
-fastify.get("/game/list/admin", { preHandler: [fastify.verify] }, getGames); // Adminként kezelt játékok lekérdezése
+fastify.get("/game/list", { preHandler: [fastify.verify] }, listGames); // Játékok lekérdezése
 fastify.get("/game/data/admin/:id", { preHandler: [fastify.verify] }, getGame2); // Adminként kezelt játékok lekérdezése
 fastify.get("/game/status", { preHandler: [fastify.verify] }, getStatus); // Játék státus lekérdezés
 fastify.get("/game/players", { preHandler: [fastify.verify] }, getPlayers); // Játékosok lekérdezése
@@ -123,35 +108,6 @@ fastify.post("/moderator/add", { preHandler: [fastify.verify, fastify.captcha] }
 fastify.delete("/moderator/delete", { preHandler: [fastify.verify, fastify.captcha] }, deleteModerator); // Moderátor törlése
 
 fastify.ready(() => {
-  /*
-  fastify.io.use(async function (socket, next) {
-    console.log(socket.handshake.query);
-    if (socket.handshake.query && socket.handshake.query.token) {
-      const cookies = Object.entries({
-        token: socket.handshake.query.token,
-      })
-        .map((param) => param.join("="))
-        .join("; ");
-
-      const response = await fetch("http://localhost:1337/page/socket/verify", {
-        headers: {
-          Cookie: cookies,
-        },
-      }).then((data) => data.json());
-
-      if (response.status === "allowed") next();
-      else {
-        next(new Error("Authentication error"));
-      }
-    } else {
-      next(new Error("Authentication error"));
-    }
-  });
-  fastify.io.on("connection", (socket) => {
-    socket.on("test", async (param, send) => send(param));
-  });
-*/
-
   fastify_server.listen({ port: process.env.PORT }, (error) => {
     console.log(`Fastify server started at port: ${process.env.PORT}`);
   });

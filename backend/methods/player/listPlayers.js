@@ -7,7 +7,7 @@ module.exports = async function (req, res) {
 
 		const { g_id: game_id } = req.query;
 
-		const players = await Player.find({ game_id }, { projection: { _id: 1, name: 1 } });
+		const players = await Player.find({ game_id });
 		if (!players) return res.code(400).send({ status: "error", message: "This game does not have any players!" });
 
 		return res.send({

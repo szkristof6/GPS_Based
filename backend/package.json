@@ -18,6 +18,7 @@
     "@fastify/jwt": "^6.7.0",
     "@fastify/multipart": "^7.6.0",
     "@fastify/rate-limit": "^8.0.0",
+    "@fastify/redis": "^6.1.1",
     "base64url": "^3.0.1",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",

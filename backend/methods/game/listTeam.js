@@ -7,11 +7,12 @@ module.exports = async function (req, res) {
 
 		const { g_id: game_id } = req.query;
 
-		const teams = await Team.find({ game_id }, { projection: { image: 1, _id: 1 } }).toArray();
+		const teams = await Team.find({ game_id }).toArray();
+		teams.shift();
 
 		return res.send({
 			status: "success",
-			teams: [teams[1], teams[2]],
+			teams: teams.map((team) => ({ id: team._id, image: team.image })),
 		});
 	} catch (error) {
 		return res.send(error);

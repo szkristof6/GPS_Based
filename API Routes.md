@@ -1,27 +1,13 @@
-### HANDLERS
-
-## VERIFY
-
-INPUT: token COOKIE, refreshToken COOKIE (JWT Tokens)
-OUTPUT:
-ERROR: request.verified = FALSE
-SUCCESS: request.verified = TRUE
-
-## CAPTCHA
-
-INPUT: token BODY
-OUTPUT:
-ERROR: request.captchaVerify = FALSE
-SUCCESS: request.captchaVerify = TRUE
-
 ### ROUTES
 
 # Védett oldalak ellenörzése
 
 METHOD: GET
 URL: /page/verify
-HANDLER: VERIFY
-OUTPUT: { status: "allowed" : "disallowed" }
+QUERY: access_token
+OUTPUT: 
+ERROR: { status: "disallowed" }
+SUCCESS: { status: "allowed", next: "admin" OR "join" }
 
 ## User Paths
 
@@ -29,40 +15,38 @@ OUTPUT: { status: "allowed" : "disallowed" }
 
 METHOD: POST
 URL: /login/facebook
-HANDLER: CAPTCHA
 INPUT SOURCE: FACEBOOK OAUTH, reCAPTCHA
 INPUT: { status: String, accessToken: String, token: String }
 OUTPUT:
 ERROR: { status: "error", message: String }
-SUCCESS: { status: "success" }, SET token COOKIE, refreshToken COOKIE
+SUCCESS: { status: "success", access_token: String }
 
 # Google belépés
 
 METHOD: POST
 URL: /login/google
-HANDLER: CAPTCHA
 INPUT SOURCE: GOOGLE OAUTH, reCAPTCHA
 INPUT: { credential: String, token: String }
 OUTPUT:
 ERROR: { status: "error", message: String }
-SUCCESS: { status: "success" }, SET token COOKIE, refreshToken COOKIE
+SUCCESS: { status: "success", access_token: String }
+
 
 # Email belépés
 
 METHOD: POST
 URL: /login/user
-HANDLER: CAPTCHA
 INPUT SOURCE: reCAPTCHA
 INPUT: { email: String, password: String, token: String }
 OUTPUT:
 ERROR: { status: "error", message: String }
-SUCCESS: { status: "success" }, SET token COOKIE, refreshToken COOKIE
+SUCCESS: { status: "success", access_token: String }
+
 
 # Regisztráció
 
 METHOD: POST
 URL: /register
-HANDLER: CAPTCHA
 INPUT SOURCE: reCAPTCHA
 INPUT: { firstname: String, lastname: String email: String, password: String, passwordre: String, token: String }
 OUTPUT:
@@ -73,7 +57,6 @@ SUCCESS: { status: "success", message: "Please verify your e-mail address!" }
 
 METHOD: POST
 URL: /user/reset/password/request
-HANDLER: CAPTCHA
 INPUT SOURCE: reCAPTCHA
 INPUT: { email: String, token: String }
 OUTPUT:
@@ -84,7 +67,6 @@ SUCCESS: { status: "success", message: "The e-mail has been sent!" }
 
 METHOD: POST
 URL: /user/reset/password
-HANDLER: CAPTCHA
 INPUT SOURCE: reCAPTCHA
 INPUT: { user_id: String, user_token: String, email: String, password: String, passwordre: String, token: String }
 OUTPUT:
@@ -95,7 +77,6 @@ SUCCESS: { status: "success" }
 
 METHOD: POST
 URL: /user/verify
-HANDLER: CAPTCHA
 INPUT SOURCE: reCAPTCHA
 INPUT: { user_id: String, user_token: String, token: String }
 OUTPUT:
@@ -104,9 +85,9 @@ SUCCESS: { status: "success" }
 
 # Kilépés
 
-METHOD: POST
+METHOD: GET
 URL: /user/logout
-HANDLER: VERIFY
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success" }
@@ -117,7 +98,7 @@ SUCCESS: { status: "success" }
 
 METHOD: POST
 URL: /game/create
-HANDLER: VERIFY, CAPTCHA
+QUERY: access_token
 INPUT SOURCE: reCAPTCHA.
 INPUT: { name: String, password: String, date: DateTime, map: Array(Object(x: Number, y: Number)), images: Array(String), objects: Array(Object(type: String, team: Number, location: Object(x: Number, y: Number) )) token: String }
 OUTPUT:
@@ -128,18 +109,18 @@ SUCCESS: { status: "success" }
 
 METHOD: POST
 URL: /game/join
-HANDLER: VERIFY, CAPTCHA
+QUERY: access_token
 INPUT SOURCE: reCAPTCHA
 INPUT: { id: String, password: String, token: String }
 OUTPUT:
 ERROR: { status: "error", message: String }
-SUCCESS: { status: "success" }, SET g_id COOKIE = GAME.\_ID
+SUCCESS: { status: "success", g_id: String }
 
 # Pozició frissítés
 
 METHOD: GET
 URL: /game/update/location
-HANDLER: VERIFY
+QUERY: access_token
 INPUT: { location: Object(x, y) }
 OUTPUT:
 ERROR: { status: "error", message: String }
@@ -149,7 +130,7 @@ SUCCESS: { status: "success" }
 
 METHOD: GET
 URL: /game/data
-HANDLER: VERIFY
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success", map: Array(), objects: Object() }
@@ -158,7 +139,7 @@ SUCCESS: { status: "success", map: Array(), objects: Object() }
 
 METHOD: GET
 URL: /game/list/admin
-HANDLER: VERIFY
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success", map: Array(), objects: Object() }
@@ -167,7 +148,7 @@ SUCCESS: { status: "success", map: Array(), objects: Object() }
 
 METHOD: GET
 URL: /game/data/admin/:id
-HANDLER: VERIFY
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success", map: Array(), objects: Object() }
@@ -176,7 +157,7 @@ SUCCESS: { status: "success", map: Array(), objects: Object() }
 
 METHOD: GET
 URL: /game/status
-HANDLER: VERIFY
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success", game: Object(count: Number, time: DateTime, status: Boolean ) }
@@ -185,7 +166,7 @@ SUCCESS: { status: "success", game: Object(count: Number, time: DateTime, status
 
 METHOD: GET
 URL: /game/players
-HANDLER: VERIFY
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success", count: Number, players: Array(Object(user: Object( name: String, image: String), team: Object( color: team.color ), location: Object(x: Number, y: Number))) }
@@ -194,7 +175,7 @@ SUCCESS: { status: "success", count: Number, players: Array(Object(user: Object(
 
 METHOD: GET
 URL: /game/status/waiting
-HANDLER: VERIFY, CAPTCHA
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success" }
@@ -203,7 +184,7 @@ SUCCESS: { status: "success" }
 
 METHOD: GET
 URL: /game/status/start
-HANDLER: VERIFY, CAPTCHA
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success" }
@@ -212,7 +193,7 @@ SUCCESS: { status: "success" }
 
 METHOD: GET
 URL: /game/status/stop
-HANDLER: VERIFY, CAPTCHA
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success" }
@@ -221,7 +202,7 @@ SUCCESS: { status: "success" }
 
 METHOD: GET
 URL: /game/status/pause
-HANDLER: VERIFY, CAPTCHA
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success" }
@@ -230,7 +211,7 @@ SUCCESS: { status: "success" }
 
 METHOD: GET
 URL: /game/status/resume
-HANDLER: VERIFY, CAPTCHA
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { status: "success" }
@@ -241,7 +222,7 @@ SUCCESS: { status: "success" }
 
 METHOD: POST
 URL: /upload/picture
-HANDLER: VERIFY, CAPTCHA
+QUERY: access_token
 INPUT File
 OUTPUT:
 ERROR: { status: "error", message: String }
@@ -251,6 +232,7 @@ SUCCESS: { status: "success", files: Array(String) }
 
 METHOD: GET
 URL: /cdn/p/:hash
+QUERY: access_token
 OPTIONAL: width && height
 OUTPUT:
 ERROR: { status: "error", message: String }
@@ -262,7 +244,7 @@ SUCCESS: Image
 
 METHOD: POST
 URL: /message/send
-HANDLER: VERIFY
+QUERY: access_token
 INPUT: { message: String, receiver_type: String, receiver: String }
 OUTPUT:
 ERROR: { status: "error", message: String }
@@ -272,7 +254,7 @@ SUCCESS: { status: "success" }
 
 METHOD: GET
 URL: /message/list
-HANDLER: VERIFY
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: { count: Number, messages: Array(Object(text: String, type: String, sender: String, time: DateTime )) }
@@ -283,17 +265,17 @@ SUCCESS: { count: Number, messages: Array(Object(text: String, type: String, sen
 
 METHOD: GET
 URL: /player/add
-HANDLER: VERIFY
+QUERY: access_token
 INPUT: { location: Object(x: Number, y: Number), team_id: String }
 OUTPUT:
 ERROR: { status: "error", message: String }
-SUCCESS: { status: "success" }, SET p_id COOKIE = PLAYER.\_id
+SUCCESS: { status: "success", p_id: String }
 
 # Játékos adatok lekérdezése
 
 METHOD: GET
 URL: /player/data
-HANDLER: VERIFY
+QUERY: access_token
 OUTPUT:
 ERROR: { status: "error", message: String }
 SUCCESS: ??

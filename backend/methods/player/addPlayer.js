@@ -51,9 +51,8 @@ module.exports = async function (req, res) {
 			team_id,
 			point: 0,
 		};
-		
-		await Location.insertOne(newLocation);
-		await Player.insertOne(newPlayer);
+
+		Promise.all([Location.insertOne(newLocation), Player.insertOne(newPlayer)]);
 
 		// res = setCookie("p_id", player._id.toString(), res);
 
