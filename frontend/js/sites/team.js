@@ -27,11 +27,11 @@ window.addEventListener("load", async () => {
 	team2Button.addEventListener("click", (e) => joinTeam(teamID2));
 
 	const team1Img = document.createElement("img");
-	team1Img.setAttribute("src", `${API.default}/cdn/p/${data.teams[0].image}?access_token=${Cookies.get("access_token")}`);
+	team1Img.setAttribute("src", `${API.static_uri}/p/${data.teams[0].image}?access_token=${Cookies.get("access_token")}`);
 	team1Img.setAttribute("class", "team_img");
 
 	const team2Img = document.createElement("img");
-	team2Img.setAttribute("src", `${API.default}/cdn/p/${data.teams[1].image}?access_token=${Cookies.get("access_token")}`);
+	team2Img.setAttribute("src", `${API.static_uri}/p/${data.teams[1].image}?access_token=${Cookies.get("access_token")}`);
 	team2Img.setAttribute("class", "team_img");
 
 	team1Button.appendChild(team1Img);

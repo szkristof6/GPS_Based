@@ -219,7 +219,6 @@ form.addEventListener("submit", async (e) => {
 	}
 
 	const imageUpload = await API.fetchForm(formData, `upload/picture?access_token=${Cookies.get("access_token")}&size=90`);
-
 	const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
 	const pin = `${formData.get("pin1")}${formData.get("pin2")}${formData.get("pin3")}${formData.get("pin4")}`;

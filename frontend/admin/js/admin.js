@@ -95,7 +95,7 @@ function placeMarkers(objects) {
 
 		// Create a new image element for the team flag
 		const teamFlagImg = document.createElement("img");
-		teamFlagImg.src = new URL(`${API.default}/cdn/p/${markerData.team.image}?access_token=${Cookies.get("access_token")}`);
+		teamFlagImg.src = new URL(`${API.static_uri}/p/${markerData.team.image}?access_token=${Cookies.get("access_token")}`);
 
 		teamFlagImg.style.height = "32px";
 		teamFlagImg.style.objectFit = "cover";

@@ -11,8 +11,6 @@ const fastify = require("fastify")({ serverFactory });
 
 require("dotenv").config();
 
-fastify.register(require('@fastify/redis'), { host: 'localhost', password: process.env.REDIS_PASSWORD });
-
 fastify.register(require("@fastify/multipart"), { });
 
 /*

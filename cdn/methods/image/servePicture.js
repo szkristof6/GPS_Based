@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
-const { fastify } = require("../../fastify");
+const redis = require("../../redis");
 
 const File = require("../../collections/file");
 
@@ -34,7 +34,7 @@ module.exports = async function (request, reply) {
 	}
 
 	const redisKey = `image:${hash}`;
-	const cachedImage = await fastify.redis.get(redisKey);
+	const cachedImage = await redis.get(redisKey);
 	if (cachedImage) {
 		if (width && height) await resize(cachedImage, height, width);
 
@@ -75,7 +75,7 @@ module.exports = async function (request, reply) {
 			return reply.status(400).send({ error: "Invalid image file" });
 		}
 
-		await fastify.redis.set(redisKey, image.toString('base64'));
+		await redis.set(redisKey, image.toString('base64'));
 
 		// Resize the image if width and height are provided
 		if (width && height) await resize(image, height, width);

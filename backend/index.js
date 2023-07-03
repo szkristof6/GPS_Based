@@ -74,15 +74,6 @@ fastify.get("/game/status/stop", { preHandler: [fastify.verify] }, changeGameSta
 fastify.get("/game/status/pause", { preHandler: [fastify.verify] }, changeGameStatus); // Játék státus: pause
 fastify.get("/game/status/resume", { preHandler: [fastify.verify] }, changeGameStatus); // Játék státus: resume
 
-// File methods -
-
-const pictureUpload = require("./methods/upload/picture");
-const servePicture = require("./methods/upload/servePicture");
-
-fastify.post("/upload/picture", { preHandler: [fastify.verify] }, pictureUpload);
-
-fastify.get("/cdn/p/:hash", { preHandler: [fastify.verify] }, servePicture);
-
 // Chat methods -
 
 const sendMessage = require("./methods/chat/sendMessage");

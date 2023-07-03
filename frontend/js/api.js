@@ -1,10 +1,10 @@
 /*
 Megadjuk, hogy milyen címen tudjuk elérni a szerverünket.
 */
-const backend_uri = "http://localhost:1337";
+export const backend_uri = "http://localhost:1337";
 //const backend_uri = "https://api.airtrk.hu";
 
-export default backend_uri;
+export const static_uri = "https://static.airtrk.hu";
 
 export const fetch = async (data, route, method) => {
 	try {
@@ -30,12 +30,8 @@ export const fetchForm = async (data, route) => {
 	try {
 		const response = await axios({
 			method: "POST",
-			headers: {
-				"Content-Type": "multipart/form-data",
-			},
-			url: `${backend_uri}/${route}`,
+			url: `${static_uri}/${route}`,
 			data,
-			withCredentials: true,
 		});
 
 		return response.data;
@@ -47,5 +43,5 @@ export const fetchForm = async (data, route) => {
 export async function logOut() {
 	const response = await fetch("", `user/logout?access_token=${Cookies.get("access_token")}`, "GET");
 
-  return response.status === "success" ? true : false;
+	return response.status === "success" ? true : false;
 }
