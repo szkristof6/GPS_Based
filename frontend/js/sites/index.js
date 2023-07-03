@@ -36,13 +36,13 @@ showButton.addEventListener("click", (e) => {
 	if (e.target.classList.contains("not_see")) {
 		input.type = "text";
 
-		e.target.src = "media/hide.png";
+		e.target.src = "media/hide.webp";
 		e.target.classList.remove("not_see");
 		e.target.classList.add("see");
 	} else if (e.target.classList.contains("see")) {
 		input.type = "password";
 
-		e.target.src = "media/eye.png";
+		e.target.src = "media/eye.webp";
 		e.target.classList.remove("see");
 		e.target.classList.add("not_see");
 	}
