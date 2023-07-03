@@ -135,20 +135,51 @@ jsonReader.onload = function () {
 	}
 };
 
-/*button toggle*/
-var toggleButton = document.getElementById("toggle-button");
-var overlay = document.getElementById("overlay");
-var icon = document.getElementsByClassName("icon")[0];
+/* PIN */
 
-toggleButton.addEventListener("click", function () {
-	if (overlay.style.display === "none") {
-		overlay.style.display = "block";
-		icon.src = "../media/close.png";
-	} else {
-		overlay.style.display = "none";
-		icon.src = "../media/menu.png";
-	}
-});
+const pinContainer = document.querySelector(".pin-code");
+
+pinContainer.addEventListener(
+	"keyup",
+	function (event) {
+		const { target } = event;
+
+		const maxLength = parseInt(target.attributes["maxlength"].value, 10);
+		const myLength = target.value.length;
+
+		if (myLength >= maxLength) {
+			let next = target;
+			while ((next = next.nextElementSibling)) {
+				if (next == null) break;
+				if (next.tagName.toLowerCase() == "input") {
+					next.focus();
+					break;
+				}
+			}
+		}
+
+		if (myLength === 0) {
+			let next = target;
+			while ((next = next.previousElementSibling)) {
+				if (next == null) break;
+				if (next.tagName.toLowerCase() == "input") {
+					next.focus();
+					break;
+				}
+			}
+		}
+	},
+	false
+);
+
+pinContainer.addEventListener(
+	"keydown",
+	function (event) {
+		const { target } = event;
+		target.value = "";
+	},
+	false
+);
 
 /*
 const adminField = document.querySelector("#admin_field");
