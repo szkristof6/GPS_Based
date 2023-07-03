@@ -54,3 +54,15 @@ async function joinTeam(team) {
 		}, Message.redirect_time);
 	}
 }
+
+const logoutButton = document.querySelector("#logout");
+logoutButton.addEventListener("click", async () => {
+	const logged_out = await API.logOut();
+	if (logged_out) {
+		Message.openToast("You have been logged out!", "Success", "success");
+
+		setTimeout(() => {
+			window.location.replace(index);
+		}, Message.redirect_time);
+	}
+});

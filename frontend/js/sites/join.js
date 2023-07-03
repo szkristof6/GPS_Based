@@ -45,25 +45,25 @@ function createTable(games, parent) {
 	});
 }
 
-const form = document.querySelector("form");
-const joinButton = document.querySelector("#JoinRoom");
-const logoutButton = document.querySelector("#logout");
 
-console.log("787cf2e7940b4db7");
 console.log("1234");
 
+const form = document.querySelector("form");
 form.addEventListener("submit", (event) => event.preventDefault());
-logoutButton.addEventListener("click", async () => {
-	const response = await API.fetch("", `user/logout?access_token=${Cookies.get("access_token") || ""}`, "GET");
-	if (response.status === "success") {
-		Message.openToast("You have been logged out!", "Success", response.status);
 
+const logoutButton = document.querySelector("#logout");
+logoutButton.addEventListener("click", async () => {
+	const logged_out = await API.logOut();
+	if (logged_out) {
+		Message.openToast("You have been logged out!", "Success", "success");
+		
 		setTimeout(() => {
 			window.location.replace(index);
 		}, Message.redirect_time);
 	}
 });
 
+const joinButton = document.querySelector("#JoinRoom");
 joinButton.addEventListener("click", async (event) => {
 	const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
