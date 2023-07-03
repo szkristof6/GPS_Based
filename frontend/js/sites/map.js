@@ -14,7 +14,7 @@ window.addEventListener("load", async () => {
 
 	const data = await API.fetch("", `game/data?access_token=${Cookies.get("access_token")}&g_id=${Cookies.get("g_id")}`, "GET");
 
-	map.setCenter([data.objects[0].location.x, data.objects[0].location.y]);
+	map.setCenter([data.map.center.x, data.map.center.y]);
 
 	drawMapBorder(data.map.location);
 	placeMarkers(data.objects);
@@ -56,8 +56,7 @@ const map = new mapboxgl.Map({
 	container: "map",
 	style: "mapbox://styles/mapbox/satellite-streets-v11?optimize=true",
 	center: [19, 47],
-	zoom: 14,
-	//minZoom: 15,
+	zoom: 15,
 	performanceMetricsCollection: false,
 });
 
@@ -94,13 +93,43 @@ function drawMapBorder(location) {
 			},
 		},
 	});
+
+	const mapBounds = map.getBounds();
+	const NE = mapBounds.getNorthEast();
+	const SW = mapBounds.getSouthWest();
+
+	const bounds = [
+		[SW.lng.toFixed(4), SW.lat.toFixed(4)], // [west, south]
+		[NE.lng.toFixed(4), NE.lat.toFixed(4)], // [east, north]
+	];
+
+	map.setMaxBounds(bounds);
+
+	const cellSide = 0.05;
+	const grid = turf.squareGrid([SW.lng, SW.lat, NE.lng, NE.lat], cellSide);
+
+	map.addSource("grid-source", {
+		type: "geojson",
+		data: grid,
+		generateId: true,
+	});
+	map.addLayer({
+		id: "grid-layer",
+		type: "line",
+		source: "grid-source",
+		paint: {
+			"line-color": "rgba(116,116,116,0.7)",
+			"line-width": 2.5,
+		},
+	});
+
 	map.addLayer({
 		id: "polygon-layer",
 		type: "line",
 		source: "polygon",
 		paint: {
 			"line-color": "red",
-			"line-width": 2,
+			"line-width": 2.5,
 		},
 	});
 }

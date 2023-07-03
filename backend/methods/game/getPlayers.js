@@ -30,7 +30,7 @@ module.exports = async function (req, res) {
 
 		for (const player of players) {
 			// player.user_id !== req.user.user_id
-			if (true) {
+			if (player.user_id !== req.user.user_id) {
 				const user = User.findOne({ _id: new ObjectId(player.user_id) });
 				const team = Team.findOne({ _id: new ObjectId(player.team_id) });
 				const location = Location.findOne({ _id: new ObjectId(player.location_id) });

@@ -1,3 +1,4 @@
+const turf = require("@turf/turf");
 const { ObjectId } = require("mongodb");
 
 const Game = require("../../collections/game");
@@ -27,10 +28,15 @@ module.exports = async function (req, res) {
 			};
 		});
 
+		console.log([map.location.map((x) => [x.x, x.y])]);
+		const area = turf.points([map.location.map((x) => [x.x, x.y])]);
+
+		const center = turf.center(area);
+
 		return res.send({
 			status: "success",
 			game: { status: game.status, id: game._id },
-			map: { location: map.location },
+			map: { location: map.location, center: { x: center.geometry.coordinates[0], y: center.geometry.coordinates[1] } },
 			objects: objectsWithPictures,
 		});
 	} catch (error) {
