@@ -81,8 +81,8 @@ async function setJWTCookie(user, res) {
 
 		// const refresh = JWT_sign(user, refreshTime);
 
-		const existing = await JWT.countDocuments({ user_id: user._id }).then((num) => num === 1);
-		if (existing) await JWT.updateOne({ user_id: user._id }, { $set: { token } });
+		const existing = await JWT.countDocuments({ user_id: user._id.toString() }).then((num) => num === 1);
+		if (existing) await JWT.updateOne({ user_id: user._id.toString() }, { $set: { token } });
 		else {
 			const newJWT = {
 				user_id: user._id.toString(),

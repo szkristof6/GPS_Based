@@ -15,19 +15,31 @@ window.addEventListener("load", async () => {
 	const data = await API.fetch("", `game/team/list?access_token=${Cookies.get("access_token")}&g_id=${Cookies.get("g_id")}`, "GET");
 
 	const team1Button = document.querySelector(".team1");
-	team1Button.setAttribute("id", data.teams[0].id);
 	const team2Button = document.querySelector(".team2");
-	team2Button.setAttribute("id", data.teams[1].id);
+
+	const teamID1 = data.teams[0].id;
+	const teamID2 = data.teams[1].id;
+
+	team1Button.setAttribute("id", teamID1);
+	team2Button.setAttribute("id", teamID2);
+
+	team1Button.addEventListener("click", (e) => joinTeam(teamID1));
+	team2Button.addEventListener("click", (e) => joinTeam(teamID2));
+
+	const team1Img = document.createElement("img");
+	team1Img.setAttribute("src", `${API.default}/cdn/p/${data.teams[0].image}?access_token=${Cookies.get("access_token")}`);
+	team1Img.setAttribute("class", "team_img");
+
+	const team2Img = document.createElement("img");
+	team2Img.setAttribute("src", `${API.default}/cdn/p/${data.teams[1].image}?access_token=${Cookies.get("access_token")}`);
+	team2Img.setAttribute("class", "team_img");
+
+	team1Button.appendChild(team1Img);
+	team2Button.appendChild(team2Img);
 
 	const loader = document.querySelector(".container");
 	loader.style.display = "none";
 });
-
-const team1Button = document.querySelector(".team1");
-const team2Button = document.querySelector(".team2");
-
-team1Button.addEventListener("click", (e) => joinTeam(e.target.id));
-team2Button.addEventListener("click", (e) => joinTeam(e.target.id));
 
 async function joinTeam(team) {
 	const data = await API.fetch({ id: team }, `game/team/join?access_token=${Cookies.get("access_token")}`, "POST");

@@ -102,6 +102,7 @@
 .toast .column span {
   font-size: 1.07rem;
   margin-left: 12px;
+  color: black;
 }
 .toast i:last-child {
   color: #aeb0d7;
