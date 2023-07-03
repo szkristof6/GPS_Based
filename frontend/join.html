@@ -5,42 +5,24 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="css/icons.css" />
 		<link rel="stylesheet" href="css/loader.css" />
 		<link rel="stylesheet" href="css/toast.css" />
 		<title>Select a room</title>
 
 		<script src="https://www.google.com/recaptcha/api.js?render=6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG"></script>
 		<script src="js/sites/join.js" type="module"></script>
+		<script src="js/modal.js" type="module"></script>
 		<script src="js/axios/axios.min.js"></script>
 		<script src="js/js.cookie.min.js"></script>
 	</head>
 	<body>
+		<div class="icons">
+			<button class="circle-button" id="logout"><img src="./media/log-out.png" /></button>
+		</div>
 		<div class="login-box white_glass_background">
 			<h1>Select a room</h1>
-			<form>
-				<input type="hidden" name="action" value="validate_captcha" />
-
-				<div class="form__group field">
-					<input type="text" name="id" class="form__field" placeholder="Room number" required="" />
-					<label for="id" class="form__label">Room number</label>
-				</div>
-
-				<div class="form__group field">
-					<label for="pin-code" class="form__label">Game PIN</label>
-
-					<div class="pin-code">
-						<input type="number" maxlength="1" name="pin1"  required />
-						<input type="number" maxlength="1" name="pin2" required />
-						<input type="number" maxlength="1" name="pin3" required />
-						<input type="number" maxlength="1" name="pin4" required />
-					</div>
-				</div>
-
-				<div class="buttons_1">
-					<button id="logout" class="white">Log Out</button>
-					<button id="JoinRoom" class="white">Join</button>
-				</div>
-			</form>
+			<div class="game_table"></div>
 		</div>
 		<div class="container">
 			<div class="loader">
@@ -52,5 +34,30 @@
 		</div>
 
 		<ul class="notifications"></ul>
+
+		<div class="modal">
+			<div class="m_box login-box">
+				<h1>Please enter the pincode</h1>
+				<form>
+					<input type="hidden" name="action" value="validate_captcha" />
+					<input type="hidden" name="id" class="id" />
+
+					<div class="form__group field">
+						<label for="pin-code" class="form__label">Game PIN</label>
+
+						<div class="pin-code">
+							<input type="number" maxlength="1" name="pin1" required />
+							<input type="number" maxlength="1" name="pin2" required />
+							<input type="number" maxlength="1" name="pin3" required />
+							<input type="number" maxlength="1" name="pin4" required />
+						</div>
+					</div>
+
+					<div class="buttons_1">
+						<button id="JoinRoom" class="white">Join</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</body>
 </html>

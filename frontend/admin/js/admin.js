@@ -205,7 +205,7 @@ function paintPlayer(player) {
 	player_image.style.height = `40px`;
 	player_image.style.borderRadius = "50%";
 
-	new mapboxgl.Marker(player_image).setLngLat([player.location.location.x, player.location.location.y]).addTo(map);
+	new mapboxgl.Marker(player_image).setLngLat([player.location.x, player.location.y]).addTo(map);
 }
 
 async function getLocationOfPlayers() {

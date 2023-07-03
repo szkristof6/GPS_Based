@@ -1,5 +1,6 @@
 import * as API from "../api.js";
 import * as Message from "../toast.js";
+import * as Modal from "../modal.js";
 import * as Cookie from "../cookie.js";
 
 const next = "team.html";
@@ -13,11 +14,36 @@ window.addEventListener("load", async () => {
 	});
 
 	const response = await API.fetch("", `game/list?access_token=${Cookies.get("access_token")}`, "GET");
-	console.log(response);
+
+	const game_table = document.querySelector(".game_table");
+	createTable(response.games, game_table);
 
 	const loader = document.querySelector(".container");
 	loader.style.display = "none";
 });
+
+function createTable(games, parent) {
+	games.forEach((game) => {
+		const gt_row = document.createElement("div");
+		gt_row.setAttribute("class", "gt_row");
+
+		const gt_text = document.createElement("div");
+		gt_text.setAttribute("class", "gt_text");
+		gt_text.innerText = game.name;
+
+		const gt_button = document.createElement("div");
+		gt_button.setAttribute("class", "gt_button");
+		gt_button.setAttribute("id", game.id);
+		gt_button.innerText = "Join";
+
+		gt_button.addEventListener("click", (event) => Modal.openModal(event));
+
+		gt_row.appendChild(gt_text);
+		gt_row.appendChild(gt_button);
+
+		parent.appendChild(gt_row);
+	});
+}
 
 const form = document.querySelector("form");
 const joinButton = document.querySelector("#JoinRoom");

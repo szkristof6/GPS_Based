@@ -28,8 +28,7 @@ module.exports = async function (req, res) {
 			};
 		});
 
-		console.log([map.location.map((x) => [x.x, x.y])]);
-		const area = turf.points([map.location.map((x) => [x.x, x.y])]);
+		const area = turf.points(map.location.map((x) => [x.x, x.y]));
 
 		const center = turf.center(area);
 

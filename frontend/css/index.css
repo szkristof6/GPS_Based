@@ -1,240 +1,231 @@
 /*COLORS*/
 :root {
-  --col1: #536332;
-  --col2: #789249;
-  --col3: #92ae5e;
+	--col1: #536332;
+	--col2: #789249;
+	--col3: #92ae5e;
 }
 
 /*WRAP -OK ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 .wrap3 {
-  display: block;
+	display: block;
 }
 
 .displayBlock {
-  /*display: block;*/
-  visibility: visible;
-  opacity: 1;
-  /*transition: visibility 0s, opacity 0.5s linear;*/
-  transition: all 0.5s cubic-bezier(0.55, -0.02, 0.28, 0.97);
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  top: 50%;
+	/*display: block;*/
+	visibility: visible;
+	opacity: 1;
+	/*transition: visibility 0s, opacity 0.5s linear;*/
+	transition: all 0.5s cubic-bezier(0.55, -0.02, 0.28, 0.97);
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;
+	top: 50%;
 }
 
 .displayNone {
-  /*display: none;*/
-  visibility: hidden;
-  opacity: 0;
-  transition: all 0.5s linear;
-  position: absolute;
-  top: 50%;
-  left: -18%;
-  /* margin: auto; */
-  width: 355px;
+	/*display: none;*/
+	visibility: hidden;
+	opacity: 0;
+	transition: all 0.5s linear;
+	position: absolute;
+	top: 50%;
+	left: -18%;
+	/* margin: auto; */
+	width: 355px;
 
-  /* transition: visibility 0s, opacity 0.5s linear;*/
+	/* transition: visibility 0s, opacity 0.5s linear;*/
 }
 
 /*BASIC STUFF ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 * {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-    "Helvetica Neue", sans-serif;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 html {
-  height: 100%;
-  box-sizing: border-box;
+	height: 100%;
+	box-sizing: border-box;
 }
 
 button {
-  background: none;
-  border: none;
-  cursor: pointer;
+	background: none;
+	border: none;
+	cursor: pointer;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  /*background: linear-gradient(#141e30, #243b55);
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	/*background: linear-gradient(#141e30, #243b55);
   background-image: url("../media/bg.jpg");*/
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../media/bg.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../media/bg.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
 }
 
 p {
-  color: #fff;
-  text-align: center;
-  margin: 10px 0 0 0;
+	color: #fff;
+	text-align: center;
+	margin: 10px 0 0 0;
 }
 
 .register {
-  color: var(--col3);
-  font-weight: 700;
-  text-decoration: none;
+	color: var(--col3);
+	font-weight: 700;
+	text-decoration: none;
 }
 
 a {
-  color: #fff;
-  text-align: center;
-  margin: 10px 0 0 0;
-  text-decoration: none;
+	color: #fff;
+	text-align: center;
+	margin: 10px 0 0 0;
+	text-decoration: none;
 }
 
 /*BASIC STUFF ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 .white {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(5px);
+	-webkit-backdrop-filter: blur(5px);
 }
 
 .black {
-  background: rgba(0, 0, 0, 0.54);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5.4px);
-  -webkit-backdrop-filter: blur(5.4px);
+	background: rgba(0, 0, 0, 0.54);
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(5.4px);
+	-webkit-backdrop-filter: blur(5.4px);
 }
 
 .login-box {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 355px;
-  max-width: 98%;
-  padding: 40px;
-  transform: translate(-50%, -50%);
-  box-sizing: border-box;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
-  border-radius: 10px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 355px;
+	max-width: 98%;
+	padding: 40px;
+	transform: translate(-50%, -50%);
+	box-sizing: border-box;
+	box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+	border-radius: 10px;
 
-  /*glassy background*/
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+	/*glassy background*/
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(5px);
+	-webkit-backdrop-filter: blur(5px);
 }
 
 .login-box h1,
 h4 {
-  margin: 0 0 30px;
-  padding: 0;
-  color: #fff;
-  text-align: center;
+	margin: 0 0 30px;
+	padding: 0;
+	color: #fff;
+	text-align: center;
 }
 
 .login-box h5 {
-  margin: 0 0 10px;
-  padding: 0;
-  color: #fff;
-  text-align: center;
-  font-size: 17px;
-  font-weight: 400;
+	margin: 0 0 10px;
+	padding: 0;
+	color: #fff;
+	text-align: center;
+	font-size: 17px;
+	font-weight: 400;
 }
 
 .login-box .user-box {
-  position: relative;
+	position: relative;
 }
 
 .buttons_1 {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-  margin-top: 20px;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 20px;
+	margin-top: 20px;
 }
 
 .buttons_1 button {
-  font-weight: 700;
-  font-size: 1.1em;
-  color: white;
-  text-decoration: none;
-  padding: 9px 24px;
-  align-items: center;
-  height: 45px;
-  cursor: pointer;
-  width: 100%;
+	font-weight: 700;
+	font-size: 1.1em;
+	color: white;
+	text-decoration: none;
+	padding: 9px 24px;
+	align-items: center;
+	height: 45px;
+	cursor: pointer;
+	width: 100%;
 }
 
 .buttons_2 {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
-div.buttons_2>* {
-  margin: 0 15px;
+div.buttons_2 > * {
+	margin: 0 15px;
 }
 
 .login-box button img {
-  width: 2.35rem;
-  height: 2.35rem;
+	width: 2.35rem;
+	height: 2.35rem;
 }
 
 .g_id_signin {
-  max-width: 100px;
+	max-width: 100px;
 }
-
 
 /*MOBILE OPTIMALIZE ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 @media only screen and (max-width: 400px) {
-  .login-box {
-    padding: 9%;
-  }
+	.login-box {
+		padding: 9%;
+	}
 
-  .buttons_1 button {
-    padding: 0 7%;
-    white-space: nowrap;
-  }
-
+	.buttons_1 button {
+		padding: 0 7%;
+		white-space: nowrap;
+	}
 }
 
 @media only screen and (max-width: 160px) {
-  .login-box {
-    padding: 6%;
-  }
+	.login-box {
+		padding: 6%;
+	}
 
-  .buttons_1 {
-    flex-direction: column;
-  }
+	.buttons_1 {
+		flex-direction: column;
+	}
 
-  .buttons_1 button {
-    margin: 7px 0;
-  }
+	.buttons_1 button {
+		margin: 7px 0;
+	}
 
-  div.buttons_2>* {
-    margin: 0 8px;
-  }
+	div.buttons_2 > * {
+		margin: 0 8px;
+	}
 }
-
-
-
-
-
-
 
 /*MESSAGE TEST BUTTON ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 .tom {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 .tom:hover {
-  background-color: var(--col1);
+	background-color: var(--col1);
 }
 
-.toast.active~button {
-  pointer-events: none;
+.toast.active ~ button {
+	pointer-events: none;
 }
 
 /* Autocomplete styles in Chrome* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -246,111 +237,111 @@ textarea:-webkit-autofill:hover,
 textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:focus {
-  -webkit-text-fill-color: white;
-  -webkit-box-shadow: 0;
-  transition: background-color 5000s ease-in-out 0s;
+	-webkit-text-fill-color: white;
+	-webkit-box-shadow: 0;
+	transition: background-color 5000s ease-in-out 0s;
 }
 
 /*input field*/
 .form__group {
-  position: relative;
-  padding: 20px 0 0;
-  width: 100%;
+	position: relative;
+	padding: 20px 0 0;
+	width: 100%;
 }
 
 .form__field {
-  font-family: inherit;
-  width: 100%;
-  border: none;
-  border-bottom: 2px solid #9b9b9b;
-  outline: 0;
-  font-size: 17px;
-  color: #fff;
-  padding: 7px 0;
-  background: transparent;
-  transition: border-color 0.2s;
-  margin: 0 0 10px 0;
+	font-family: inherit;
+	width: 100%;
+	border: none;
+	border-bottom: 2px solid #9b9b9b;
+	outline: 0;
+	font-size: 17px;
+	color: #fff;
+	padding: 7px 0;
+	background: transparent;
+	transition: border-color 0.2s;
+	margin: 0 0 10px 0;
 }
 
 .form__field::placeholder {
-  color: transparent;
+	color: transparent;
 }
 
-.form__field:placeholder-shown~.form__label {
-  font-size: 17px;
-  cursor: text;
-  top: 20px;
+.form__field:placeholder-shown ~ .form__label {
+	font-size: 17px;
+	cursor: text;
+	top: 20px;
 }
 
-.form__field:-webkit-autofill~.form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: #38caef;
-  font-weight: 700;
+.form__field:-webkit-autofill ~ .form__label {
+	position: absolute;
+	top: 0;
+	display: block;
+	transition: 0.2s;
+	font-size: 17px;
+	color: #38caef;
+	font-weight: 700;
 }
 
 .form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: #9b9b9b;
-  pointer-events: none;
+	position: absolute;
+	top: 0;
+	display: block;
+	transition: 0.2s;
+	font-size: 17px;
+	color: #9b9b9b;
+	pointer-events: none;
 }
 
 .form__field:focus {
-  padding-bottom: 6px;
-  font-weight: 700;
-  border-width: 3px;
-  border-image: linear-gradient(to right, var(--col1), var(--col2));
-  border-image-slice: 1;
+	padding-bottom: 6px;
+	font-weight: 700;
+	border-width: 3px;
+	border-image: linear-gradient(to right, var(--col1), var(--col2));
+	border-image-slice: 1;
 }
 
-.form__field:focus~.form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: var(--col3);
-  font-weight: 700;
+.form__field:focus ~ .form__label {
+	position: absolute;
+	top: 0;
+	display: block;
+	transition: 0.2s;
+	font-size: 17px;
+	color: var(--col3);
+	font-weight: 700;
 }
 
 /* reset input */
 .form__field:required,
 .form__field:invalid {
-  box-shadow: none;
+	box-shadow: none;
 }
 
 /*Password visibility*/
 .see_not_see {
-  width: 22px;
-  position: absolute;
-  right: 3px;
-  bottom: 22px;
-  cursor: pointer;
+	width: 22px;
+	position: absolute;
+	right: 3px;
+	bottom: 22px;
+	cursor: pointer;
 }
 
 /* SIGN IN* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
 .agree {
-  display: flex;
+	display: flex;
 }
 
 .agree input {
-  width: 17px;
-  margin: 0 5px;
+	width: 17px;
+	margin: 0 5px;
 }
 
 .agree p {
-  margin: 0;
+	margin: 0;
 }
 
 .grecaptcha-badge {
-  visibility: hidden;
+	visibility: hidden;
 }
 
 /*---------------------------- PIN BOX-----------------------------------------*/
@@ -382,4 +373,73 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}
+
+/*---------------------------- GAMES TABLE -----------------------------------------*/
+
+.game_table {
+	display: flex;
+	flex-direction: column;
+}
+
+.gt_row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin: 10px 0;
+}
+
+.gt_text {
+	color: white;
+	font-size: 17px;
+}
+
+.gt_button {
+	background-color: white;
+	transition: 0.3s;
+	width: 80px;
+	height: 40px;
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+  align-items: center;
+	cursor: pointer;
+	font-size: 17px;
+}
+
+.gt_button:hover {
+	transition: 0.3s;
+	background-color: rgb(206, 205, 205);
+}
+
+/*---------------------------- MODAL -----------------------------------------*/
+
+.modal {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+  position: fixed;
+	z-index: -1;
+
+	height: 100vh;
+	width: 100vw;
+
+	background-color: #00000099;
+	backdrop-filter: blur(5px);
+	transition: 0.2s;
+  opacity: 0;
+}
+
+.m_open{
+	transition: 0.2s;
+  opacity: 1;
+
+  position: fixed;
+  z-index: 10;
+}
+
+.m_box {
+	border-radius: 10px;
 }

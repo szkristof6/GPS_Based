@@ -10,6 +10,9 @@
   position: fixed;
   top: 30px;
   right: 20px;
+
+  z-index: 100;
+  position: fixed;
 }
 .notifications :where(.toast, .column) {
   display: flex;
@@ -143,6 +146,5 @@
 }
 .toast_img_close{
   width: 20px;
-  margin: 0 20px 0 0;
   cursor: pointer;
 }
