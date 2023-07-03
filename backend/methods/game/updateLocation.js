@@ -1,8 +1,11 @@
 const yup = require("yup");
 const { ObjectId } = require("mongodb");
 
+const OutsideArea = require("./outsideArea");
+
 const Player = require("../../collections/player");
 const Location = require("../../collections/location");
+const Map = require("../../collections/location");
 
 const { locationObject } = require("../../schema");
 
@@ -23,8 +26,12 @@ module.exports = async function (req, res) {
 
 		await schema.validate(req.body);
 
-		const player = await Player.findOne({ _id: new ObjectId(player_id) }, { projection: { _id: 1, game_id: 1 } });
+		const player = await Player.findOne({ _id: new ObjectId(player_id) });
 		if (!player) return res.code(400).send({ status: "error", message: "The player was not found!" });
+
+		const map = await Map.findOne({game_id: player.game_id });
+
+		const outside = OutsideArea(map.location, req.body.location);
 
 		const newLocation = {
 			location: req.body.location,
@@ -35,7 +42,7 @@ module.exports = async function (req, res) {
 		const savedLocation = await Location.insertOne(newLocation);
 
 		await Player.updateOne({ _id: new ObjectId(player_id) }, { $set: { location_id: savedLocation.insertedId } });
-		return res.send({ status: "success" });
+		return res.send({ status: "success", outside });
 	} catch (error) {
 		return res.send(error);
 	}

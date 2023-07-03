@@ -9,6 +9,7 @@ const Map = require("../../collections/map");
 const Object = require("../../collections/object");
 
 const { trimmedString, dateTime, numberMin } = require("../../schema");
+const { ObjectId } = require("mongodb");
 
 module.exports = async function (req, res) {
 	try {
@@ -32,15 +33,19 @@ module.exports = async function (req, res) {
 
 		const hash = await bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash(req.body.password, salt));
 
+		const game_id = new ObjectId()
+
 		const newMap = {
 			user_id: req.user.user_id,
 			location: req.body.map,
+			game_id: game_id.toString(),
 			createdAt: new Date(),
 		};
 
 		const savedMap = await Map.insertOne(newMap);
 
 		const newGame = {
+			_id: game_id,
 			id: crypto.randomBytes(8).toString("hex"),
 			name: escapeHtml(req.body.name),
 			map_id: savedMap.insertedId.toString(),
@@ -63,7 +68,7 @@ module.exports = async function (req, res) {
 		for (const index in req.body.images) {
 			const newTeam = {
 				image: req.body.images[index],
-				game_id: savedGame.insertedId.toString(),
+				game_id: game_id.toString(),
 				color: teamColors[index],
 				point: 0,
 				createdAt: new Date(),
@@ -76,6 +81,7 @@ module.exports = async function (req, res) {
 
 		const newObject = {
 			map_id: savedMap.insertedId.toString(),
+			game_id: game_id.toString(),
 			objects: req.body.objects.map((object) => ({ ...object, team_id: teamIds[object.team] })),
 			createdAt: new Date(),
 		};

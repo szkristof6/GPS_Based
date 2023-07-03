@@ -161,11 +161,11 @@ async function getPlayerData() {
 }
 
 function paintPlayer(player) {
+	if (player.outside === true) Message.openToast("Player is outside of game area!", "Error", "error");
+
 	const player_circle = document.createElement("span");
 	player_circle.className = "dot";
 	player_circle.style.background = player.team.color;
-
-	console.log(player_circle);
 
 	new mapboxgl.Marker(player_circle).setLngLat([player.location.x, player.location.y]).addTo(map);
 }
