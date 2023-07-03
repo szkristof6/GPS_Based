@@ -26,13 +26,27 @@ module.exports = async function (req, res) {
 		const cleaned = new Array(); // Létrehozunk egy üres listát
 
 		for (const player of players) {
-			if (player.user_id !== req.user.user_id) {
+			// player.user_id !== req.user.user_id
+			if (true) {
 				const user = User.findOne({ _id: new ObjectId(player.user_id) });
 				const team = Team.findOne({ _id: new ObjectId(player.team_id) });
 				const location = Location.findOne({ _id: new ObjectId(player.location_id) });
 
 				await Promise.all([user, team, location]).then(function (values) {
-					cleaned.push({ user: values[0], team: values[1], location: values[2] });
+					const user = {
+						name: values[0].name,
+						image: values[0].image,
+					}
+					const team = {
+						color: values[1].color,
+						image: values[1].image
+					}
+					const location = {
+						x: values[2].location.x,
+						y: values[2].location.y
+					}
+
+					cleaned.push({user, team, location });
 				});
 			}
 		}

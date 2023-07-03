@@ -23,8 +23,8 @@ const form = document.querySelector("form");
 const joinButton = document.querySelector("#JoinRoom");
 const logoutButton = document.querySelector("#logout");
 
-console.log("4a50d5db8a6029a9");
-console.log("teszt123");
+console.log("787cf2e7940b4db7");
+console.log("1234");
 
 form.addEventListener("submit", (event) => event.preventDefault());
 logoutButton.addEventListener("click", async () => {
@@ -42,9 +42,12 @@ joinButton.addEventListener("click", async (event) => {
 	const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
 	const formData = new FormData(form);
+
+	const pin = `${formData.get("pin1")}${formData.get("pin2")}${formData.get("pin3")}${formData.get("pin4")}`;
+
 	const json = {
 		id: formData.get("id"),
-		password: formData.get("password"),
+		password: pin,
 		token,
 	};
 	const game = await API.fetch(json, `game/join?access_token=${Cookies.get("access_token") || ""}`, "POST");
@@ -62,23 +65,48 @@ joinButton.addEventListener("click", async (event) => {
 	}
 });
 
-//pasword visibilty
-const showButton = document.querySelector(".see_not_see");
+/* PIN */
 
-showButton.addEventListener("click", (e) => {
-	const input = e.target.parentNode.querySelector("input");
+const pinContainer = document.querySelector(".pin-code");
 
-	if (e.target.classList.contains("not_see")) {
-		input.type = "text";
+pinContainer.addEventListener(
+	"keyup",
+	function (event) {
+		const { target } = event;
 
-		e.target.src = "media/hide.png";
-		e.target.classList.remove("not_see");
-		e.target.classList.add("see");
-	} else if (e.target.classList.contains("see")) {
-		input.type = "password";
+		const maxLength = parseInt(target.attributes["maxlength"].value, 10);
+		const myLength = target.value.length;
 
-		e.target.src = "media/eye.png";
-		e.target.classList.remove("see");
-		e.target.classList.add("not_see");
-	}
-});
+		if (myLength >= maxLength) {
+			let next = target;
+			while ((next = next.nextElementSibling)) {
+				if (next == null) break;
+				if (next.tagName.toLowerCase() == "input") {
+					next.focus();
+					break;
+				}
+			}
+		}
+
+		if (myLength === 0) {
+			let next = target;
+			while ((next = next.previousElementSibling)) {
+				if (next == null) break;
+				if (next.tagName.toLowerCase() == "input") {
+					next.focus();
+					break;
+				}
+			}
+		}
+	},
+	false
+);
+
+pinContainer.addEventListener(
+	"keydown",
+	function (event) {
+		const { target } = event;
+		target.value = "";
+	},
+	false
+);

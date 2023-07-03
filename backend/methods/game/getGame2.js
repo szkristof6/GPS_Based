@@ -29,7 +29,7 @@ module.exports = async function (req, res) {
 
 		return res.send({
 			status: "success",
-			game: { status: game.status },
+			game: { status: game.status, id: game._id },
 			map: { location: map.location },
 			objects: objectsWithPictures,
 		});

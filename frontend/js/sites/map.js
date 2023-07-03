@@ -15,11 +15,13 @@ window.addEventListener("load", async () => {
 	const data = await API.fetch("", `game/data?access_token=${Cookies.get("access_token")}&g_id=${Cookies.get("g_id")}`, "GET");
 
 	map.setCenter([data.objects[0].location.x, data.objects[0].location.y]);
-	map.setZoom(10); // You can adjust the zoom level as needed
 
 	drawMapBorder(data.map.location);
 	placeMarkers(data.objects);
 
+	getLocationOfPlayers();
+
+	/*
 	navigator.geolocation.watchPosition(onSuccess, (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"), { enableHighAccuracy: true });
 
 	setInterval(async () => {
@@ -38,6 +40,8 @@ window.addEventListener("load", async () => {
 		getLocationOfPlayers();
 	}, refresh_rate);
 
+	*/
+
 	const loader = document.querySelector(".container");
 	loader.style.display = "none";
 });
@@ -51,8 +55,8 @@ mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzO
 const map = new mapboxgl.Map({
 	container: "map",
 	style: "mapbox://styles/mapbox/satellite-streets-v11?optimize=true",
-	center: [0, 0],
-	zoom: 8,
+	center: [19, 47],
+	zoom: 14,
 	//minZoom: 15,
 	performanceMetricsCollection: false,
 });
@@ -157,14 +161,13 @@ async function getPlayerData() {
 }
 
 function paintPlayer(player) {
-	const player_image = document.createElement("img");
-	player_image.className = "player-icon";
-	player_image.src = `${new URL(player.user.image)}`;
-	player_image.style.width = `40px`;
-	player_image.style.height = `40px`;
-	player_image.style.borderRadius = "50%";
+	const player_circle = document.createElement("span");
+	player_circle.className = "dot";
+	player_circle.style.background = player.team.color;
 
-	new mapboxgl.Marker(player_image).setLngLat([player.location.x, player.location.y]).addTo(map);
+	console.log(player_circle);
+
+	new mapboxgl.Marker(player_circle).setLngLat([player.location.x, player.location.y]).addTo(map);
 }
 
 async function getLocationOfPlayers() {

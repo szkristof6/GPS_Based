@@ -6,8 +6,8 @@ mapboxgl.accessToken = "pk.eyJ1Ijoic3prcmlzdG9mNiIsImEiOiJjbGY0MW4xc20weTViM3FzO
 const map = new mapboxgl.Map({
 	container: "map",
 	style: "mapbox://styles/mapbox/satellite-streets-v11?optimize=true",
-	center: [0, 0],
-	zoom: 2,
+	center: [19, 47],
+	zoom: 8,
 	performanceMetricsCollection: false,
 });
 
@@ -181,6 +181,21 @@ pinContainer.addEventListener(
 	false
 );
 
+/*button toggle*/
+const toggleButton = document.getElementById("toggle-button");
+const overlay = document.getElementById("overlay");
+const icon = document.getElementsByClassName("icon")[0];
+
+toggleButton.addEventListener("click", function () {
+  if (overlay.style.display === "none") {
+    overlay.style.display = "block";
+    icon.src = "../media/close.png";
+  } else {
+    overlay.style.display = "none";
+    icon.src = "../media/menu.png";
+  }
+});
+
 /*
 const adminField = document.querySelector("#admin_field");
 adminField.addEventListener("input", (e) => {
@@ -203,11 +218,11 @@ form.addEventListener("submit", async (e) => {
 		}
 	}
 
-	const imageUpload = await API.fetchForm(formData, `upload/picture?access_token=${Cookies.get("access_token")}&width=64&height=64`);
+	const imageUpload = await API.fetchForm(formData, `upload/picture?access_token=${Cookies.get("access_token")}&size=64`);
 
 	const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
-	const pin = Number(`${formData.get("pin1")}${formData.get("pin2")}${formData.get("pin3")}${formData.get("pin4")}`);
+	const pin = `${formData.get("pin1")}${formData.get("pin2")}${formData.get("pin3")}${formData.get("pin4")}`;
 
 	const json = {
 		name: formData.get("name"),

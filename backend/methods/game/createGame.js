@@ -17,7 +17,7 @@ module.exports = async function (req, res) {
 
 		const schema = yup.object().shape({
 			name: trimmedString.max(255),
-			password: numberMin.max(10),
+			password: trimmedString,
 			date: dateTime,
 
 			//admins: adminArray,
@@ -54,10 +54,17 @@ module.exports = async function (req, res) {
 
 		const teamIds = new Array();
 
-		for (const image of req.body.images) {
+		const teamColors = {
+			0: "red",
+			1: "green",
+			2: "yellow",
+		};
+
+		for (const index in req.body.images) {
 			const newTeam = {
-				image,
+				image: req.body.images[index],
 				game_id: savedGame.insertedId.toString(),
+				color: teamColors[index],
 				point: 0,
 				createdAt: new Date(),
 			};

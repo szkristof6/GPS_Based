@@ -4,6 +4,8 @@ const escapeHtml = require('escape-html')
 
 require("dotenv").config();
 
+//bcrypt.genSalt(parseInt(process.env.SALT)).then((salt) => bcrypt.hash("1234", salt)).then(pass => console.log(pass))
+
 const User = require("../../collections/user");
 
 const { insertToken } = require("../token");

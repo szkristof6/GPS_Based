@@ -38,12 +38,12 @@ module.exports = async function (request, reply) {
 			const uniqueFilename = `${Date.now()}_${fileName}.webp`;
 			const tempFileWebpPath = path.join(uploadDir, uniqueFilename);
 
-			if (request.query.width && request.query.height) {
-				const { width, height } = request.query;
+			if (request.query.size) {
+				const { size } = request.query;
 
 				// Compress and convert the uploaded image to WebP format
 				await sharp(tempFilePath)
-					.resize({ width: Number(width), height: Number(height) })
+					.resize({ height: Number(size) })
 					.toFormat("webp")
 					.webp({ quality: 80 }) // Set the desired WebP quality
 					.toFile(tempFileWebpPath);

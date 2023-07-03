@@ -5,7 +5,7 @@ const Game = require("../../collections/game");
 
 const { setCookie } = require("../cookie");
 
-const { trimmedString } = require("../../schema");
+const { trimmedString, numberMin } = require("../../schema");
 
 /*
 Lekérdezzük az adatbásból azt a játékot, amelyiknek az azonosítója egyezik a megadott azonosítóval

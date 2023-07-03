@@ -13,7 +13,7 @@ const map = new mapboxgl.Map({
 	container: "map",
 	style: "mapbox://styles/mapbox/satellite-streets-v11?optimize=true",
 	center: [0, 0],
-	zoom: 2,
+	zoom: 10,
 	performanceMetricsCollection: false,
 });
 
@@ -178,7 +178,7 @@ async function joinGame(game_id) {
 
 	const data = await API.fetch("", `game/data/admin/${game_id}?access_token=${Cookies.get("access_token")}`, "GET");
 
-	Cookie.set("g_id", data.g_id);
+	Cookie.set("g_id", data.game.id);
 
 	if (data.status === "success") {
 		gamesTable.style.display = "none";

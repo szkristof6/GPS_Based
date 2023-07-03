@@ -352,3 +352,34 @@ select:-webkit-autofill:focus {
 .grecaptcha-badge {
   visibility: hidden;
 }
+
+/*---------------------------- PIN BOX-----------------------------------------*/
+
+.pin-code {
+	padding: 0;
+	margin: 10px 0;
+	display: flex;
+	justify-content: center;
+}
+
+.pin-code input {
+	border: none;
+	text-align: center;
+	width: 38px;
+	height: 38px;
+	font-size: 25px;
+	background-color: #f3f3f32e;
+	margin-right: 5px;
+	color: white;
+}
+
+.pin-code input:focus {
+	border: 1px solid #573d8b;
+	outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
