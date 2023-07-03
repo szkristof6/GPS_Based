@@ -207,9 +207,11 @@ form.addEventListener("submit", async (e) => {
 
 	const token = await grecaptcha.execute("6LcOBhElAAAAANLxZEiq9CaWq8MgqSpFVoqxy3IG", { action: "validate_captcha" });
 
+	const pin = Number(`${formData.get("pin1")}${formData.get("pin2")}${formData.get("pin3")}${formData.get("pin4")}`);
+
 	const json = {
 		name: formData.get("name"),
-		password: formData.get("password"),
+		password: pin,
 		date: formData.get("date"),
 		map: mapArray,
 		objects: objectArray.map((object) => ({

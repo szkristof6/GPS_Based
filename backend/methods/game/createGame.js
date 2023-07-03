@@ -8,7 +8,7 @@ const Team = require("../../collections/team");
 const Map = require("../../collections/map");
 const Object = require("../../collections/object");
 
-const { trimmedString, dateTime, adminArray, locationArray, objectsArray } = require("../../schema");
+const { trimmedString, dateTime, numberMin } = require("../../schema");
 
 module.exports = async function (req, res) {
 	try {
@@ -17,7 +17,7 @@ module.exports = async function (req, res) {
 
 		const schema = yup.object().shape({
 			name: trimmedString.max(255),
-			password: trimmedString,
+			password: numberMin.max(10),
 			date: dateTime,
 
 			//admins: adminArray,
