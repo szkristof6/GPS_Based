@@ -2,7 +2,7 @@
 Megadjuk, hogy milyen címen tudjuk elérni a szerverünket.
 */
 export const backend_uri = "http://localhost:1337";
-//const backend_uri = "https://api.airtrk.hu";
+// export const backend_uri = "https://api.airtrk.hu";
 
 export const static_uri = "https://static.airtrk.hu";
 

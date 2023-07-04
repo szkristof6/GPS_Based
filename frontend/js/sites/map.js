@@ -19,8 +19,6 @@ window.addEventListener("load", async () => {
 	drawMapBorder(data.map.location);
 	placeMarkers(data.objects);
 
-	getLocationOfPlayers();
-
 	/*
 	navigator.geolocation.watchPosition(onSuccess, (error) => Message.openToast(`${error.message}`, `An error, has occured: ${error.code}`, "error"), { enableHighAccuracy: true });
 
@@ -178,14 +176,26 @@ async function getPlayerData() {
 
 	if (response.status === "success") {
 		const { data } = response;
-		const esemeny = document.querySelector(".esemeny");
-		const user = document.querySelector(".user");
 
-		esemeny.querySelector(".ssc-line").style.display = "none";
-		user.querySelector(".ssc-line").style.display = "none";
+		const menu = document.querySelector(".menu");
 
-		esemeny.querySelector("p").innerHTML = `${data.game.name}`;
-		user.querySelector("p").innerHTML = `${data.user.name}`;
+		const m_profil = menu.querySelector(".m_profil");
+		
+		const p_picture = document.createElement("img")
+		p_picture.src = new URL(data.user.image)
+
+		m_profil.appendChild(p_picture)
+
+		const p_name = document.createElement("p")
+		p_name.innerText = data.user.name;
+
+		m_profil.appendChild(p_name)
+
+		const g_name = menu.querySelector(".g_name")
+		g_name.innerText = data.game.name;
+
+		const g_deaths = menu.querySelector(".g_deaths")
+		g_deaths.innerText = 0;
 	}
 }
 
@@ -229,3 +239,9 @@ async function onSuccess(pos) {
 	const update = await API.fetch(json, `game/update/location?access_token=${Cookies.get("access_token")}&p_id=${Cookies.get("p_id")}`, "POST");
 	if (update.status !== "success") Message.openToast(update.message, "Error", update.status);
 }
+
+const menuButton = document.querySelector("#menu");
+menuButton.addEventListener("click", function () {
+	const content = document.querySelector(".content");
+	content.classList.toggle("menu_open");
+});
