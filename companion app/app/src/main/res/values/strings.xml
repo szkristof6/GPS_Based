@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AirTRK Companion</string>
+    <string name="bgimg">bgimg</string>
+    <string name="limg">limg</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+</resources>
