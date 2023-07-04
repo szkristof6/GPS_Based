@@ -18,8 +18,8 @@ body {
 	background-repeat: no-repeat;
 }
 
-p.bold{
-  font-weight: bold;
+p.bold {
+	font-weight: bold;
 }
 
 .content {
@@ -50,7 +50,7 @@ p.bold{
 	grid-row: 1;
 	grid-column: 1;
 
-  background-color: rgb(255 255 255 / 77%);
+	background-color: rgb(255 255 255 / 77%);
 	border-radius: 0 10px 10px;
 	padding: 10px;
 }
@@ -83,18 +83,18 @@ p.bold{
 .m_stat .m_stat_row {
 	display: flex;
 	flex-direction: row;
-  align-items: center;
+	align-items: center;
 
 	width: 100%;
 	margin: 5px 0;
 }
 
-.m_stat_row .bold{
-  font-size: 18px;
+.m_stat_row .bold {
+	font-size: 18px;
 }
 
-.m_stat_row .m_stat_value{
-  margin-left: 5px;
+.m_stat_row .m_stat_value {
+	margin-left: 5px;
 }
 
 .m_buttons {
@@ -175,6 +175,17 @@ p.bold{
 	box-shadow: 0 var(--shadow-y, 4px) var(--shadow-blur, 12px) var(--shadow);
 	transform: scale(var(--scale, 1)) translateZ(0);
 	color: var(--color);
+}
+
+.button-hold.alive {
+	--background: #d40000;
+
+	background: var(--background);
+}
+
+.button-hold.dead {
+	--background: #06b003;
+
 	background: var(--background);
 }
 

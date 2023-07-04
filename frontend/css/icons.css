@@ -7,6 +7,10 @@
 	z-index: 5;
 }
 
+.icon-left {
+	left: 0;
+}
+
 .circle-button {
 	display: flex;
 	justify-content: center;
@@ -22,7 +26,7 @@
 	overflow: hidden;
 }
 
-.circle-button:hover{
+.circle-button:hover {
 	transition: 0.3s;
 	background-color: #cdcdcd;
 }

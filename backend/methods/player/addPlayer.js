@@ -50,6 +50,8 @@ module.exports = async function (req, res) {
 			location_id: newLocation._id,
 			team_id,
 			point: 0,
+			status: "alive",
+			deaths: 0,
 		};
 
 		Promise.all([Location.insertOne(newLocation), Player.insertOne(newPlayer)]);

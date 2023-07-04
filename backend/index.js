@@ -86,8 +86,10 @@ fastify.get("/message/list", { preHandler: [fastify.verify] }, listMessages); //
 
 const addPlayer = require("./methods/player/addPlayer");
 const getPlayerData = require("./methods/player/getPlayerData");
+const changePlayerStatus = require("./methods/player/changePlayerStatus");
 
 fastify.post("/player/add", { preHandler: [fastify.verify] }, addPlayer); // Játékos hozzásadáse
+fastify.post("/player/status/:status", { preHandler: [fastify.verify] }, changePlayerStatus); // Játékos adatok lekérdezése
 fastify.get("/player/data", { preHandler: [fastify.verify] }, getPlayerData); // Játékos adatok lekérdezése
 
 // Moderator methods

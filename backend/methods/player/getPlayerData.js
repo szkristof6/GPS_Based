@@ -27,11 +27,13 @@ module.exports = async function (req, res) {
 			status: "success",
 			data: {
 				player: {
-					point: player.point
+					point: player.point,
+					status: player.status,
+					deaths: player.deaths,
 				},
 				user: {
 					image: user.image,
-					name: user.name, 
+					name: user.name,
 					permission: user.permission,
 				},
 				game: {
@@ -39,7 +41,7 @@ module.exports = async function (req, res) {
 				},
 				team: {
 					image: team.image,
-					point: team.point
+					point: team.point,
 				},
 			},
 		});

@@ -180,22 +180,29 @@ async function getPlayerData() {
 		const menu = document.querySelector(".menu");
 
 		const m_profil = menu.querySelector(".m_profil");
-		
-		const p_picture = document.createElement("img")
-		p_picture.src = new URL(data.user.image)
 
-		m_profil.appendChild(p_picture)
+		const p_picture = document.createElement("img");
+		p_picture.src = new URL(data.user.image);
 
-		const p_name = document.createElement("p")
+		m_profil.appendChild(p_picture);
+
+		const p_name = document.createElement("p");
 		p_name.innerText = data.user.name;
 
-		m_profil.appendChild(p_name)
+		m_profil.appendChild(p_name);
 
-		const g_name = menu.querySelector(".g_name")
+		const g_name = menu.querySelector(".g_name");
 		g_name.innerText = data.game.name;
 
-		const g_deaths = menu.querySelector(".g_deaths")
-		g_deaths.innerText = 0;
+		const g_deaths = menu.querySelector(".g_deaths");
+		g_deaths.innerText = data.player.deaths;
+
+		const death_button = menu.querySelector(".button-hold");
+		death_button.classList.add(data.player.status);
+
+		const b_text = death_button.querySelector("span");
+		if (data.player.status === "dead") b_text.innerText = "Reborn";
+		else b_text.innerText = "Dead";
 	}
 }
 
@@ -244,4 +251,60 @@ const menuButton = document.querySelector("#menu");
 menuButton.addEventListener("click", function () {
 	const content = document.querySelector(".content");
 	content.classList.toggle("menu_open");
+});
+
+/*hit button */
+// Hold button with mouse / select with tab and hold spacebar
+let duration = 100,
+	success = async (button) => {
+		//Success function
+
+		const text = button.querySelector("span");
+		const state = text.innerText === "Dead" ? "dead" : "alive";
+
+		const data = await API.fetch("", `player/status/${state}?access_token=${Cookies.get("access_token")}&p_id=${Cookies.get("p_id")}`, "POST");
+
+		if (data.status === "success") {
+			button.classList.add("success");
+
+			setTimeout(() => {
+				button.classList.toggle("dead");
+				button.classList.toggle("alive");
+
+				if (state === "dead") {
+					const g_deaths = document.querySelector(".g_deaths");
+					const d_inc = Number(g_deaths.innerText) + 1;
+
+					g_deaths.innerText = d_inc;
+					
+					text.innerText = "Reborn";
+				} else text.innerText = "Dead";
+
+				button.classList.remove("success");
+			}, 2000);
+		}
+	};
+
+document.querySelectorAll(".button-hold").forEach((button) => {
+	button.style.setProperty("--duration", duration + "ms");
+	["mousedown", "touchstart", "keypress"].forEach((e) => {
+		button.addEventListener(e, (ev) => {
+			if (e != "keypress" || (e == "keypress" && ev.which == 32 && !button.classList.contains("process"))) {
+				button.classList.add("process");
+				button.timeout = setTimeout(success, duration, button);
+			}
+		});
+	});
+	["mouseup", "mouseout", "touchend", "keyup"].forEach((e) => {
+		button.addEventListener(
+			e,
+			(ev) => {
+				if (e != "keyup" || (e == "keyup" && ev.which == 32)) {
+					button.classList.remove("process");
+					clearTimeout(button.timeout);
+				}
+			},
+			false
+		);
+	});
 });
