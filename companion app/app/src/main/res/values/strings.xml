@@ -6,4 +6,5 @@
     <string name="register">Register</string>
     <string name="email">email</string>
     <string name="password">password</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiYnJ5Y2tlciIsImEiOiJjbGNiemR2NGwweTM5M29tcGoxaDI1ZHl4In0.9MSEB41XBJCs7K5CaSSAHw</string>
 </resources>

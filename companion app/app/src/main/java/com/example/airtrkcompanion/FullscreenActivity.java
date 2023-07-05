@@ -1,17 +1,26 @@
 package com.example.airtrkcompanion;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.View;
 
-public class FullscreenActivity extends Activity {
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+
+public class FullscreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        // Hide the navigation bar and on-screen buttons
+        requestWindowFeature(Window.FEATURE_NO_TITLE); // Add this line before setContentView()
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         hideSystemUI();
+
+        setContentView(R.layout.activity_main);
     }
 
     private void hideSystemUI() {

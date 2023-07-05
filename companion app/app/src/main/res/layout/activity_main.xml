@@ -2,11 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <FrameLayout
+        android:id="@+id/backgroundLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/BackgroundImg"
+            android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/bgimg"
@@ -35,6 +37,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
+            android:id="@+id/imgLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="320dp"
@@ -66,28 +69,31 @@
         android:id="@+id/Auth"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/authLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Register"
+                android:id="@+id/Auth_input"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="50">
 
                 <LinearLayout
+                    android:id="@+id/inputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -98,88 +104,100 @@
 
 
                     <EditText
-                        android:id="@+id/loginEmail"
+                        android:id="@+id/email"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_margin="10dp"
                         android:autofillHints=""
                         android:ems="10"
                         android:inputType="textEmailAddress"
                         android:text="@string/email"
                         android:textColor="#689F38"
+                        android:textSize="15sp"
                         tools:ignore="DuplicateSpeakableTextCheck" />
 
                     <EditText
-                        android:id="@+id/loginPass"
+                        android:id="@+id/pass"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_margin="10dp"
                         android:autofillHints=""
                         android:ems="10"
                         android:inputType="textPassword"
                         android:text="@string/password"
                         android:textColor="#689F38"
+                        android:textSize="15sp"
                         tools:ignore="DuplicateSpeakableTextCheck,TouchTargetSizeCheck" />
 
-                    <Button
-                        android:id="@+id/loginBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:backgroundTint="@color/black"
-                        android:text="@string/login"
-                        android:textColor="#EF6C00"
-                        app:iconTint="@color/black" />
+                    <LinearLayout
+                        android:id="@+id/btnLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/regBtn"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_margin="10dp"
+                            android:layout_weight="50"
+                            android:alpha="0.8"
+                            android:backgroundTint="@color/black"
+                            android:text="@string/register"
+                            android:textColor="#EF6C00" />
+
+                        <Button
+                            android:id="@+id/loginBtn"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_margin="10dp"
+                            android:layout_weight="50"
+                            android:alpha="0.8"
+                            android:backgroundTint="@color/black"
+                            android:text="@string/login"
+                            android:textColor="#EF6C00"
+                            app:iconTint="@color/black" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Login"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="50">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <EditText
-                        android:id="@+id/regEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:autofillHints=""
-                        android:ems="10"
-                        android:inputType="textEmailAddress"
-                        android:text="@string/email"
-                        android:textColor="#689F38" />
-
-                    <EditText
-                        android:id="@+id/regPass"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:autofillHints=""
-                        android:ems="10"
-                        android:inputType="textPassword"
-                        android:text="@string/password"
-                        android:textColor="#689F38"
-                        tools:ignore="TouchTargetSizeCheck" />
-
-                    <Button
-                        android:id="@+id/regBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@color/black"
-                        android:text="@string/register"
-                        android:textColor="#EF6C00" />
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Lobby"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lobbyList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lobbyWait"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/waitLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -193,6 +211,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <com.mapbox.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:mapbox_cameraTargetLat="40.7128"
+            app:mapbox_cameraTargetLng="-74.0060"
+            app:mapbox_cameraZoom="9.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

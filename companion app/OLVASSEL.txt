@@ -1,0 +1,103 @@
+activity_main.xml
+
+- benne vannak a vizuálisan elhelyezett eszközök
+- fa rendszerben vannak beállítva
+	- a Design résznél szemléltethető
+
+	- main : az alap ablakunk					1
+
+		- backgroundLayout : a háttér elrendezéséhez		 2
+			- background : a háttér képe			  3
+
+		- Loading : töltőkép					 2
+			- imgLayout : töltőkép elrendezéséhez 		  3
+				- loading : töltőkép			   4
+
+		- Auth : Authentikáció					 2
+			- authLayout : Authentikáció elrendezéséhez 	  3
+				- inputLayout : beviteli elrendezés	   4
+					- email : bevitel		    5
+					- pass : bevitel		    5
+					- btnLayout : Gomb elrendezés	    5
+						- regBtn : reg. Gomb	     6
+						- loginBtn: belép. Gomb       6
+				(
+
+					TODO: a böngészős login/reg oldal újraalkotása
+
+				)
+
+		- Lobby : Várakozó					 2
+			- lobbyList : esemény lista elrendezés 		  3
+				- listView : esemény lista kiíratás	   4
+			- lobbyWait : esemény várakozó			  3
+				- waitLayout : várakozó elrendezés	   4
+					(
+
+						TODO: a böngészős várakozó újraalkotása						
+
+					)
+
+		- Map : Térkép						 2
+			- mapView : Mapbox térkép			  3
+			(
+
+				TODO: HUD elemek létrehozása
+					pl: hit gomb, értesítések, stb...
+
+			)
+
+-----------------------------------------------------------------------------------------------------
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+-----------------------------------------------------------------------------------------------------
+
+	SCRIPT
+
+		- az activity_main.xml-ben lévő 2-es rangú pontokat kell majd switch-el
+
+			- beléptetés : -set-> username
+			
+			- (if username != null) -set-> Auth gone (lekapcsolja) , -set-> Lobby visible
+			
+			- várakozó : -set-> game_id listView-ban , -set-> gameIsOn igaz
+
+			- (if game_id != null && gameIsOn == true) -set-> Lobby gone , -set-> Map visible
+			
+						
+-----------------------------------------------------------------------------------------------------
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+-----------------------------------------------------------------------------------------------------
+
+	TODO
+
+		- IMPLEMENTÁLNI A MAPBOXOT
+		- satellite képet adni a mapView-ban
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			 
