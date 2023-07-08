@@ -79,6 +79,7 @@
             android:id="@+id/authLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:baselineAligned="false"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -132,7 +133,7 @@
                     <LinearLayout
                         android:id="@+id/btnLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <Button
@@ -162,6 +163,16 @@
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/authError"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="#FF0000"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
+
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -179,18 +190,24 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lobbyList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <ListView
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lobbyWait"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/waitLayout"
@@ -222,7 +239,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:mapbox_cameraTargetLat="47.23708040607996"
             app:mapbox_cameraTargetLng="17.640845880205756"
-            app:mapbox_cameraZoom="9.0" />
+            app:mapbox_cameraZoom="18.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
